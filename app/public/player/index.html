@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="./player.css" rel="stylesheet" />
+    <title>Cyberspace Saboteur</title>
+</head>
+<body>
+    <h1>You are the human!</h1>
+
+    <div id="body">
+        <div id="console">
+
+        </div>
+        <div id="main-container">
+            <div id="vertical-divider"></div>
+            <table id="game-board">
+                <tr>
+                    <td class="hidden" id="room-0-0"></td>
+                    <td class="hidden" id="room-0-1"></td>
+                    <td class="hidden" id="room-0-2"></td>
+                </tr>
+                <tr>
+                    <td class="hidden" id="room-1-0"></td>
+                    <td class="hidden" id="room-1-1"></td>
+                    <td class="hidden" id="room-1-2"></td>
+                </tr>
+                <tr>
+                    <td class="hidden" id="room-2-0"></td>
+                    <td class="hidden" id="room-2-1"></td>
+                    <td class="hidden" id="room-2-2"></td>
+                </tr>
+            </table>
+        </div>
+        <div id="tools">
+            <button class="button"> Fire Extinguisher </button>
+            <button class="button"> Wrench </button>
+            <button class="button"> Gun </button>
+        </div>
+    </div>
+</body>
+<script src="../constants.js"></script>
+<script src="../websocket.js"></script>
+<script src="../board.js"></script>
+<script src="./player.js"></script>
+</html>
