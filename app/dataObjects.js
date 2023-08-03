@@ -1,10 +1,10 @@
 /**
- * This file will contain objects for different types of data we will send to the player/AI during the game
+ * This file will contain objects for different types of data we will send to the human/AI during the game
  */
-const PlayerRoomUpdateData = (room) => ({
-    name : "playerRoomUpdate",
+const HumanRoomUpdateData = (room) => ({
+    name : "humanRoomUpdate",
     room
 });
 
-module.exports = { PlayerRoomUpdateData }
+module.exports = { HumanRoomUpdateData }
 

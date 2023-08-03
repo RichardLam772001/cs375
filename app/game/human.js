@@ -1,12 +1,12 @@
-let playerState = {
+let humanState = {
     room: "0-0"
 }
 
 const enterRoom = (room) => {
-    playerState.room = room;
+    humanState.room = room;
 }
 const getCurrentRoom = () => {
-    return playerState.room;
+    return humanState.room;
 }
 
 module.exports = { enterRoom, getCurrentRoom };

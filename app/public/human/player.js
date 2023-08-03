@@ -1,4 +1,4 @@
-const PLAYER = (() => {
+const HUMAN = (() => {
 
     let currentRoom = "";
 
@@ -35,17 +35,20 @@ const getCurrentRoom = () => {
 WS.onConnect(() => {
     console.log("We are connected");
     getCurrentRoom();
-})
+});
+WS.onDisconnect(() => {
+    
+});
 
 WS.onReceive((data) => {
-    if (data.name === "playerRoomUpdate") {
-        PLAYER.setCurrentRoom(data.room);
+    if (data.name === "humanRoomUpdate") {
+        HUMAN.setCurrentRoom(data.room);
     }
 });
 
 for (let i=0; i < 3; i++) {
     for (let j=0; j < 3; j++) {
-        document.getElementById(`room-${i}-${j}`).addEventListener('click', () => PLAYER.enterRoom(`${i}-${j}`));
+        document.getElementById(`room-${i}-${j}`).addEventListener('click', () => HUMAN.enterRoom(`${i}-${j}`));
     }
 }
 

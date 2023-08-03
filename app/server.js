@@ -1,6 +1,6 @@
 // Require statements
-const { getCurrentRoom, enterRoom } = require("./game/player.js");
-const { PlayerRoomUpdateData } = require("./dataObjects.js");
+const { getCurrentRoom, enterRoom } = require("./game/human.js");
+const { HumanRoomUpdateData } = require("./dataObjects.js");
 
 const { WEBSOCKET_PORT, HOSTNAME, PORT } = require("../env.json");
 let express = require("express");
@@ -41,11 +41,11 @@ const onReceiveDataFromClient = (byteData) => {
 		case "enterRoom":
 			enterRoom(action.args.room);
 			currentRoom = getCurrentRoom();
-			sendToAllClients(PlayerRoomUpdateData(currentRoom));
+			sendToAllClients(HumanRoomUpdateData(currentRoom));
 			break;
 		case "getCurrentRoom":
 			currentRoom = getCurrentRoom();
-			sendToAllClients(PlayerRoomUpdateData(currentRoom));
+			sendToAllClients(HumanRoomUpdateData(currentRoom));
 			break;
 		default:
 			break;
