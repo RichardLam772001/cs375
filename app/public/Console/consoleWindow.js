@@ -10,9 +10,8 @@ const snapToBottomTolerance = 50; //When within this many pixels from the bottom
 let modes = ["public", "private", "important", "critical"];
 let seconds = 60*4; //for testing
 
-//Expects an object with 3 keys: time, message, classString
-function AddConsoleLine(lineObj){
-    let {time, message, classString} = lineObj;
+function AddConsoleLine(consoleLineData){
+    let {time, message, style} = consoleLineData;
 
     let stringMessage = "";
 
@@ -24,7 +23,7 @@ function AddConsoleLine(lineObj){
 
     stringMessage += "> "+message;
     const newElem = AddConsoleLineString(stringMessage);
-    newElem.className = classString;
+    newElem.className = style;
 }
 
 //Makes and returns a line element as a child of the lines parent element, setting its text content
