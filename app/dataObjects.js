@@ -6,5 +6,13 @@ const HumanRoomUpdateData = (room) => ({
     room
 });
 
-module.exports = { HumanRoomUpdateData }
+const ConsoleLineData = (time, message, style) => ({
+    name : "consoleLine",
+    time,
+    message,
+    visibility,
+    style
+});
+
+module.exports = { PlayerRoomUpdateData, ConsoleLineData};
 
