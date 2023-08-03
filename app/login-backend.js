@@ -30,7 +30,7 @@ app.post("/login", async (req, res) => {
             return res.status(500).send();
         }
         if (verifyResult) {
-            console.log("Login successful")
+            console.log("Login successful!")
             return res.status(200).send();
         } else {
             console.log("Incorrect password")
