@@ -1,0 +1,34 @@
+#consoleWindow {
+    background-color: #212121;
+    width:20%;
+    height: 80vh;
+    overflow-y:scroll;
+    vertical-align: text-bottom;
+    border: 1em solid lime;
+}
+
+#consoleWindow .lineHolder{
+    padding: 10px;
+    font-family: "Lucida Console", "Courier New", monospace;
+}
+
+#consoleWindow .public{
+    color:white;
+    margin: 10px 0;
+}
+#consoleWindow .private{
+    color:orange;
+    margin: 10px 0;
+}
+#consoleWindow .important{
+    color:lime;
+    font-weight: bold;
+    font-size: large;
+    margin: 10px 0;
+}
+#consoleWindow .critical{
+    color:rgb(255, 60, 60);
+    font-weight: bolder;
+    font-size: larger;
+    margin: 10px 0;
+}
