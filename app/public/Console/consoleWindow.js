@@ -11,7 +11,7 @@ const CONSOLE = (() => {
     let modes = ["public", "private", "important", "critical"];
     let seconds = 60*4; //for testing
 
-    function AddConsoleLine(consoleLineData){
+    function addConsoleLine(consoleLineData){
         let {time, message, style} = consoleLineData;
 
         let stringMessage = "";
@@ -22,72 +22,72 @@ const CONSOLE = (() => {
         }
 
         stringMessage += "> "+message;
-        const newElem = AddConsoleLineString(stringMessage);
+        const newElem = addConsoleLineString(stringMessage);
         newElem.className = style;
     }
-    function SecondsToTimeObj(seconds){
+    function secondsToTimeObj(seconds){
         return {minutes: Math.floor(seconds / 60), seconds: seconds % 60 };
     }
 
     //Makes and returns a line element as a child of the lines parent element, setting its text content
-    function AddConsoleLineString(lineString){
-        let scrolledToBottom = IsScrolledToBottom();
+    function addConsoleLineString(lineString){
+        let scrolledToBottom = isScrolledToBottom();
         let lineElement = document.createElement("div");
         lineElement.textContent = lineString;
         lineHolderElement.appendChild(lineElement);
 
         if(scrolledToBottom){
-            setTimeout(ScrollToBottom, 0); //delay allows the font time to adjust
+            setTimeout(scrollToBottom, 0); //delay allows the font time to adjust
         }
         return lineElement;
     }
 
-    function RemoveChildrenOfElement(element){
+    function removeChildrenOfElement(element){
         element.innerText = "";
     }
 
-    function SetConsoleLines(linesArray){
-        RemoveChildrenOfElement(lineHolderElement);
+    function setConsoleLines(linesArray){
+        removeChildrenOfElement(lineHolderElement);
         for(const line of linesArray){
-            AddConsoleLine(line);
+            addConsoleLine(line);
         }
     }
     //for testing
-    function AddRandomLines(numberOfLines){
+    function addRandomLines(numberOfLines){
         for(let i = 0; i < numberOfLines; ++i){
-            AddRandomLine();
+            addRandomLine();
         }
     }
 
-    function AddRandomLine(){
-        const classString = RandomListElem(modes);
+    function addRandomLine(){
+        const classString = randomListElem(modes);
         const lineObj = {
-            time: SecondsToTimeObj(seconds), 
+            time: secondsToTimeObj(seconds), 
             message: `${classString} message`, 
             style: classString};
-        AddConsoleLine(lineObj);
+        addConsoleLine(lineObj);
         seconds--;
     }
-    function RandomListElem(L){
+    function randomListElem(L){
         var index = Math.floor(Math.random() * modes.length);
         return L[index];
     }
 
-    function ScrollToBottom(){
+    function scrollToBottom(){
         lineHolderElement.scrollIntoView(false);
     }
-    function IsScrolledToBottom(){
+    function isScrolledToBottom(){
         return Math.abs(scrollElement.scrollHeight - scrollElement.scrollTop - scrollElement.clientHeight) < snapToBottomTolerance;
     }
 
 
     return{
-        AddConsoleLine,
-        SetConsoleLines,
-        SecondsToTimeObj,
+        addConsoleLine,
+        setConsoleLines,
+        secondsToTimeObj,
 
         //TESTING
-        AddRandomLines
+        addRandomLines
     }
 })();
 
@@ -98,8 +98,8 @@ let testLines = [
     {message:"Distress beacon activated", style: "public"},
     {message:"Scanning AI companion system...", style: "public"},
     {message:"Scan result: 50% chance that AI system has been hacked by hostile forces", style: "critical"},
-    {time: CONSOLE.SecondsToTimeObj(60*4), message:"Rescue arrives in 4 minutes", style: "important"}
+    {time: CONSOLE.secondsToTimeObj(60*4), message:"Rescue arrives in 4 minutes", style: "important"}
 ]
-CONSOLE.SetConsoleLines(testLines);
+CONSOLE.setConsoleLines(testLines);
 
-setInterval(() => CONSOLE.AddRandomLines(1),1000);
+setInterval(() => CONSOLE.addRandomLines(1),1000);
