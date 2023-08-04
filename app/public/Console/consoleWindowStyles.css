@@ -1,4 +1,4 @@
-#consoleWindow {
+#console-window {
     background-color: #212121;
     width:20%;
     height: 80vh;
@@ -7,26 +7,26 @@
     border: 1em solid lime;
 }
 
-#consoleWindow .lineHolder{
+#console-window .lineHolder{
     padding: 10px;
     font-family: "Lucida Console", "Courier New", monospace;
 }
 
-#consoleWindow .public{
+#console-window .public{
     color:white;
     margin: 10px 0;
 }
-#consoleWindow .private{
+#console-window .private{
     color:orange;
     margin: 10px 0;
 }
-#consoleWindow .important{
+#console-window .important{
     color:lime;
     font-weight: bold;
     font-size: large;
     margin: 10px 0;
 }
-#consoleWindow .critical{
+#console-window .critical{
     color:rgb(255, 60, 60);
     font-weight: bolder;
     font-size: larger;

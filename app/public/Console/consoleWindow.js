@@ -1,6 +1,6 @@
 const CONSOLE = (() => {
 
-    const consoleWindowElement = document.getElementById("consoleWindow");
+    const consoleWindowElement = document.getElementById("console-window");
     const lineHolderElement = document.createElement("div");
     lineHolderElement.className = "lineHolder";
     consoleWindowElement.appendChild(lineHolderElement);

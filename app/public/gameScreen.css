@@ -1,0 +1,59 @@
+/* For shared stylings on both players' screens */
+
+body{
+    background-color: rgb(54, 3, 54);
+    color: white;
+}
+
+#game-board {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+#game-board td {
+    width: 10rem;
+    
+    border: 1px solid black;
+}
+#body {
+    display: flex;
+    flex-direction: row;
+}
+#vertical-divider {
+    width: 1rem;
+    height: 10rem;
+    opacity: 0;
+}
+
+#tools {
+    display: flex;
+    flex-direction: column;
+    height: 20rem;
+}
+
+#main-container {
+    display: flex;
+}
+
+td.hidden {
+    background-color: black;
+}
+
+td.selected {
+    background-color: white;
+    background-image: url("./temp-room.png");
+    background-size: contain;
+}
+
+
+#sidebar{
+    display: flex;
+    flex-direction: column;
+    height: 20rem;
+
+}
+
+.tool-group{
+    display: flex;
+    flex-direction: column;
+    height: 20rem;
+}
