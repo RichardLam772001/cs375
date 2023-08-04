@@ -48,7 +48,7 @@ WS.onReceive((data) => {
 
 for (let i=0; i < 3; i++) {
     for (let j=0; j < 3; j++) {
-        document.getElementById(`room-${i}-${j}`).addEventListener('click', () => HUMAN.enterRoom(`${i}-${j}`));
+        BOARD.getRoom(i,j).addEventListener('click', () => HUMAN.enterRoom(`${i}-${j}`));
     }
 }
 

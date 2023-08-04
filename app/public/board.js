@@ -1,12 +1,35 @@
-const BOARD = (() => {
+const BOARD = ((rowCount, columnCount) => {
 
     const ROOMS = [];
-    for (let i=0; i < 3; i++) {
-        let row = [];
-        for (let j=0; j < 3; j++) {
-            row.push(document.getElementById(`room-${i}-${j}`));
+
+    const TABLE_PARENT = document.getElementById("main-container");
+    const TABLE_ELEMENT = createTableElem();
+    
+    
+    
+    function createTableElem(){
+        const tableElem = createElemUnderParent("table", TABLE_PARENT);
+        tableElem.id = "game-board";
+
+        for (let i=0; i < rowCount; i++) {
+            let row = [];
+            let rowElem = createElemUnderParent("tr", tableElem);
+
+            for (let j=0; j < columnCount; j++) {
+                const newCell = createElemUnderParent("td", rowElem);
+                newCell.class = "hidden";
+                newCell.id = `room-${i}-${j}`;
+
+                row.push(newCell);
+            }
+            ROOMS.push(row);
         }
-        ROOMS.push(row);
+        return tableElem;
+    }
+    function createElemUnderParent(elemType, parentElem){
+        const newElem = document.createElement(elemType);
+        parentElem.appendChild(newElem);
+        return newElem;
     }
 
     /**
@@ -29,8 +52,13 @@ const BOARD = (() => {
         setAllToHidden();
         ROOMS[i][j].classList.add("selected");
     }
+
+    function getRoom(row, column){
+        return ROOMS[row][column];
+    }
     
     return {
-        setCurrentRoom
+        setCurrentRoom,
+        getRoom
     };;
-})();
+})(3,3);

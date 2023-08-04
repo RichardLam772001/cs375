@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="./human.css" rel="stylesheet" />
+    <link href="./ai.css" rel="stylesheet" />
     <link href="../gameScreen.css" rel="stylesheet" />
     <link href="../Console/consoleWindowStyles.css" rel="stylesheet" />
     <title>Cyberspace Saboteur</title>
 </head>
 <body>
-    <h1 id="role-text">You are the human</h1>
+    <h1 id="role-text">You are the AI</h1>
 
     <div id="body">
         <div id="console">
@@ -19,16 +19,24 @@
         <div id="vertical-divider"></div>
         <div id="main-container"></div>
         <div id="vertical-divider"></div>
-        <div id="tools">
-            <button class="button"> Fire Extinguisher </button>
-            <button class="button"> Wrench </button>
-            <button class="button"> Gun </button>
+        <div id="sidebar">
+            <div class="tool-group">
+                <div>Pings</div>
+                <button class="button"> Fire</button>
+                <button class="button"> Breach </button>
+                <button class="button"> Intruder </button>
+            </div>
+            <div class="tool-group">
+                <div>Manage Threats</div>
+                <button class="button"> Assist</button>
+                <button class="button"> Sabotage </button>
+            </div>
         </div>
     </div>
 </body>
 <script src="../constants.js"></script>
 <script src="../websocket.js"></script>
 <script src="../board.js"></script>
-<script src="./human.js"></script>
+<script src="./ai.js"></script>
 <script src="../Console/consoleWindow.js"></script>
 </html>
