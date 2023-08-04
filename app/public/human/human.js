@@ -1,12 +1,5 @@
 const HUMAN = (() => {
 
-    let currentRoom = "";
-
-    const setCurrentRoom = (newRoom) => {
-        currentRoom = newRoom;
-        BOARD.setCurrentRoom(newRoom);
-    }
-
     const enterRoom = (room) => {
         WS.send({
             action: {
@@ -19,35 +12,13 @@ const HUMAN = (() => {
     };
 
     return {
-        setCurrentRoom,
         enterRoom
     }
 })();
 
-const getCurrentRoom = () => {
-    WS.send({
-        action: {
-            name: "getCurrentRoom"
-        }
-    });
-}
-
-WS.onConnect(() => {
-    console.log("We are connected");
-    getCurrentRoom();
-});
-WS.onDisconnect(() => {
-    
-});
-
-WS.onReceive((data) => {
-    if (data.name === "humanRoomUpdate") {
-        HUMAN.setCurrentRoom(data.room);
-    }
-});
-
-for (let i=0; i < 3; i++) {
-    for (let j=0; j < 3; j++) {
+const size = BOARD.getSize();
+for (let i=0; i < size.rows; i++) {
+    for (let j=0; j < size.columns; j++) {
         BOARD.getRoom(i,j).addEventListener('click', () => HUMAN.enterRoom(`${i}-${j}`));
     }
 }

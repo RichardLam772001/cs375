@@ -5,7 +5,9 @@ const BOARD = ((rowCount, columnCount) => {
     const TABLE_PARENT = document.getElementById("main-container");
     const TABLE_ELEMENT = createTableElem();
     
-    
+    function getSize(){
+        return {rows: rowCount, columns: columnCount};
+    }
     
     function createTableElem(){
         const tableElem = createElemUnderParent("table", TABLE_PARENT);
@@ -44,13 +46,21 @@ const BOARD = ((rowCount, columnCount) => {
 
     const parseRoomToIndexes = (room) => room.split("-").map(n => Number(n));
 
+    function roomExists(coordinate){
+        return coordinate[0] < rowCount && coordinate[1] < columnCount;
+    }
+
     /**
      * @param {string} room two numbers separated by a dash ranging from 0-0 to 2-2
      */
     const setCurrentRoom = (room) => {
         let [i, j] = parseRoomToIndexes(room);
         setAllToHidden();
-        ROOMS[i][j].classList.add("selected");
+        if(!roomExists([i,j])){
+            console.log(`Room ${i}-${j} does not exist`);
+        }else{
+            ROOMS[i][j].classList.add("selected");
+        }
     }
 
     function getRoom(row, column){
@@ -59,6 +69,7 @@ const BOARD = ((rowCount, columnCount) => {
     
     return {
         setCurrentRoom,
-        getRoom
+        getRoom,
+        getSize
     };;
 })(3,3);
