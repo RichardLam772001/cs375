@@ -7,6 +7,7 @@ const HUMAN_STATE = (() => {
 
     function setCurrentRoom(newRoom){
         currentRoom = newRoom;
+        CONSOLE.addConsoleLine({message:`Human enters room ${newRoom}`, style: "public"});
         BOARD.setCurrentRoom(newRoom);
     }
     function setCurrentTool(newTool){

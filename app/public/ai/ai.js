@@ -1,7 +1,7 @@
 const AI = (() => {
 
     function pingRoom(row, column){
-        console.log(`ping room ${row}-${column}`);
+        CONSOLE.addConsoleLine({message:`ping room ${row}-${column}`, style: "private"});
     }
 
     return {
