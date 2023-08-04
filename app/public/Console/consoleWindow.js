@@ -7,7 +7,7 @@ const CONSOLE = (() => {
 
     const scrollElement = consoleWindowElement;
 
-    const snapToBottomTolerance = 50; //When within this many pixels from the bottom of the console, new messages will cause the scroll to snap to the bottom
+    const SNAP_TO_BOTTOM_TOLERANCE = 50; //When within this many pixels from the bottom of the console, new messages will cause the scroll to snap to the bottom
     let modes = ["public", "private", "important", "critical"];
     let seconds = 60*4; //for testing
 
@@ -77,7 +77,7 @@ const CONSOLE = (() => {
         lineHolderElement.scrollIntoView(false);
     }
     function isScrolledToBottom(){
-        return Math.abs(scrollElement.scrollHeight - scrollElement.scrollTop - scrollElement.clientHeight) < snapToBottomTolerance;
+        return Math.abs(scrollElement.scrollHeight - scrollElement.scrollTop - scrollElement.clientHeight) < SNAP_TO_BOTTOM_TOLERANCE;
     }
 
 
