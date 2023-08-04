@@ -14,5 +14,5 @@ const ConsoleLineData = (time, message, style) => ({
     style
 });
 
-module.exports = { PlayerRoomUpdateData, ConsoleLineData};
+module.exports = { HumanRoomUpdateData, ConsoleLineData};
 
