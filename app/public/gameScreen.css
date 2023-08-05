@@ -40,7 +40,7 @@ td.hidden {
 
 td.selected {
     background-color: white;
-    background-image: url("./temp-room.png");
+    background-image: url("./images/temp-room.png");
     background-size: contain;
 }
 
