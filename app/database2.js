@@ -1,6 +1,6 @@
 let express = require("express");
 let { Pool } = require("pg");
-let env = require("E:/starter2/dbenv.json");
+let env = require("../dbenv.json");
 const argon2 = require('argon2');
 
 let hostname = "localhost";
