@@ -2,7 +2,7 @@
  * This file will contain objects for different types of data we will send to the human/AI during the game
  */
 
-// Sync with dataObjects.js on the backend
+// Sync with dataObjects.js on the frontend
 const DATA_TYPES = {
     HUMAN_ROOM_UPDATE : "humanRoomUpdate",
     CONSOLE_LINE : "consoleLine",
@@ -27,6 +27,6 @@ const GameReadyData = (lobbyId) => ({
     lobbyId
 });
 
-
-module.exports = { HumanRoomUpdateData, ConsoleLineData, GameReadyData };
-
+const isMessageType = (data, data_type) => {
+    return data.name === data_type
+}
