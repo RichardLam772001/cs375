@@ -14,7 +14,7 @@ const HumanRoomUpdateData = (room) => ({
     room
 });
 
-const ConsoleLineData = (time, message, style) => ({
+const ConsoleLineData = (time, message, visibility, style) => ({
     name : DATA_TYPES.CONSOLE_LINE,
     time,
     message,
