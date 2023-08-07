@@ -1,6 +1,6 @@
 // Require statements
-const { getCurrentRoom, enterRoom } = require("./game/human.js");
 const { HumanRoomUpdateData } = require("./dataObjects.js");
+const { Match } = require("./game/match.js");
 
 const { WEBSOCKET_PORT, HOSTNAME, PORT } = require("../env.json");
 let express = require("express");
@@ -33,23 +33,14 @@ const sendToAllClients = (data) => {
 	});
 }
 
+const match = Match(webSockServer);
+
 const onReceiveDataFromClient = (byteData) => {
 	let data = JSON.parse(byteData.toString());
+    console.log(`receive: ${byteData.toString()}`);
 	let action = data.action;
-	let currentRoom;
-	switch(action.name) {
-		case "enterRoom":
-			enterRoom(action.args.room);
-			currentRoom = getCurrentRoom();
-			sendToAllClients(HumanRoomUpdateData(currentRoom));
-			break;
-		case "getCurrentRoom":
-			currentRoom = getCurrentRoom();
-			sendToAllClients(HumanRoomUpdateData(currentRoom));
-			break;
-		default:
-			break;
-	}
+
+    match.handleAction(undefined, action);
 }
 
 webSockServer.on('connection', ws => {
