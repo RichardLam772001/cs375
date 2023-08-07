@@ -15,10 +15,12 @@ npm install
 (Don't forget to run this before developing)
 
 # To start the server
+Have node installed.
+Run this once:
 ```
-npm run start
+npm install
 ```
-or 
+Then:
 ```
-node server.js
+node app/server.js
 ```
