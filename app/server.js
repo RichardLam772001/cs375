@@ -33,14 +33,16 @@ const sendToAllClients = (data) => {
 	});
 }
 
-const match = Match(webSockServer);
+const MATCHES = {};
+MATCHES[0] = Match(webSockServer);
 
 const onReceiveDataFromClient = (byteData) => {
 	let data = JSON.parse(byteData.toString());
-    console.log(`receive: ${byteData.toString()}`);
+    let matchID = 0; //to be extracted from the data or the cookie or whatever
+    let clientID = undefined; //to be extracted
 	let action = data.action;
 
-    match.handleAction(undefined, action);
+    MATCHES[matchID].handleAction(clientID, action);
 }
 
 webSockServer.on('connection', ws => {

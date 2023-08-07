@@ -1,38 +1,7 @@
 const { HumanState } = require("./human.js");
-const { HumanRoomUpdateData } = require("../dataObjects.js");
-
-const Broadcaster = ((webSockServer, humanClient, aiClient) => {
-    function sendHuman(data){
-        if (typeof data === "object") {
-            data = JSON.stringify(data);
-        }
-        humanClient.send(data);
-    }
-    function sendAi(data){
-        if (typeof data === "object") {
-            data = JSON.stringify(data);
-        }
-        aiClient.send(data);
-    }
-    function sendBoth(data){
-        //sendHuman(data);
-        //sendAi(data);
-        sendToAllClients(data);
-    }
-    const sendToAllClients = (data) => {
-        if (typeof data === "object") {
-            data = JSON.stringify(data);
-        }
-        webSockServer.clients.forEach(client => {
-            client.send(data);
-        });
-    }
-    return {
-        sendHuman,
-        sendAi,
-        sendBoth
-    };
-});
+const { HumanRoomUpdateData, ConsoleLineData} = require("../dataObjects.js");
+const { ConsoleLinesLog } = require("./consoleLinesLog.js");
+const { Broadcaster } = require("./broadcaster.js");
 
 // This object is in charge of a Match (an instance of the game between two players)
 
@@ -40,18 +9,15 @@ const Match = ((webSocketServer, humanID, aiID) => {
 
     const matchLength = 4*60;
     const secondsPerTick = 0.1;
-    let timeRemaining;
+    let tickInterval = setInterval(() => tick(secondsPerTick), secondsPerTick/1000);
+    let timeRemaining = matchLength;
 
     const broadcaster = Broadcaster(webSocketServer, webSocketServer.clients[0], webSocketServer.clients[1]);
+
+    //Match state
     const humanState = HumanState([3,3]);
+    const consoleLinesLog = ConsoleLinesLog();
 
-    let tickInterval;
-
-    const start = (() => {
-        timeRemaining = matchLength;
-        
-        tickInterval = setInterval(() => tick(secondsPerTick), secondsPerTick/1000);
-    })();
     
     function tick(deltaSeconds){
         timeRemaining -= deltaSeconds;
@@ -60,36 +26,66 @@ const Match = ((webSocketServer, humanID, aiID) => {
         }
     }
 
-    function handleAction(senderID, action){
-        if(action === undefined){
-            console.log("action is undefined");
+    function clientIsHuman(clientID){
+        return clientID == humanID;
+    }
+    function clientIsAi(clientID){
+        return clientID == aiID;
+    }
+
+    function clientIsInMatch(clientID){
+        return true; //always accept input for now
+        //return clientIsHuman(clientID) || clientIsAi(clientID); //TODO
+    }
+
+    function handleAction(senderID, action){ //TODO: Input validation
+        if(!clientIsInMatch(senderID) || action === undefined){
             return;
         }
-        let actionName = action.name;
-        switch(actionName){
+
+        if(handleMutualAction(senderID, action) === true) return;
+        
+        if(clientIsHuman(senderID) || true){ //TODO: We're always assuming a human action for now
+            handleHumanAction(action);
+        }else{ //client is AI
+            handleAIAction(action);
+        }
+    }
+
+    //Handle any action that may be performed by either player.
+    //Returns true if an action was performed.
+    function handleMutualAction(senderID, action){
+        switch(action.name){
             case "getCurrentRoom":
                 let currentRoom = humanState.getCurrentRoom();
                 broadcaster.sendBoth(HumanRoomUpdateData(currentRoom));
-                return;
+                return true;
             default:
                 break;
         }
-
-        if(senderID === humanID || true){
-            switch(action.name){
-                case "enterRoom":
-                    humanState.enterRoom(action.args.room);
-                    let currentRoom = humanState.getCurrentRoom();
-                    broadcaster.sendBoth(HumanRoomUpdateData(currentRoom));
-                    return;
-                default:
-                    break;
-            }
-        }else if(senderID === aiID || true){
-
-        }else{
-            //Error: sender is not in this match
+        return false;
+    }
+    
+    function handleHumanAction(action){
+        switch(action.name){
+            case "enterRoom":
+                humanState.enterRoom(action.args.room);
+                let currentRoom = humanState.getCurrentRoom();
+                broadcaster.sendBoth(HumanRoomUpdateData(currentRoom));
+                addConsoleLineAndBroadcast({time: timeRemaining, message: `HUMAN moves to ${currentRoom}`});
+                return true;
+            default:
+                break;
         }
+        return false;
+    }
+    function handleAIAction(action){
+        return false;
+    }
+
+    function addConsoleLineAndBroadcast(consoleLine){
+        consoleLinesLog.addConsoleLine(consoleLine);
+        broadcaster.sendBoth(ConsoleLineData(consoleLine.time, consoleLine.message, consoleLine.style));
     }
 
     function onTimeUp(){
