@@ -1,5 +1,3 @@
-const e = require("express");
-
 const webSocket = new WebSocket(`ws://localhost:${WEBSOCKET_PORT}/`);
 webSocket.onmessage = (event) => {
   console.log(event.data);
@@ -37,16 +35,15 @@ function loginUser(username, password) {
     }),
   })
     .then((response) => {
-      if (response.status === 200) {
-        return response.json();
-      } else if (response.status === 400) {
-        document.getElementById("error-message").innerText =
-          "Incorrect username or password, please try again";
-        throw new Error("Incorrect username or password");
+      if (!response.ok) {
+        throw new Error("Incorrect username or password, please try again");
       }
+      return response.status(200).json();
+      // console.log("");
     })
     .catch((error) => {
-      console("There was an error logging in" + error);
+      document.getElementById("error-message").textContent = error.message;
+      console("There was an error logging in");
     });
 }
 
@@ -71,26 +68,10 @@ function checkPassword() {
   document.getElementById("newPassword").value = input;
   document.getElementById("count").textContent = "Length: " + input.length;
 
-  document.getElementById("lengthGreatThanEight").style.color =
-    input.length > 8 ? "green" : "red";
-  document.getElementById("containsNumber").style.color = input.match(/[0-9]/)
-    ? "green"
-    : "red";
-  document.getElementById("containsSpecialCharacter").style.color = input.match(
-    /[/[!@#$%^&*(),.?":{}|]/
-  )
-    ? "green"
-    : "red";
-  document.getElementById("containUppercaseLetter").style.color = input.match(
-    /[A-Z]/
-  )
-    ? "green"
-    : "red";
-  document.getElementById("containLowercaseLetter").style.color = input.match(
-    /[a-z]/
-  )
-    ? "green"
-    : "red";
+  document.getElementById("lengthMoreThanSix").style.color =
+    input.length > 6 ? "green" : "red";
+  document.getElementById("lengthLessThanSixteen").style.color =
+    input.length < 16 ? "green" : "red";
   document.getElementById("notContainSpace").style.color = input.match(/\s/)
     ? "red"
     : "green";

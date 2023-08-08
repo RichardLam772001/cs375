@@ -65,7 +65,7 @@ input {
 #see {
   display: inline-block;
   position: relative;
-  margin: 2%;
+  margin: 1%;
   margin-bottom: 1%;
   color: gray;
   cursor: pointer;
@@ -98,13 +98,3 @@ span {
 input:hover {
   border-bottom: 2px solid black;
 }
-
-/* .form {
-  padding: 1rem;
-  margin: 2rem 0;
-  border: 1px solid black;
-}
-
-.form div {
-  margin: 1rem 0;
-} */
