@@ -47,4 +47,4 @@ webSockServer.on('connection', ws => {
     ws.onerror = onError;
 });
 
-module.exports = { sendToAllClients }
+module.exports = { sendToAllClients, webSockServer }

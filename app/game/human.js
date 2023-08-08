@@ -1,12 +1,19 @@
-let humanState = {
-    room: "0-0"
-}
 
-const enterRoom = (room) => {
-    humanState.room = room;
-}
-const getCurrentRoom = () => {
-    return humanState.room;
-}
+const HumanState = ((roomSize) => {
 
-module.exports = { enterRoom, getCurrentRoom };
+    let room = "0-0";
+
+    function enterRoom(newRoom){
+        room = newRoom;
+    }
+    function getCurrentRoom(){
+        return room;
+    }
+
+    return {
+        enterRoom,
+        getCurrentRoom
+    };
+});
+
+module.exports = { HumanState };

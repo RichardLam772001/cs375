@@ -13,6 +13,7 @@ const CONSOLE = (() => {
 
     function addConsoleLine(consoleLineData){
         let {time, message, style} = consoleLineData;
+        if(style == undefined) style = "public";
 
         let stringMessage = "";
 
