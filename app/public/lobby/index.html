@@ -3,10 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="style.css">
     <title>Lobby</title>
 </head>
 <body>
-    One sec, deciding your role
+	<div id="home">
+		<header>
+			<div class="header-cont">
+				<h2 class="title header-elem">Cyberspace Saboteur</h2>
+				<div class="header-info header-elem">
+					<h2 class="name header-elem">username here?</h2>
+					<button class="header-btn header-elem">?</button>
+					<button class="header-btn header-elem">?</button>
+					<button class="header-btn header-elem">?</button> <!--possible header btns for settings, stats, idk-->
+				</div>
+			</div>
+		</header>
+		<div>
+			<h2 class="lobby-header">Lobby</h2>
+		</div>
+		<div>
+			<div class="container">
+				<div class="chat page-cont"></div>
+				<div class="lobby-list page-cont">
+					<table>
+						<thead class="lobby-tbl-hdr">
+							<tr>
+								<th>Host</th> <!--username of host-->
+								<th>Players</th> <!--player count?-->
+								<th>Created</th> <!--created t ago-->
+							</tr>
+						</thead>
+						<tbody class="lobby-tbl-body">
+						</tbody>
+					</table>
+				</div>
+				<div class="lobby-btn-cont page-cont">
+					<div class="lobby-btns"> <!--having trouble centering this vertically, could be left here though-->
+						<button id="create" class="lobby-optn">Create Game</button>
+						<button id="refresh" class="lobby-optn">Refresh</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
 <script src="../constants.js"></script>
 <script src="../api.js"></script>
@@ -14,4 +54,5 @@
 <script src="../dataObjects.js"></script>
 <script src="../websocket.js"></script>
 <script src="./lobby.js"></script>
+<script src="./lobbyfuncs.js"></script> <!--keeping in a separate js file from lobby.js for now-->
 </html>
