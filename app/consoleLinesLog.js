@@ -1,4 +1,4 @@
-// A Match keeps an instance of this object.
+// A game server keeps an instance of this object.
 // It contains a list of all console lines sent so far.
 
 const ConsoleLinesLog = (() => {
@@ -14,7 +14,7 @@ const ConsoleLinesLog = (() => {
 
     const allVisibility = "all";
     const getLinesWithVisibility = (visibility) => {
-        return consoleLines.filter((line) => line.visibility === visibility || line.visibility === allVisibility || line.visibility == undefined);
+        return consoleLines.filter((line) => line.visibility === visibility || line.visibility === allVisibility);
     }
 
     const getHumanLines = () => {
@@ -31,5 +31,3 @@ const ConsoleLinesLog = (() => {
         getAILines
     }
 });
-
-module.exports = { ConsoleLinesLog };
