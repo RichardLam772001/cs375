@@ -2,6 +2,7 @@
 const { Match } = require("./game/match.js");
 const { setRequestHandlers } = require("./request_handlers/request_handlers.js");
 const { HOSTNAME, PORT } = require("../env.json");
+const { webSockServer } = require("./wss.js");
 
 const express = require("express");
 const cookieParser = require("cookie-parser");
