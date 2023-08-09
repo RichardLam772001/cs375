@@ -5,4 +5,13 @@ const ROLES = {
 }
 const ANONY_COOKIE_DURATION_MS = 5*60*1000; // 5 mins
 
-module.exports = { PLAYERS_PER_GAME, ROLES, ANONY_COOKIE_DURATION_MS };
+
+const HUMAN_ACTIONS = {
+    enterRoom : "enterRoom",
+    getCurrentRoom : "getCurrentRoom"
+}
+const AI_ACTIONS = {
+    getCurrentRoom : "getCurrentRoom"
+}
+
+module.exports = { PLAYERS_PER_GAME, ROLES, ANONY_COOKIE_DURATION_MS, HUMAN_ACTIONS, AI_ACTIONS };

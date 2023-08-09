@@ -23,15 +23,16 @@ post(
 });
 
 WS.onReceive((data) => {
+    console.log("WSS Received data", data);
     if (isMessageType(data, DATA_TYPES.GAME_READY) && LOBBY_ID === data.lobbyId) {
-        startGame();
+        joinGame(data.gameId);
     }
 });
 
-const startGame = () => {
+const joinGame = (gameId) => {
     post(
-        "/startgame/anon",
-        {"lobbyId" : LOBBY_ID, "username" : username}
+        "/lobby/join-game",
+        {"gameId" : gameId, "username" : username}
     ).then((resp) => {
         resp.json().then((body) => {
             if (body.role === ROLES.HUMAN) {
