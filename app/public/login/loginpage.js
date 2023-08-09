@@ -23,29 +23,103 @@ document
     loginUser(username, password);
   });
 
-function loginUser(username, password) {
-  fetch("/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      username: username,
-      password: password,
-    }),
-  })
-    .then((response) => {
+
+  async function sendRequest(endpoint, data) {
+    try{
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
       if (!response.ok) {
         throw new Error("Incorrect username or password, please try again");
       }
-      return response.status(200).json();
-      // console.log("");
-    })
-    .catch((error) => {
+      return await response.json();
+    }catch (error) {
       document.getElementById("error-message").textContent = error.message;
-      console("There was an error logging in");
-    });
-}
+      console.error("There was an error logging in");
+    }
+
+    async function loginUser(username, password) {
+      try{
+        const response = await sendRequest("/login", {
+          username: username,
+          password: password,
+        });
+        console.log(response);
+      }catch(error){
+        document.getElementById("error-message").textContent = error.message;
+        console.error("There was an error logging in");
+      }
+    }
+        
+
+      async function createAccount() {
+        try{
+          const response = await sendRequest("/createAccount", {
+            username: document.getElementById("newUsername").value,
+            password: document.getElementById("newPassword").value,
+          });
+          console.log(response);
+        }catch(error){
+          document.getElementById("error-message").textContent = error.message;
+          console("There was an error logging in");
+        }
+      }
+
+
+// function loginUser(username, password) {
+//   fetch("/login", {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify({
+//       username: username,
+//       password: password,
+//     }),
+//   })
+//     .then((response) => {
+//       if (!response.ok) {
+//         throw new Error("Incorrect username or password, please try again");
+//       }
+//       return response.status(200).json();
+//       // console.log("");
+//     })
+//     .catch((error) => {
+//       document.getElementById("error-message").textContent = error.message;
+//       console("There was an error logging in");
+//     });
+// }
+
+
+// // function createAccount()
+// function createAccount() {
+//   fetch("/createAccount", {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({
+//         username: document.getElementById("newUsername").value,
+//         password: document.getElementById("newPassword").value,
+//       }),
+//     })
+//     .then((response) => {
+//       if (!response.ok) {
+//         throw new Error("Incorrect username or password, please try again");
+//       }
+//       return response.status(200).json();
+//       // console.log("");
+//     })
+//     .catch((error) => {
+//       document.getElementById("error-message").textContent = error.message;
+//       console("There was an error logging in");
+//     });
+// }
+
 
 var is_visible = false;
 function see() {
@@ -77,7 +151,7 @@ function checkPassword() {
     : "green";
 }
 
-function cofirmNewPassword() {
+function confirmNewPassword() {
   const newPass = document.getElementById("newPassword").value;
   const confirmPass = document.getElementById("newPasswordConfirm").value;
   if (confirmPass.length === 0) {
