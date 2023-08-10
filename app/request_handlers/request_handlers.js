@@ -1,9 +1,8 @@
-const { lobbyJoin } = require("./handlers/lobby.js");
-const { startGameAnon } = require("./handlers/startgame.js");
+const { lobbyJoin, lobbyJoinGame } = require("./handlers/lobby.js");
 
 const setRequestHandlers = (app) => {
 
-    app.post("/startgame/anon", startGameAnon);
+    app.post("/lobby/join-game", lobbyJoinGame);
 
     // TO DO: Remove once full lobby system is made
     // lobby join system for anonymous users

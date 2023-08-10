@@ -48,20 +48,18 @@ const assignRoles = (lobbyId) => {
     LOBBIES[lobbyId][indexOfAIPlayer].role = ROLES.AI;
 }
 
-/**
- * 
- * @param {number} lobbyId 
- * @param {string} playerUserName 
- * @returns the role of the player if they are in the lobby
- */
-const lookUpRole = (lobbyId, playerUserName) => {
-
-    throwOnInvalidLobbyId(lobbyId);
-
-    if (LOBBIES[lobbyId][0].username === playerUserName) {
-        return LOBBIES[lobbyId][0].role;
-    }
-    return LOBBIES[lobbyId][1].role;
+const clearLobby = (lobbyId) => {
+    delete LOBBIES[lobbyId];
 }
 
-module.exports = { joinLobby, lookUpRole }
+/**
+ * 
+ * @param {*} lobbyId 
+ * @returns array of size 2, 1st element will be player w/ human role, 2nd element will be player w/ ai role
+ */
+const getPlayersInLobby = (lobbyId) => {
+    const players = LOBBIES[lobbyId];
+    return players[0].role === ROLES.HUMAN ? players : [players[1], players[0]];
+}
+
+module.exports = { joinLobby, getPlayersInLobby, clearLobby }

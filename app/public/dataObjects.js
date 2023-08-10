@@ -22,9 +22,10 @@ const ConsoleLineData = (time, message, visibility, style) => ({
     style
 });
 
-const GameReadyData = (lobbyId) => ({
+const GameReadyData = (lobbyId, gameId) => ({
     name : DATA_TYPES.GAME_READY,
-    lobbyId
+    lobbyId,
+    gameId
 });
 
 const isMessageType = (data, data_type) => {

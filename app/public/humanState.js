@@ -14,7 +14,6 @@ const HUMAN_STATE = (() => {
         currentTool = newTool;
     } 
 
-
     return {
         setCurrentRoom,
         setCurrentTool
@@ -25,7 +24,9 @@ const getCurrentRoom = () => {
     WS.send({
         action: {
             name: "getCurrentRoom"
-        }
+        },
+        username: USERNAME_COOKIE,
+        gameId: GAME_ID_COOKIE
     });
 }
 
