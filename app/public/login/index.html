@@ -11,8 +11,7 @@
       rel="stylesheet"
       href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
       integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
-      crossorigin="anonymous"
-    />
+      crossorigin="anonymous" />
   </head>
   <body>
     <!-- Richard: This will send a message to the websocket server -->
@@ -27,8 +26,7 @@
             id="username"
             name="username"
             placeholder="Username"
-            required
-          />
+            required />
         </div>
         <div class="input-group">
           <label for="password">Password</label>
@@ -37,8 +35,7 @@
             id="password"
             name="password"
             placeholder="Password"
-            required
-          />
+            required />
         </div>
         <button type="submit" id="submit">Login</button>
         <button id="noAccountCreateAccount">Create Account</button>
@@ -57,8 +54,7 @@
             id="newUsername"
             name="newUsername"
             placeholder="Username"
-            required
-          />
+            required />
         </div>
         <div class="input-group">
           <label for="newPassword">Password</label>
@@ -68,8 +64,7 @@
             name="newPassword"
             placeholder="Enter your password"
             onInput="checkPassword()"
-            required
-          />
+            required />
           <div id="set">
             <i id="see" onclick="see()" class="far fa-eye"></i>
             <div id="count">Length : 0</div>
@@ -95,8 +90,7 @@
             name="newPasswordConfirm"
             placeholder="Confirm Password"
             onInput="confirmNewPassword()"
-            required
-          />
+            required />
         </div>
         <div id="matchNewPassword">
           <i class="far fa-check-circle"></i> <span> Match your password.</span>
@@ -105,6 +99,8 @@
       </form>
     </div>
   </body>
+  <script src="./websocket.js"></script>
+  <script scr="cookies.js"></script>
   <script src="./constants.js"></script>
   <script src="./loginpage.js"></script>
 </html>

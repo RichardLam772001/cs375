@@ -1,18 +1,3 @@
-const webSocket = new WebSocket(`ws://localhost:${WEBSOCKET_PORT}/`);
-webSocket.onmessage = (event) => {
-  console.log(event.data);
-};
-webSocket.addEventListener("open", () => {
-  console.log("We are connected");
-  sendMessage("Hi from client");
-});
-
-const sendMessage = (message) => {
-  // Sends message to websocket server
-  // "Hi from client"
-  webSocket.send(message);
-};
-
 document
   .getElementById("loginForm")
   .addEventListener("submit", function (event) {
