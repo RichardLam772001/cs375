@@ -3,18 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
-            #progress-bar {
-                width: 100%;
-                height: 20px;
-                background-color: lightseagreen;
-                text-align: center;
-                line-height: 25px;
-                border-radius: 30px;
-                color: black;
-                font-weight: bolder;
-            }
-        </style>
+        <link rel="stylesheet" href="progressBarStyles.css">
     </head>
     <body>
         <h1>Testing Progress Bar</h1>
@@ -24,16 +13,10 @@
         </div>
 
         <br>
-        <button onclick="PROGRESS_BAR(document.getElementById('progress-bar'))">Run Progress</button>
+        <button onclick="bar.startFill()">Run Progress</button>
     </body>
-<script src="movement.js"></script>
+<script src="progressBar.js"></script>
 <script>
-/*     let button = document.getElementById("start-button");
-    button.addEventListener("click", startProgress);
-
-    function startProgress() {
-        PROGRESS_BAR(document.getElementById("progress-bar"));
-    } */
-
+    const bar = PROGRESS_BAR(document.getElementById("progress-bar"));
 </script>
 </html>

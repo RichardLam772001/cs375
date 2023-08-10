@@ -4,14 +4,9 @@ const PROGRESS_BAR = ((progressBar) => {
     let tickrate = 30;
     let timeTaken = 0;
 
-    if (!interval) {
-        interval = setInterval(pushBar, tickrate);
-    }
-
-    function pushBar(milliseconds) {
-        if (width >= 100) {
-            clearInterval(interval);
-            interval = null;
+    function pushBar() {
+        if (width === 100) {
+            stopBar();
         }
         else {
             width++;
@@ -21,5 +16,32 @@ const PROGRESS_BAR = ((progressBar) => {
                 progressBar.textContent =  timeTaken + "secs";
             }
         }
+    }
+
+    function stopBar() {
+        clearInterval(interval);
+        interval = null;
+    }
+
+    function resetBar() {
+        width = 1;
+        timeTaken = 0;
+        clearInterval(interval);
+        interval = null;
+        progressBar.textContent = "";
+        startFill();
+    }
+
+    function startFill() {
+        if (!interval) {
+            interval = setInterval(pushBar, tickrate);        
+        }
+        else if (width != 100) {
+            resetBar();
+        }
+    }
+
+    return {
+        startFill
     }
 });
