@@ -1,5 +1,5 @@
 document
-  .getElementById("loginForm")
+  .getElementById("loginAccount")
   .addEventListener("submit", function (event) {
     event.preventDefault();
 
@@ -8,52 +8,64 @@ document
     loginUser(username, password);
   });
 
+document
+  .getElementById("createAccount")
+  .addEventListener("submit", function (event) {
+    event.preventDefault();
+    createAccount();
+  });
 
-  async function sendRequest(endpoint, data) {
-    try{
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-      if (!response.ok) {
-        throw new Error("Incorrect username or password, please try again");
-      }
-      return await response.json();
-    }catch (error) {
-      document.getElementById("error-message").textContent = error.message;
-      console.error("There was an error logging in");
+async function sendRequest(endpoint, data) {
+  try {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      throw new Error("Incorrect username or password, please try again");
+    }
+    return await response.json();
+  } catch (error) {
+    document.getElementById("error-message").textContent = error.message;
+    console.error("There was an error logging in");
+  }
+}
+
+async function loginUser(username, password) {
+  try {
+    const response = await sendRequest("/login", {
+      username: username,
+      password: password,
+    });
+    console.log(response);
+  } catch (error) {
+    document.getElementById("error-message").textContent = error.message;
+    console.error("There was an error logging in");
+  }
+}
+
+async function createAccount() {
+  try {
+    const username = document.getElementById("newUsername").value;
+    const password = document.getElementById("newPassword").value;
+
+    if (!isPasswordValid(password)) {
+      document.getElementById("error-message").textContent =
+        "Password does not meet the requirements";
+      return;
     }
 
-    async function loginUser(username, password) {
-      try{
-        const response = await sendRequest("/login", {
-          username: username,
-          password: password,
-        });
-        console.log(response);
-      }catch(error){
-        document.getElementById("error-message").textContent = error.message;
-        console.error("There was an error logging in");
-      }
-    }
-        
-
-      async function createAccount() {
-        try{
-          const response = await sendRequest("/createAccount", {
-            username: document.getElementById("newUsername").value,
-            password: document.getElementById("newPassword").value,
-          });
-          console.log(response);
-        }catch(error){
-          document.getElementById("error-message").textContent = error.message;
-          console("There was an error logging in");
-        }
-      }
-
+    const result = await sendRequest("/createAccount", { username, password });
+    // Handle successful account creation if necessary
+    // For example: navigate to a confirmation page or update UI
+  } catch (error) {
+    document.getElementById("error-message").textContent =
+      "There was an error creating the account";
+  }
+}
 
 // function loginUser(username, password) {
 //   fetch("/login", {
@@ -79,7 +91,6 @@ document
 //     });
 // }
 
-
 // // function createAccount()
 // function createAccount() {
 //   fetch("/createAccount", {
@@ -104,7 +115,6 @@ document
 //       console("There was an error logging in");
 //     });
 // }
-
 
 var is_visible = false;
 function see() {
@@ -147,6 +157,9 @@ function confirmNewPassword() {
   }
 }
 
-//https://www.youtube.com/watch?v=cAUb9Iarg8I&t=638s
-//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/trim
-// https://github.com/kaizhelam/password-validation/blob/main/index.html
+function isPasswordValid(password) {
+  if (password.length <= 6 || password.length >= 10 || password.match(/\s/)) {
+    return false;
+  }
+  return true;
+}
