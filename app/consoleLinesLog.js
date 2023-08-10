@@ -31,3 +31,5 @@ const ConsoleLinesLog = (() => {
         getAILines
     }
 });
+
+module.exports = { ConsoleLinesLog };

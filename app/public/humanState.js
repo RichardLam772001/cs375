@@ -1,5 +1,7 @@
 //This human state is shared between both players
 
+const { ConsoleLineData } = require("../dataObjects");
+
 const HUMAN_STATE = (() => {
 
     let currentRoom = "";
@@ -39,8 +41,16 @@ WS.onDisconnect(() => {
 });
 
 WS.onReceive((data) => {
-    if (data.name === "humanRoomUpdate") {
-        HUMAN_STATE.setCurrentRoom(data.room);
+    switch(data.name){
+        case "humanRoomUpdate":
+            HUMAN_STATE.setCurrentRoom(data.room);
+            break;
+        case "consoleLine":
+            CONSOLE.addConsoleLine(ConsoleLineData(data.time, data.message, data.visibility, data.style));
+            break;
+        default:
+            break; 
     }
+    
 });
 

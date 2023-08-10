@@ -13,4 +13,24 @@ const idGenerator = () => {
 	return () => id++;
 };
 
-module.exports = { randomInt, idGenerator }
+const randomChoice = (choiceList) => {
+    let remainingProb = 0;
+
+    for(choice of choiceList){
+        remainingProb += choiceProbability(choice);
+    }
+
+    for(choice of choiceList){
+        let probability = choiceProbability(choice);
+        if(Math.random()*remainingProb <= probability){
+            return choiceValue(choice);
+        }else{
+            remainingProb -= probability;
+        }
+    }
+    return undefined;
+}
+const choiceProbability = (choice) => choice[0];
+const choiceValue = (choice) => choice[1];
+
+module.exports = { randomInt, idGenerator, randomChoice}
