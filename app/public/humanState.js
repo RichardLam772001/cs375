@@ -1,7 +1,5 @@
 //This human state is shared between both players
 
-const { ConsoleLineData } = require("../dataObjects");
-
 const HUMAN_STATE = (() => {
 
     let currentRoom = "";
@@ -9,7 +7,7 @@ const HUMAN_STATE = (() => {
 
     function setCurrentRoom(newRoom){
         currentRoom = newRoom;
-        CONSOLE.addConsoleLine({message:`Human enters room ${newRoom}`, style: "public"});
+        CONSOLE.addConsoleLine({message:`Human enters room ${newRoom}`, style: "public"}); //TODO: console line should be in a seperate WS send
         BOARD.setCurrentRoom(newRoom);
     }
     function setCurrentTool(newTool){

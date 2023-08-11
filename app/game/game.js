@@ -1,17 +1,20 @@
 const { ROLES, GAME_TICK_DELAY_MS } = require("../constants");
-const { Threat, THREAT_COOLDOWN_SECONDS } = require("./threat");
+const { Threat, THREAT_COOLDOWN_SECONDS, MAX_THREATS_ACTIVE } = require("./threat");
 const { randomInt, randomChoice } = require("../utils.js");
 
 const { ConsoleLinesLog } = require("../consoleLinesLog.js");
 const { ConsoleLineData } = require("../dataObjects.js");
+const { Room } = require("./room.js");
 
 const GAMES = {
     
 };
 
-const selectThreatRoom = (avilableRooms, roomsWithThreats) => {
-    const rooms = avilableRooms.filter((room) => !(room in roomsWithThreats));
-    return rooms[randomInt(0, rooms.length - 1)];
+const selectThreatRoom = (availableRooms, roomsWithThreats) => {
+    
+    const roomCandidates = availableRooms.filter((room) => !(room in roomsWithThreats));
+    console.log(`selecting room out of ${roomCandidates.length} candidates`)
+    return roomCandidates[randomInt(0, roomCandidates.length - 1)];
 }
 
 const GAME = (humanUsername, aiUsername) => {
@@ -20,15 +23,40 @@ const GAME = (humanUsername, aiUsername) => {
 
     let HUMAN_USERNAME = humanUsername;
     let AI_USERNAME = aiUsername;
-    let room = "0-0";
-    let threatCooldown = THREAT_COOLDOWN_SECONDS;
 
+    //ROOMS
+    const SHIP_SIZE = [3,3];
+    const SHIP_ROWS = SHIP_SIZE[0];
+    const SHIP_COLS = SHIP_SIZE[1];
+
+    const ROOMS = []; //2D array of all room objects
+    const AVAILABLE_ROOMS = []; //Rooms that have not been destroyed
+    generateRooms();
+    let humanRoom = ROOMS[0][0];
+
+
+    // THREATS
     // Temp for testing: Spawns threat right away, TO DO: Determine when to spawn threats
-    const THREATS = [];
-    const AVAILABLE_ROOMS = ["0-0", "0-1", "0-2", "1-0", "1-1", "1-2", "2-0", "2-1", "2-2"]; // Richard: Yes I know it's hardcoded, we can make a dynamic room generator later TO DO 
+    let threatCooldown = THREAT_COOLDOWN_SECONDS;
+    const THREATS = [];    
     const ROOMS_WITH_THREATS = [];
+    const MAX_ROOMS_DESTROYED = 3; //The game ends when this many rooms are destroyed
+    
+    let roomsDestroyed = 0;
 
     let consoleLinesLog = ConsoleLinesLog();
+
+    function generateRooms(){
+        for(let r = 0; r < SHIP_SIZE[0]; ++r){
+            ROOMS.push([]);
+            for(let c = 0; c < SHIP_SIZE[1]; ++c){
+                const newRoom = Room(r,c);
+
+                ROOMS[r].push(newRoom);
+                AVAILABLE_ROOMS.push(newRoom);
+            }
+        }
+    }
 
     const getRole = (username) => {
         if (username == HUMAN_USERNAME) {
@@ -39,17 +67,40 @@ const GAME = (humanUsername, aiUsername) => {
         }
         return null;
     }
-    const enterRoom = (newRoom) => {
-        // If room not available (cause destroyed), cant enter
-        if (AVAILABLE_ROOMS.indexOf(newRoom) === -1) {
-            console.log(`GAME - Cannot enter room ${newRoom}`);
+    //Whether the room exists on the spaceship
+    const validateRoomPos = (x, y) =>{
+        return x >= 0 && x < SHIP_ROWS && y >= 0 && y < SHIP_COLS;
+    }
+    const roomIsDestroyed = (room) =>{
+        return AVAILABLE_ROOMS.indexOf(room) === -1;
+    }
+    const enterRoom = (roomString) => { //TODO: Validation
+        let coords = roomString.split("-");
+        return enterRoomPos(coords[0], coords[1]);
+    }
+    const enterRoomPos = (x,y) => {
+        if(!validateRoomPos(x,y)) return;
+        let room = ROOMS[x][y];
+
+        if (roomIsDestroyed(room)) {
+            console.log(`GAME - Cannot enter room ${room.name}`);
         }
         else {
-            room = newRoom;
+            humanRoom = room;
         }
     }
+    //Retuns string representation
     const getCurrentRoom = () => {
-        return room;
+        return `${humanRoom.x}-${humanRoom.y}`;
+    }
+    const trySpawnThreat= () => {
+        if(THREATS.length >= MAX_THREATS_ACTIVE) return; //too many threats
+
+        const threatRoom = selectThreatRoom(AVAILABLE_ROOMS, ROOMS_WITH_THREATS);
+        if(threatRoom == undefined) return; // No valid room was picked
+        const threat = Threat(() => onThreatUnresolved(threatRoom, THREATS.length));
+        THREATS.push(threat);
+        console.log(`Threat spawned in room ${threatRoom.name}`);
     }
     // This is called once every second
     const tick = (deltaSeconds) => {
@@ -57,10 +108,7 @@ const GAME = (humanUsername, aiUsername) => {
 
         // Threats
         if (threatCooldown <= 0) {
-            const threatRoom = selectThreatRoom(AVAILABLE_ROOMS, ROOMS_WITH_THREATS);
-            const threat = Threat(() => onThreatUnresolved(threatRoom, THREATS.length));
-            THREATS.push(threat);
-            console.log(`Threat spawned in room ${threatRoom}`);
+            trySpawnThreat();
             threatCooldown = THREAT_COOLDOWN_SECONDS;
         }
         else {
@@ -70,19 +118,24 @@ const GAME = (humanUsername, aiUsername) => {
         if(timeRemaining <= 0){
             return onTimeUp();
         }
-
     }
+    
     const onThreatUnresolved = (room, threatId) => {
         THREATS.splice(threatId, 1); // Remove threat from THREATS list
         AVAILABLE_ROOMS.splice(AVAILABLE_ROOMS.indexOf(room), 1);
-        console.log(`Threat was unresolved room ${room} is no longer available`);
+        let message = `ROOM ${room.name} HAS BEEN DESTROYED BY ${"<threatType>"}`;
+        let line = ConsoleLineData(timeRemaining, message, undefined, "critical");
+        addConsoleLineAndBroadcast(line);
+        console.log(message);
+
+        roomsDestroyed++;
+        if(roomsDestroyed >= MAX_ROOMS_DESTROYED){
+            onShipDestroyed();
+        }
     }
-    const roomName = (row, column) =>{
-        return `${String.fromCharCode(65 + row)}${column}`;
-    }    
 
     //Attempt to ping a room, but randomly scramble it first
-    const tryPingRoom = (row, column, threatType) =>{
+    const scrambleThenPing = (row, column, threatType) =>{
         let scrambleCount = randomChoice([[50, 0], [30, 1], [20, 2]]);
         console.log(`scrambles: ${scrambleCount}`);
         pingRoom(row, column, threatType);
@@ -90,14 +143,18 @@ const GAME = (humanUsername, aiUsername) => {
 
     //Actually ping this room
     const pingRoom = (row, column, threatType) => {
-        let line = ConsoleLineData(timeRemaining, `AI pings ${threatType} at ${roomName(row,column)}`);
+        if(!validateRoomPos(row,column)) return;
+
+        let room = ROOMS[row][column];
+
+        let line = ConsoleLineData(timeRemaining, `AI pings ${threatType} at ${room.name}`);
         addConsoleLineAndBroadcast(line);
     }
 
     function addConsoleLineAndBroadcast(consoleLine){
         consoleLinesLog.addConsoleLine(consoleLine);
-        //broadcaster.sendBoth(consoleLine);
-        //sendToAllClients(consoleLine);
+
+        //TODO: either broadcast this line now, or have the ConsoleLinesLog broadcast it when appended
     }
 
     function onTimeUp(){
@@ -107,11 +164,12 @@ const GAME = (humanUsername, aiUsername) => {
         endGame();
     }
     function endGame(){
+        //TODO: Remove this Game object from the collection of games and direct the players to the end screen
     }
 
     function testPings(){
         for(let i = 0; i < 20; ++i){
-            tryPingRoom(0,0,"");
+            scrambleThenPing(0,0,"");
         }
     }
     testPings();
