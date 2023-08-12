@@ -1,6 +1,7 @@
 const { ROLES, GAME_TICK_DELAY_MS } = require("../constants");
 const { Threat, THREAT_COOLDOWN_SECONDS, MAX_THREATS_ACTIVE } = require("./threat");
 const { randomInt, randomChoice } = require("../utils.js");
+const { RandomBag } = require("../randomBag.js");
 
 const { ConsoleLinesLog } = require("../consoleLinesLog.js");
 const { ConsoleLineData } = require("../dataObjects.js");
@@ -11,9 +12,7 @@ const GAMES = {
 };
 
 const selectThreatRoom = (availableRooms, roomsWithThreats) => {
-    
     const roomCandidates = availableRooms.filter((room) => !(room in roomsWithThreats));
-    console.log(`selecting room out of ${roomCandidates.length} candidates`)
     return roomCandidates[randomInt(0, roomCandidates.length - 1)];
 }
 
@@ -126,7 +125,6 @@ const GAME = (humanUsername, aiUsername) => {
         let message = `ROOM ${room.name} HAS BEEN DESTROYED BY ${"<threatType>"}`;
         let line = ConsoleLineData(timeRemaining, message, undefined, "critical");
         addConsoleLineAndBroadcast(line);
-        console.log(message);
 
         roomsDestroyed++;
         if(roomsDestroyed >= MAX_ROOMS_DESTROYED){
@@ -136,8 +134,34 @@ const GAME = (humanUsername, aiUsername) => {
 
     //Attempt to ping a room, but randomly scramble it first
     const scrambleThenPing = (row, column, threatType) =>{
-        let scrambleCount = randomChoice([[50, 0], [30, 1], [20, 2]]);
-        console.log(`scrambles: ${scrambleCount}`);
+        let scrambleCount = RandomBag([[50, 0], [30, 1], [20, 2]]).pull();
+
+        const scrambleBag = RandomBag([[1,"row"], [1, "col"], [1,"type"]]); //Different scramble categories may be given different weights
+        for(let s = 0; s < scrambleCount; ++s){
+            let scrambleFunc = scrambleBag.pull(false);
+            switch(scrambleFunc){
+                case "row":
+                    let newRow;
+                    do{
+                        newRow = randomInt(0, SHIP_ROWS);
+                    }while(newRow === row);
+                    row = newRow;
+                    break;
+
+                case "col":
+                    let newCol;
+                    do{
+                        newCol = randomInt(0, SHIP_COLS);
+                    }while(newCol === column);
+                    column = newCol;
+                    break;
+
+                case "type":
+                    //TODO: Scamble threat type before pinging
+                    break;
+            }
+        }
+
         pingRoom(row, column, threatType);
     }
 
@@ -147,13 +171,14 @@ const GAME = (humanUsername, aiUsername) => {
 
         let room = ROOMS[row][column];
 
-        let line = ConsoleLineData(timeRemaining, `AI pings ${threatType} at ${room.name}`);
+        let message = `AI pings ${threatType} at ${room.name}`
+        let line = ConsoleLineData(timeRemaining, message);
         addConsoleLineAndBroadcast(line);
     }
 
     function addConsoleLineAndBroadcast(consoleLine){
         consoleLinesLog.addConsoleLine(consoleLine);
-
+        console.log(consoleLine.message);
         //TODO: either broadcast this line now, or have the ConsoleLinesLog broadcast it when appended
     }
 
@@ -166,13 +191,6 @@ const GAME = (humanUsername, aiUsername) => {
     function endGame(){
         //TODO: Remove this Game object from the collection of games and direct the players to the end screen
     }
-
-    function testPings(){
-        for(let i = 0; i < 20; ++i){
-            scrambleThenPing(0,0,"");
-        }
-    }
-    testPings();
 
     return {
         tick,
