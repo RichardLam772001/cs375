@@ -22,7 +22,6 @@ const BOARD = ((rowCount, columnCount) => {
 
             for (let j=0; j < columnCount; j++) {
                 const newRoom = RoomElement(rowElem);
-                newRoom.setVisible(true);
                 row.push(newRoom);
             }
             ROOMS.push(row);
@@ -41,8 +40,12 @@ const BOARD = ((rowCount, columnCount) => {
     const applyToAllRooms = (func) => {
         ROOMS.forEach((row) => row.forEach(func));
     }
+    const setAllRoomsVisibility = (visible) =>{
+        console.log(`set all rooms to ${visible}`);
+        applyToAllRooms((room) => {room.setVisible(visible)});
+    }
     const setAllToHidden = () => {
-        applyToAllRooms((room) => {room.setVisible(false)});
+        setAllRoomsVisibility(false);
     }
 
     const parseRoomToIndexes = (room) => room.split("-").map(n => Number(n));
@@ -50,29 +53,34 @@ const BOARD = ((rowCount, columnCount) => {
     function roomExists(coordinate){
         return coordinate[0] < rowCount && coordinate[1] < columnCount;
     }
-
-    /**
-     * @param {string} room two numbers separated by a dash ranging from 0-0 to 2-2
-     */
-    const setCurrentRoom = (room) => {
-        let [i, j] = parseRoomToIndexes(room);
-        setAllToHidden();
+    const parseMoveableRoom = (roomString) =>{
+        let [i, j] = parseRoomToIndexes(roomString);
         if(!roomExists([i,j])){
             console.log(`Room ${i}-${j} does not exist`);
-        }else{
-            ROOMS[i][j].setVisible(true);
-            HUMAN_ELEM.moveToRoom(ROOMS[i][j]);
+            return false;
         }
+        return ROOMS[i][j];
+    }
+
+    function getRoomFromString(roomString){
+        const indicies = parseRoomToIndexes(roomString); //TODO: validation
+        return getRoom(indicies[0], indicies[1]);
     }
 
     function getRoom(row, column){
         return ROOMS[row][column];
     }
+    function roomHasThreat(room){
+        return false; //TODO
+    }
     
     return {
-        setCurrentRoom,
+        setAllToHidden,
+        parseMoveableRoom,
         getRoom,
-        getSize
+        getRoomFromString,
+        getSize,
+        roomHasThreat
     };;
 })(3,3);
 

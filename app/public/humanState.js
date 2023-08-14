@@ -2,45 +2,34 @@
 
 const HUMAN_STATE = (() => {
 
-    let currentRoom = "";
+    let currentRoom;
     let currentTool = "";
 
-    function setCurrentRoom(newRoom){
+    let onRoomChange;
+
+    function setCurrentRoom(newRoomString){
+        const newRoom = BOARD.parseMoveableRoom(newRoomString);
+        if(newRoom === undefined) return;
+        const oldRoom = currentRoom;
         currentRoom = newRoom;
-        CONSOLE.addConsoleLine({message:`Human enters room ${newRoom}`, style: "public"});
-        BOARD.setCurrentRoom(newRoom);
+        CONSOLE.addConsoleLine({message:`Human enters room ${newRoomString}`, style: "public"});
+        HUMAN_ELEM.moveToRoom(newRoom);
+        if(onRoomChange){
+            onRoomChange(oldRoom, newRoom);
+        }
     }
+
+    function setRoomChangeCallback(onRoomChangeFunc){
+        onRoomChange = onRoomChangeFunc;
+    }
+
     function setCurrentTool(newTool){
         currentTool = newTool;
     } 
 
     return {
         setCurrentRoom,
+        setRoomChangeCallback,
         setCurrentTool
     }
 })();
-
-const getCurrentRoom = () => {
-    WS.send({
-        action: {
-            name: "getCurrentRoom"
-        },
-        username: USERNAME_COOKIE,
-        gameId: GAME_ID_COOKIE
-    });
-}
-
-WS.onConnect(() => {
-    console.log("We are connected");
-    getCurrentRoom();
-});
-WS.onDisconnect(() => {
-    
-});
-
-WS.onReceive((data) => {
-    if (data.name === "humanRoomUpdate") {
-        HUMAN_STATE.setCurrentRoom(data.room);
-    }
-});
-

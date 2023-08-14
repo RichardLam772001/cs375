@@ -28,4 +28,13 @@ window.onload = () => {
         }
         
     }
+
 };
+
+BOARD.setAllToHidden();
+HUMAN_STATE.setRoomChangeCallback(onRoomChange);
+function onRoomChange(oldRoom, newRoom){
+    if(!BOARD.roomHasThreat(oldRoom)) oldRoom?.setVisible(false); //threatened rooms remain revealed after leaving them
+    newRoom?.setVisible(true);
+}
+
