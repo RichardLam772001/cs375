@@ -65,7 +65,7 @@ body{
     background-image: url("./images/Room_Fog.png");
 }
 
-#human{
+.room img{
     width: 100%;
     height: auto;
     position: absolute;
