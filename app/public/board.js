@@ -1,3 +1,5 @@
+
+
 const BOARD = ((rowCount, columnCount) => {
 
     const ROOMS = [];
@@ -10,19 +12,18 @@ const BOARD = ((rowCount, columnCount) => {
     }
     
     function createTableElem(){
-        const tableElem = createElemUnderParent("table", TABLE_PARENT);
+        const tableElem = createElemUnderParent("div", TABLE_PARENT);
         tableElem.id = "game-board";
 
         for (let i=0; i < rowCount; i++) {
             let row = [];
-            let rowElem = createElemUnderParent("tr", tableElem);
+            let rowElem = createElemUnderParent("div", tableElem);
+            rowElem.className = "row";
 
             for (let j=0; j < columnCount; j++) {
-                const newCell = createElemUnderParent("td", rowElem);
-                newCell.class = "hidden";
-                newCell.id = `room-${i}-${j}`;
-
-                row.push(newCell);
+                const newRoom = RoomElement(rowElem);
+                newRoom.setVisible(true);
+                row.push(newRoom);
             }
             ROOMS.push(row);
         }
@@ -41,7 +42,7 @@ const BOARD = ((rowCount, columnCount) => {
         ROOMS.forEach((row) => row.forEach(func));
     }
     const setAllToHidden = () => {
-        applyToAllRooms((room) => {room.classList.remove("selected")});
+        applyToAllRooms((room) => {room.setVisible(false)});
     }
 
     const parseRoomToIndexes = (room) => room.split("-").map(n => Number(n));
@@ -59,7 +60,8 @@ const BOARD = ((rowCount, columnCount) => {
         if(!roomExists([i,j])){
             console.log(`Room ${i}-${j} does not exist`);
         }else{
-            ROOMS[i][j].classList.add("selected");
+            ROOMS[i][j].setVisible(true);
+            HUMAN_ELEM.moveToRoom(ROOMS[i][j]);
         }
     }
 
@@ -73,3 +75,5 @@ const BOARD = ((rowCount, columnCount) => {
         getSize
     };;
 })(3,3);
+
+const HUMAN_ELEM = HumanElem(BOARD.getRoom(0,0));
