@@ -2,6 +2,7 @@ const { WEBSOCKET_PORT } = require("../env.json");
 const { WebSocketServer } = require('ws');
 const { HumanRoomUpdateData } = require("./dataObjects.js");
 const { lookUpRole, lookUpGame } = require("./game/game");
+const { CLIENTS_HANDLER } = require("./clientsHandler");
 const { HUMAN_ACTIONS, ROLES, AI_ACTIONS } = require("./constants.js");
 
 const webSockServer = new WebSocketServer({ port: WEBSOCKET_PORT });
@@ -31,7 +32,7 @@ const validateData = (username, gameId, actionName) => {
     return (playerRole === ROLES.HUMAN && actionName in HUMAN_ACTIONS) || (playerRole === ROLES.AI && actionName in AI_ACTIONS)
 }
 
-const onReceiveDataFromClient = (byteData) => {
+const onReceiveDataFromClient = (clientId, byteData) => {
     let data = JSON.parse(byteData.toString());
     let action = data.action;
     let username = data.username;
@@ -45,6 +46,11 @@ const onReceiveDataFromClient = (byteData) => {
     if (!isValid) {
         return;
     }
+
+    if (!CLIENTS_HANDLER.isRegisteredClient(clientId)) {
+        CLIENTS_HANDLER.registerClient(clientId, username, gameId);
+    }
+
     const game = lookUpGame(gameId);
 
     switch(action.name) {
@@ -65,8 +71,10 @@ webSockServer.on('connection', ws => {
     // This is what runs when a client makes a connection to our websocket server
     console.log('New client connected!');
 
+    const clientId = CLIENTS_HANDLER.addClient(ws);
+
     ws.on('close', onConnectionClose);
-    ws.on('message', onReceiveDataFromClient);
+    ws.on('message', (byteData) => onReceiveDataFromClient(clientId, byteData));
     ws.onerror = onError;
 });
 
