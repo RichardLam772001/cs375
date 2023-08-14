@@ -1,3 +1,24 @@
 /* For stylings used only on the human's screen */
+.button {
+  width: 100px;
+  height: 100px;
+  background-color: #4caf50; /* Green background */
+  border: none; /* No border */
+  color: white; /* White text */
+  padding: 10px 20px; /* Padding around text */
+  text-align: center; /* Centered text */
+  text-decoration: none; /* No underline */
+  display: inline-block; /* Inline block level */
+  font-size: 16px; /* Text size */
+  margin: 4px 2px; /* Margin around the button */
+  cursor: pointer; /* Hand cursor on hover */
+  border-radius: 12px; /* Rounded corners */
+}
 
-
+.button i {
+  font-size: 60px;
+  color: white;
+}
+.button:hover {
+  background-color: #45a049; /* Darker green on hover */
+}
