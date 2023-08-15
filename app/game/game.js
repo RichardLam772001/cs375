@@ -3,6 +3,7 @@ const { Threat, THREAT_COOLDOWN_SECONDS, THREAT_TTL } = require("./threat");
 const { randomInt } = require("../utils.js");
 const { sendDataToPlayer } = require("../broadcaster.js");
 const { ThreatSpawnedData } = require("../dataObjects");
+const { CLIENTS_HANDLER } = require("../clientsHandler");
 
 const GAMES = {
     
@@ -51,6 +52,13 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     }
     // This is called once every second
     const tick = () => {
+
+        // Pause game if clients in game aren't registered (client hasn't connected yet, or one of them logged out)
+        if (!CLIENTS_HANDLER.doesGameHaveRegisteredClients(gameId)) {
+            console.log(`Game paused. There are not 2 clients connected to the gameId ${gameId}`);
+            return;
+        }
+
         gameTime -= 1;
 
         // Threats

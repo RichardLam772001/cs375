@@ -57,6 +57,13 @@ const CLIENTS_HANDLER = (() => {
         return REGISTERED_CLIENTS.has(clientId);
     }
 
+    const doesGameHaveRegisteredClients = (gameId) => {
+        if (!REGISTERED_CLIENTS_BY_GAME[gameId]) {
+            return false;
+        }
+        return Object.keys(REGISTERED_CLIENTS_BY_GAME[gameId]).length === 2;
+    }
+
     return {
         CLIENTS,
         REGISTERED_CLIENTS,
@@ -64,6 +71,7 @@ const CLIENTS_HANDLER = (() => {
         addClient,
         getClientByGameAndUser,
         registerClient,
+        doesGameHaveRegisteredClients,
     }
 })();
 
