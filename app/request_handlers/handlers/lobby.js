@@ -1,6 +1,6 @@
-const { joinLobby, getPlayersInLobby, clearLobby } = require("../../lobby/lobby.js");
+const { joinLobby, getPlayersInLobby, clearLobby, getLobbies } = require("../../lobby/lobby.js");
 const { sendToAllClients } = require("../../wss.js");
-const { GameReadyData } = require("../../dataObjects.js");
+const { GameReadyData, LobbyListData } = require("../../dataObjects.js");
 const { ANONY_COOKIE_DURATION_MS } = require("../../constants.js");
 const { startGame, lookUpRole } = require("../../game/game.js");
 
@@ -22,6 +22,8 @@ const lobbyJoin = (req, res) => {
     const isGameReady = joinLobby(lobbyId, username);
 
     console.log(`Player ${username} joined lobby ${lobbyId}`);
+	
+	sendToAllClients(LobbyListData(prepLobbiesData(getLobbies())));
     res.send();
     setTimeout(() => startGameIfReady(isGameReady, lobbyId), 1000);
 }
@@ -41,4 +43,21 @@ const lobbyJoinGame = (req, res) => {
     return res.send({ role });
 }
 
-module.exports = { lobbyJoin, lobbyJoinGame };
+const lobbiesGet = (req, res) => {
+	console.log("GET /lobby/list");
+	
+	return res.send(prepLobbiesData(getLobbies()));
+}
+
+const prepLobbiesData = (lobbies) => {
+	const lobbyIds = Object.keys(lobbies);
+	let lobbyList = {};
+	for (let id of lobbyIds) {
+		let hostname = lobbies[id][0]["username"]
+		lobbyList[id] = [id, hostname, "1/2", "sometime"]; // data accessible from main lobby: id, host username, etc...
+	}
+	return lobbyList;
+}
+
+
+module.exports = { lobbyJoin, lobbyJoinGame, lobbiesGet };

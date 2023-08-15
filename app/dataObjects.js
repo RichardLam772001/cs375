@@ -6,7 +6,8 @@
 const DATA_TYPES = {
     HUMAN_ROOM_UPDATE : "humanRoomUpdate",
     CONSOLE_LINE : "consoleLine",
-    GAME_READY : "gameReady"
+    GAME_READY : "gameReady",
+	LOBBY_LIST : "lobbyList"
 }
 
 const HumanRoomUpdateData = (room) => ({
@@ -28,6 +29,11 @@ const GameReadyData = (lobbyId, gameId) => ({
     gameId
 });
 
+const LobbyListData = (lobbies) => ({
+	name : DATA_TYPES.LOBBY_LIST,
+	lobbies
+});
 
-module.exports = { HumanRoomUpdateData, ConsoleLineData, GameReadyData };
+
+module.exports = { HumanRoomUpdateData, ConsoleLineData, GameReadyData, LobbyListData };
 
