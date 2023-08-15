@@ -7,7 +7,7 @@ const CLIENTS_HANDLER = (() => {
     // Client objects in general
     const CLIENTS = {};
     // Registered client ids
-    const REGISTERED_CLIENTS = new Set();
+    const REGISTERED_CLIENTS = {};
     // Registered client ids indexed by game and username
     const REGISTERED_CLIENTS_BY_GAME = {};
 
@@ -19,9 +19,12 @@ const CLIENTS_HANDLER = (() => {
      * This method registers a clientId to a specific game
      */
     const registerClient = (clientId, username, gameId) => {
-        REGISTERED_CLIENTS.add(clientId);
+        REGISTERED_CLIENTS[clientId] = {
+            gameId,
+            username
+        };
         if (REGISTERED_CLIENTS_BY_GAME[gameId]) {
-            REGISTERED_CLIENTS_BY_GAME[gameId][username] = clientId;            
+            REGISTERED_CLIENTS_BY_GAME[gameId][username] = clientId;
         }
         else {
             REGISTERED_CLIENTS_BY_GAME[gameId] = {[username] : clientId};
@@ -40,6 +43,15 @@ const CLIENTS_HANDLER = (() => {
         CLIENTS[clientId] = wsClient;
         return clientId;
     }
+    const removeClient = (clientId) => {
+        delete CLIENTS[clientId];
+        if (isRegisteredClient(clientId)) {
+            const { gameId, username } = REGISTERED_CLIENTS[clientId];
+            delete REGISTERED_CLIENTS_BY_GAME[gameId][username];
+            delete REGISTERED_CLIENTS[clientId];
+        }
+    };
+
     /**
      * @param {string} gameId Game id the client is in
      * @param {string} username Username the client is associated with
@@ -54,7 +66,7 @@ const CLIENTS_HANDLER = (() => {
      * @returns boolean whether client is registered to a game or not
      */
     const isRegisteredClient = (clientId) => {
-        return REGISTERED_CLIENTS.has(clientId);
+        return clientId in REGISTERED_CLIENTS;
     }
 
     const doesGameHaveRegisteredClients = (gameId) => {
@@ -66,7 +78,7 @@ const CLIENTS_HANDLER = (() => {
 
     return {
         CLIENTS,
-        REGISTERED_CLIENTS,
+        removeClient,
         isRegisteredClient,
         addClient,
         getClientByGameAndUser,

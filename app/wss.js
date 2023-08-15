@@ -7,8 +7,9 @@ const { HUMAN_ACTIONS, ROLES, AI_ACTIONS } = require("./constants.js");
 
 const webSockServer = new WebSocketServer({ port: WEBSOCKET_PORT });
 
-const onConnectionClose = () => {
+const onConnectionClose = (clientId) => {
     console.log("client disconnected!");
+    CLIENTS_HANDLER.removeClient(clientId);
 };
 const onError = () => {
     console.log("websocket error");
@@ -73,7 +74,7 @@ webSockServer.on('connection', ws => {
 
     const clientId = CLIENTS_HANDLER.addClient(ws);
 
-    ws.on('close', onConnectionClose);
+    ws.on('close', () => onConnectionClose(clientId));
     ws.on('message', (byteData) => onReceiveDataFromClient(clientId, byteData));
     ws.onerror = onError;
 });
