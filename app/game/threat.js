@@ -17,4 +17,4 @@ const Threat = (onThreatUnresolved) => {
     setTimeout(tick, THREAT_TICK_SPEED);
 }
 
-module.exports = { Threat, THREAT_COOLDOWN_SECONDS }
+module.exports = { Threat, THREAT_COOLDOWN_SECONDS, THREAT_TTL }

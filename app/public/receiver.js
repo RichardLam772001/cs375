@@ -12,8 +12,18 @@ const getCurrentRoom = () => {
 
 WS.onConnect(() => {
     console.log("We are connected");
-    getCurrentRoom();
 });
+
+const registerClient = () => {
+    if (WS.webSocket.readyState) {
+        getCurrentRoom();
+    }
+    else {
+        setTimeout(registerClient, 500);
+    }
+};
+registerClient();
+
 WS.onDisconnect(() => {
     
 });

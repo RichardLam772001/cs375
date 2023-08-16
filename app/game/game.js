@@ -1,6 +1,9 @@
 const { ROLES, GAME_TICK_DELAY_MS } = require("../constants");
-const { Threat, THREAT_COOLDOWN_SECONDS } = require("./threat");
+const { Threat, THREAT_COOLDOWN_SECONDS, THREAT_TTL } = require("./threat");
 const { randomInt } = require("../utils.js");
+const { sendDataToPlayer } = require("../broadcaster.js");
+const { ThreatSpawnedData } = require("../dataObjects");
+const { CLIENTS_HANDLER } = require("../clientsHandler");
 
 const GAMES = {
     
@@ -11,7 +14,10 @@ const selectThreatRoom = (avilableRooms, roomsWithThreats) => {
     return rooms[randomInt(0, rooms.length - 1)];
 }
 
-const GAME = (humanUsername, aiUsername) => {
+const GAME = (humanUsername, aiUsername, gameId) => {
+
+    const GAME_ID = gameId;
+
     let gameTime = 4*60;
     let HUMAN_USERNAME = humanUsername;
     let AI_USERNAME = aiUsername;
@@ -46,22 +52,37 @@ const GAME = (humanUsername, aiUsername) => {
     }
     // This is called once every second
     const tick = () => {
+
+        // Pause game if clients in game aren't registered (client hasn't connected yet, or one of them logged out)
+        if (!CLIENTS_HANDLER.doesGameHaveRegisteredClients(gameId)) {
+            console.log(`Game paused. There are not 2 clients connected to the gameId ${gameId}`);
+            return;
+        }
+
         gameTime -= 1;
 
         // Threats
         if (threatCooldown <= 0) {
-            const threatRoom = selectThreatRoom(AVAILABLE_ROOMS, ROOMS_WITH_THREATS);
-            const threat = Threat(() => onThreatUnresolved(threatRoom, THREATS.length));
-            THREATS.push(threat);
-            console.log(`Threat spawned in room ${threatRoom}`);
-            threatCooldown = THREAT_COOLDOWN_SECONDS;
+            spawnThreat();
         }
         else {
             threatCooldown -= 1;
         }
-
-
     }
+
+    const spawnThreat = () => {
+        const threatRoom = selectThreatRoom(AVAILABLE_ROOMS, ROOMS_WITH_THREATS);
+        const threat = Threat(() => onThreatUnresolved(threatRoom, THREATS.length));
+        THREATS.push(threat);
+        console.log(`Threat spawned in room ${threatRoom}`);
+        threatCooldown = THREAT_COOLDOWN_SECONDS;
+        alertAIPlayerOfThreat(threatRoom);
+    }
+
+    const alertAIPlayerOfThreat = (room) => {
+        sendDataToPlayer(GAME_ID, AI_USERNAME, ThreatSpawnedData(room, "fire", THREAT_TTL, false));
+    }
+
     const onThreatUnresolved = (room, threatId) => {
         THREATS.splice(threatId, 1); // Remove threat from THREATS list
         AVAILABLE_ROOMS.splice(AVAILABLE_ROOMS.indexOf(room), 1);
@@ -81,8 +102,10 @@ const addGame = (gameId, game) => {
 }
 
 const startGame = (humanUsername, aiUsername) => {
+    // Temp: TO DO - Replace with idGenerator when we want to test multiple games running at once
+    // For now priority is getting 1 game working beginning to end
     const gameId = 1;
-    addGame(gameId, GAME(humanUsername, aiUsername));
+    addGame(gameId, GAME(humanUsername, aiUsername, gameId));
     return gameId;
 }
 
