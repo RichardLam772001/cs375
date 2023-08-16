@@ -7,8 +7,6 @@
     <link rel="stylesheet" href="style.css" />
     <link
       rel="stylesheet"
-      <link
-      rel="stylesheet"
       href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
       integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
       crossorigin="anonymous" />
@@ -37,8 +35,7 @@
             required />
         </div>
         <button type="submit" id="submit">Login</button>
-        <button id="noAccountCreateAccount">Create Account</button>
-        <div id="error-message" style="color: red">FEEDBACKS SHOW HERE</div>
+        <div id="login-message"></div>
       </form>
     </div>
 
@@ -88,16 +85,18 @@
             id="newPasswordConfirm"
             name="newPasswordConfirm"
             placeholder="Confirm Password"
-            onInput="cofirmNewPassword()"
+            onInput="confirmNewPassword()"
             required />
         </div>
         <div id="matchNewPassword">
           <i class="far fa-check-circle"></i> <span> Match your password.</span>
         </div>
         <button type="submit" id="createAccount">Create Account</button>
+        <div id="create-account-message"></div>
       </form>
     </div>
   </body>
+  <script src="../router.js"></script>
   <script src="./loginpage.js"></script>
 </html>
 

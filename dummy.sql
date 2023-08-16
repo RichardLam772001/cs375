@@ -1,9 +1,9 @@
-\c userlogin;
-DELETE FROM userdata;
+\c cyberspace;
+DELETE FROM cyberspace;
 
 -- Insert 10 different users into the "users" table
 
-INSERT INTO userdata (username, password, loggedin) VALUES
+INSERT INTO cyberspace (username, password, loggedin) VALUES
   ('user1', '00000', TRUE),
   ('user2', '11111', FALSE),
   ('user3', '22222', TRUE),
