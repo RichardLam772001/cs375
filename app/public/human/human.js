@@ -12,8 +12,22 @@ const HUMAN = (() => {
     });
   };
 
+  const switchCurrentTool = (toolName) => {
+    WS.send({
+      action: {
+        name: "switchCurrentTool",
+        args: {
+          tool: toolName,
+        },
+      },
+      username: USERNAME_COOKIE,
+      gameId: GAME_ID_COOKIE,
+    });
+  };
+
   return {
     enterRoom,
+    switchCurrentTool,
   };
 })();
 
