@@ -1,35 +1,55 @@
 //This human state is shared between both players
 
 const HUMAN_STATE = (() => {
+  let currentRoom;
+  let currentTool = "";
 
-    let currentRoom;
-    let currentTool = "";
+  let onRoomChange;
 
-    let onRoomChange;
-
-    function setCurrentRoom(newRoomString){
-        const newRoom = BOARD.parseMoveableRoom(newRoomString);
-        if(newRoom === undefined) return;
-        const oldRoom = currentRoom;
-        currentRoom = newRoom;
-        CONSOLE.addConsoleLine({message:`Human enters room ${newRoomString}`, style: "public"});
-        HUMAN_ELEM.moveToRoom(newRoom);
-        if(onRoomChange){
-            onRoomChange(oldRoom, newRoom);
-        }
+  function setCurrentRoom(newRoomString) {
+    const newRoom = BOARD.parseMoveableRoom(newRoomString);
+    if (newRoom === undefined) return;
+    const oldRoom = currentRoom;
+    currentRoom = newRoom;
+    CONSOLE.addConsoleLine({
+      message: `Human enters room ${newRoomString}`,
+      style: "public",
+    });
+    HUMAN_ELEM.moveToRoom(newRoom);
+    if (onRoomChange) {
+      onRoomChange(oldRoom, newRoom);
     }
+  }
 
-    function setRoomChangeCallback(onRoomChangeFunc){
-        onRoomChange = onRoomChangeFunc;
+  function setRoomChangeCallback(onRoomChangeFunc) {
+    onRoomChange = onRoomChangeFunc;
+  }
+
+  function switchCurrentTool(toolName) {
+    console.log("Button clicked: ", toolName);
+
+    currentTool = toolName;
+
+    // remove all color before color to selected button
+    document.querySelectorAll(".button").forEach((btn) => {
+      btn.classList.remove("selected");
+      btn.classList.add("unselected");
+    });
+    // color to the selected button
+    const currentToolButton = document.getElementById(toolName);
+    if (currentToolButton) {
+      currentToolButton.classList.remove("unselected");
+      currentToolButton.classList.add("selected");
     }
+    CONSOLE.addConsoleLine({
+      message: `Human set tool ${toolName}`,
+      style: "public",
+    });
+  }
 
-    function setCurrentTool(newTool){
-        currentTool = newTool;
-    } 
-
-    return {
-        setCurrentRoom,
-        setRoomChangeCallback,
-        setCurrentTool
-    }
+  return {
+    setCurrentRoom,
+    setRoomChangeCallback,
+    switchCurrentTool,
+  };
 })();

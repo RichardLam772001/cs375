@@ -1,3 +1,45 @@
 /* For stylings used only on the human's screen */
+/* default as unselected */
+.button {
+  width: 100px;
+  height: 100px;
+  background-color: #a9a9a9; /* Gray background */
+  color: #696969;
+  border: none; /* No border */
+  padding: 10px 20px; /* Padding around text */
+  text-align: center; /* Centered text */
+  text-decoration: none; /* No underline */
+  display: inline-block; /* Inline block level */
+  font-size: 16px; /* Text size */
+  margin: 4px 2px; /* Margin around the button */
+  cursor: pointer; /* Hand cursor on hover */
+  border-radius: 12px; /* Rounded corners */
+}
 
+/* default icon color */
+.button i {
+  font-size: 60px;
+  color: #696969;
+}
 
+.button:hover {
+  background-color: #808080; /* Darker green on hover */
+}
+
+.button i:hover {
+  color: #bcbbbb;
+}
+
+.button.selected i {
+  font-size: 60px;
+  color: white;
+}
+
+.button.selected {
+  background-color: #4caf50;
+  color: white;
+}
+
+.button.selected:hover {
+  background-color: #4caf50;
+}
