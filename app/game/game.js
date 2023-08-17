@@ -1,6 +1,6 @@
 const { ROLES, GAME_TICK_DELAY_MS } = require("../constants");
 const { Threat, THREAT_COOLDOWN_SECONDS, MAX_THREATS_ACTIVE } = require("./threat");
-const { randomInt, randomChoice } = require("../utils.js");
+const { randomInt } = require("../utils.js");
 const { RandomBag } = require("../randomBag.js");
 
 const { ConsoleLinesLog } = require("../consoleLinesLog.js");
@@ -17,8 +17,7 @@ const selectThreatRoom = (availableRooms, roomsWithThreats) => {
 }
 
 const GAME = (humanUsername, aiUsername) => {
-    const gameTime = 4*60;
-    let timeRemaining = gameTime;
+    let timeRemaining = 4*60;
 
     let HUMAN_USERNAME = humanUsername;
     let AI_USERNAME = aiUsername;
@@ -74,12 +73,12 @@ const GAME = (humanUsername, aiUsername) => {
         return AVAILABLE_ROOMS.indexOf(room) === -1;
     }
     const enterRoom = (roomString) => { //TODO: Validation
-        let coords = roomString.split("-");
+        const coords = roomString.split("-");
         return enterRoomPos(coords[0], coords[1]);
     }
     const enterRoomPos = (x,y) => {
         if(!validateRoomPos(x,y)) return;
-        let room = ROOMS[x][y];
+        const room = ROOMS[x][y];
 
         if (roomIsDestroyed(room)) {
             console.log(`GAME - Cannot enter room ${room.name}`);
@@ -96,7 +95,7 @@ const GAME = (humanUsername, aiUsername) => {
         if(THREATS.length >= MAX_THREATS_ACTIVE) return; //too many threats
 
         const threatRoom = selectThreatRoom(AVAILABLE_ROOMS, ROOMS_WITH_THREATS);
-        if(threatRoom == undefined) return; // No valid room was picked
+        if(!threatRoom) return; // No valid room was picked
         const threat = Threat(() => onThreatUnresolved(threatRoom, THREATS.length));
         THREATS.push(threat);
         console.log(`Threat spawned in room ${threatRoom.name}`);
@@ -122,8 +121,8 @@ const GAME = (humanUsername, aiUsername) => {
     const onThreatUnresolved = (room, threatId) => {
         THREATS.splice(threatId, 1); // Remove threat from THREATS list
         AVAILABLE_ROOMS.splice(AVAILABLE_ROOMS.indexOf(room), 1);
-        let message = `ROOM ${room.name} HAS BEEN DESTROYED BY ${"<threatType>"}`;
-        let line = ConsoleLineData(timeRemaining, message, undefined, "critical");
+        const message = `ROOM ${room.name} HAS BEEN DESTROYED BY ${"<threatType>"}`;
+        const line = ConsoleLineData(timeRemaining, message, undefined, "critical");
         addConsoleLineAndBroadcast(line);
 
         roomsDestroyed++;
