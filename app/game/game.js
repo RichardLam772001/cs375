@@ -10,7 +10,7 @@ const GAMES = {
 };
 
 const selectThreatRoom = (avilableRooms, roomsWithThreats) => {
-    const rooms = avilableRooms.filter((room) => !(room in roomsWithThreats));
+    const rooms = avilableRooms.filter((room) => roomsWithThreats.indexOf(room) === -1);
     return rooms[randomInt(0, rooms.length - 1)];
 }
 
@@ -28,6 +28,8 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     const THREATS = [];
     const AVAILABLE_ROOMS = ["0-0", "0-1", "0-2", "1-0", "1-1", "1-2", "2-0", "2-1", "2-2"]; // Richard: Yes I know it's hardcoded, we can make a dynamic room generator later TO DO 
     const ROOMS_WITH_THREATS = [];
+    const THREAT_TYPES = ["fire", "breach", "invader"];
+    const MAX_THREATS_PER_ROOM = 3;
 
     const getRole = (username) => {
         if (username == HUMAN_USERNAME) {
@@ -45,6 +47,9 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         }
         else {
             room = newRoom;
+            if (ifRoomHasThreat(room)) {
+                alertHumanPlayerOfThreat(room);
+            }
         }
     }
     const getCurrentRoom = () => {
@@ -62,7 +67,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         gameTime -= 1;
 
         // Threats
-        if (threatCooldown <= 0) {
+        if (threatCooldown <= 0 && ROOMS_WITH_THREATS.length < MAX_THREATS_PER_ROOM) {
             spawnThreat();
         }
         else {
@@ -72,21 +77,49 @@ const GAME = (humanUsername, aiUsername, gameId) => {
 
     const spawnThreat = () => {
         const threatRoom = selectThreatRoom(AVAILABLE_ROOMS, ROOMS_WITH_THREATS);
-        const threat = Threat(() => onThreatUnresolved(threatRoom, THREATS.length));
-        THREATS.push(threat);
+        const threat = Threat(randomlySelectThreat(), () => onThreatUnresolved(threatRoom, THREATS.length));
+        THREATS[threatRoom] = threat;
+        ROOMS_WITH_THREATS.push(threatRoom);
         console.log(`Threat spawned in room ${threatRoom}`);
         threatCooldown = THREAT_COOLDOWN_SECONDS;
         alertAIPlayerOfThreat(threatRoom);
     }
 
+    const randomlySelectThreat = () => {
+        return THREAT_TYPES[randomInt(0, THREAT_TYPES.length-1)];
+    }
+
+    /**
+     * Used by both alertAIPlayerOfThreat and alertHumanPlayerOfThreat
+     */
+    const alertPlayerOfThreat = (threat, username, room) => {
+        sendDataToPlayer(GAME_ID, username, ThreatSpawnedData(room, threat.THREAT_TYPE, THREAT_TTL, false));        
+    }
+    /**
+     * @param {string} room e.g. 0-0 to index with 
+     */
     const alertAIPlayerOfThreat = (room) => {
-        sendDataToPlayer(GAME_ID, AI_USERNAME, ThreatSpawnedData(room, "fire", THREAT_TTL, false));
+        alertPlayerOfThreat(THREATS[room], AI_USERNAME, room);
+    }
+    /**
+     * @param {string} room e.g. 0-0 to index with 
+     */
+    const alertHumanPlayerOfThreat = (room) => {
+        alertPlayerOfThreat(THREATS[room], HUMAN_USERNAME, room);
     }
 
     const onThreatUnresolved = (room, threatId) => {
         THREATS.splice(threatId, 1); // Remove threat from THREATS list
         AVAILABLE_ROOMS.splice(AVAILABLE_ROOMS.indexOf(room), 1);
         console.log(`Threat was unresolved room ${room} is no longer available`);
+    }
+    /**
+     * 
+     * @param {string} room e.g. 0-0 
+     * @returns {boolean}
+     */
+    const ifRoomHasThreat = (room) => {
+        return ROOMS_WITH_THREATS.indexOf(room) !== -1;
     }
 
     return {

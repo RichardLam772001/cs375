@@ -29,19 +29,13 @@ WS.onDisconnect(() => {
 });
 
 WS.onReceive((data) => {
-    if (data.name === "humanRoomUpdate") {
-        HUMAN_STATE.setCurrentRoom(data.room);
+    console.log("Received WS data :", data);
+    switch (data.name) {
+        case "humanRoomUpdate":
+            HUMAN_STATE.setCurrentRoom(data.room);
+            break;
+        case "threatSpawned":
+            BOARD.spawnThreat(data.threatType, data.room);
+            break;                                
     }
-    onThreatSpawn();
 });
-
-const onThreatSpawn = () => {
-  const name = "threatSpawned";
-  const room = "0-1";
-  const isPaused = false;
-  const threatName = "fire";
-  const threatTime = 30;
-
-  console.log("Received threat data " + threatName);
-  // add your logic here
-};

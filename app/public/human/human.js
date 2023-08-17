@@ -41,13 +41,13 @@ window.onload = () => {
       }      
   }
   document
-    .querySelector('.button[title="Fire Extinguisher"]')
+    .querySelector('#fire-extinguisher-button')
     .addEventListener("click", () => HUMAN.useTool("Fire Extinguisher"));
   document
-    .querySelector('.button[title="Wrench"]')
+    .querySelector('#wrench-button')
     .addEventListener("click", () => HUMAN.useTool("Wrench"));
   document
-    .querySelector('.button[title="Gun"]')
+    .querySelector('#gun-button')
     .addEventListener("click", () => HUMAN.useTool("Gun"));
 };
 

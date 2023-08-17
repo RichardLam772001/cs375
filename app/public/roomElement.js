@@ -1,7 +1,9 @@
 // Manipulates a visual room element
 // Can contain the human, threats, and pings
 
-const RoomElement = (parentElem) => {
+const RoomElement = (parentElem, roomString) => {
+
+    const ROOM_STRING = roomString;
 
     const mainDiv = createElemUnderParent("div", parentElem);
     mainDiv.className = "room";
@@ -9,12 +11,6 @@ const RoomElement = (parentElem) => {
     backElem.className = "visible";
 
     const threatImg = createElemUnderParent("img", backElem);
-    setThreat("none");
-
-
-    const threats = ["fire", "breach", "invader", "none"];
-    setThreat(threats[Math.floor(Math.random()*threats.length)]) //TESTING: picks a random threat to show
-
 
     function setVisible(visible){
         backElem.className = visible ? "visible" : "hidden";
@@ -48,6 +44,8 @@ const RoomElement = (parentElem) => {
     return {
         rootElem: mainDiv,
         humanParent : backElem,
-        setVisible
+        setVisible,
+        setThreat,
+        ROOM_STRING
     }
 }
