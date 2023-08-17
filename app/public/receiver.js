@@ -32,5 +32,16 @@ WS.onReceive((data) => {
     if (data.name === "humanRoomUpdate") {
         HUMAN_STATE.setCurrentRoom(data.room);
     }
+    onThreatSpawn();
 });
 
+const onThreatSpawn = () => {
+  const name = "threatSpawned";
+  const room = "0-1";
+  const isPaused = false;
+  const threatName = "fire";
+  const threatTime = 30;
+
+  console.log("Received threat data " + threatName);
+  // add your logic here
+};
