@@ -5,6 +5,5 @@ CREATE DATABASE cyberspace;
 
 CREATE TABLE userdata (
 	username VARCHAR(50) PRIMARY KEY,
-	password VARCHAR,
-	loggedin BOOLEAN
+	password VARCHAR
 );

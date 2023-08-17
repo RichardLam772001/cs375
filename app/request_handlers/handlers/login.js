@@ -16,7 +16,7 @@ const cookieOptions = {
 const login = async (req, res) => {
     
     let body = req.body;
-    console.log("POST /login/login", body);
+    console.log("POST /login/login");
     let { username, password } = body;
 
     try {
@@ -32,7 +32,7 @@ const login = async (req, res) => {
         if (passwordMatch) {
           console.log(`user ${username} login successfully!`);
           let token=crypto.randomBytes(32).toString("hex");
-          console.log("Generated token", token);
+          console.log("Generated token");
           tokenStorage[token]=username;
           return res
             .cookie("token", token, cookieOptions)
@@ -71,8 +71,8 @@ const createAccount = async (req, res) => {
   
         res.sendStatus(200);
       } else {
-        console.log("User already exist, please log in");
-        return res.status(400).json({ error: "User already exist, please log in" });
+        console.log("Username already taken. Please pick a different username or log in.");
+        return res.status(400).json({ error: "Username already taken. Please pick a different username or log in." });
       }
     } catch (err) {
       console.error('Error processing login/account creation:', err);
