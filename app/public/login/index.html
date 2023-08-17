@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Page</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+      integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
+      crossorigin="anonymous" />
+  </head>
+  <body>
+    <!-- Richard: This will send a message to the websocket server -->
+    <div class="login-container">
+      <h2>Login</h2>
+      <form id="loginForm">
+        <div class="input-group">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Username"
+            required />
+        </div>
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Password"
+            required />
+        </div>
+        <button type="submit" id="submit">Login</button>
+        <div id="login-message"></div>
+      </form>
+    </div>
+
+    <!-- <button id="send">Send message to client</button> -->
+    <div class="create-container">
+      <h2>Create Account</h2>
+      <form id="createAccountForm">
+        <div class="input-group">
+          <label for="newUsername">Username</label>
+          <input
+            type="text"
+            id="newUsername"
+            name="newUsername"
+            placeholder="Username"
+            required />
+        </div>
+        <div class="input-group">
+          <label for="newPassword">Password</label>
+          <input
+            type="password"
+            id="newPassword"
+            name="newPassword"
+            placeholder="Enter your password"
+            onInput="checkPassword()"
+            required />
+          <div id="set">
+            <i id="see" onclick="see()" class="far fa-eye"></i>
+            <div id="count">Length : 0</div>
+          </div>
+          <div id="lengthMoreThanSix">
+            <i class="far fa-check-circle"></i>
+            <span> Length no less than 6</span>
+          </div>
+          <div id="lengthLessThanSixteen">
+            <i class="far fa-check-circle"></i>
+            <span> Length no more than 16.</span>
+          </div>
+          <div id="notContainSpace">
+            <i class="far fa-check-circle"></i>
+            <span>Shouldn't contain spaces.</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <label for="newPasswordConfirm">Confirm Password</label>
+          <input
+            type="password"
+            id="newPasswordConfirm"
+            name="newPasswordConfirm"
+            placeholder="Confirm Password"
+            onInput="confirmNewPassword()"
+            required />
+        </div>
+        <div id="matchNewPassword">
+          <i class="far fa-check-circle"></i> <span> Match your password.</span>
+        </div>
+        <button type="submit" id="createAccount">Create Account</button>
+        <div id="create-account-message"></div>
+      </form>
+    </div>
+  </body>
+  <script src="../router.js"></script>
+  <script src="./loginpage.js"></script>
+</html>
+
+<!-- validate part cite:https://github.com/kaizhelam/password-validation/blob/main/index.html -->
+<!-- https://www.youtube.com/watch?v=cAUb9Iarg8I&t=638s -->
