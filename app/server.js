@@ -12,8 +12,8 @@ app.use(cookieParser());
 app.use(express.static("public"));
 app.use(express.json());
 
-app.listen(PORT, HOSTNAME, () => {
-	console.log(`App running on http://${HOSTNAME}:${PORT}`);
+app.listen(PORT, () => {
+	console.log(`App running on http://:${PORT}`);
 });
 
 setRequestHandlers(app);
