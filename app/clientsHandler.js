@@ -102,10 +102,6 @@ const CLIENTS_HANDLER = (() => {
         }
     };
     
-    module.exports = {
-        // ...other functions...
-        updatePlayerStats,
-    };
     
     const areBothPlayersLoggedIn = (gameId) => {
         const registeredClients = REGISTERED_CLIENTS_BY_GAME[gameId];
