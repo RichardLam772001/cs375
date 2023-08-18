@@ -28,7 +28,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     const AVAILABLE_ROOMS = ["0-0", "0-1", "0-2", "1-0", "1-1", "1-2", "2-0", "2-1", "2-2"]; // Richard: Yes I know it's hardcoded, we can make a dynamic room generator later TO DO 
     const ROOMS_WITH_THREATS = [];
     const THREAT_TYPES = ["fire", "breach", "invader"];
-    const MAX_THREATS_PER_ROOM = 3;
+    const MAX_ACTIVE_THREATS = 3;
 
     const getRole = (username) => {
         if (username == HUMAN_USERNAME) {
@@ -66,7 +66,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         gameTime -= 1;
 
         // Threats
-        if (threatCooldown <= 0 && ROOMS_WITH_THREATS.length < MAX_THREATS_PER_ROOM) {
+        if (threatCooldown <= 0 && ROOMS_WITH_THREATS.length < MAX_ACTIVE_THREATS) {
             spawnThreat();
         }
         else {
