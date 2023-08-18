@@ -1,29 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="./human.css" rel="stylesheet" />
     <link href="../gameScreen.css" rel="stylesheet" />
     <link href="../Console/consoleWindowStyles.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    "
     <title>Cyberspace Saboteur</title>
-</head>
-<body>
+  </head>
+  <body>
     <h1 id="role-text">You are the human</h1>
 
     <div id="body">
-        <div id="console">
-
-        </div>
-        <div id="console-window"></div>
-        <div id="vertical-divider"></div>
-        <div id="main-container"></div>
-        <div id="vertical-divider"></div>
-        <div id="tools">
-            <button class="button"> Fire Extinguisher </button>
-            <button class="button"> Wrench </button>
-            <button class="button"> Gun </button>
-        </div>
+      <div id="console"></div>
+      <div id="console-window"></div>
+      <div id="vertical-divider"></div>
+      <div id="main-container"></div>
+      <div id="vertical-divider"></div>
+      <div id="tools">
+        <button id="fire-extinguisher-button" class="button">
+          <i class="fa-solid fa-fire-extinguisher"></i>
+        </button>
+        <button id="wrench-button" class="button">
+          <i class="fa-solid fa-wrench"></i>
+        </button>
+        <button id="gun-button" class="button"><i class="fa-solid fa-gun"></i></button>
+      </div>
     </div>
 </body>
 <script src="../cookies.js"></script>

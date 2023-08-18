@@ -6,6 +6,7 @@ const BOARD = ((rowCount, columnCount) => {
 
     const TABLE_PARENT = document.getElementById("main-container");
     const TABLE_ELEMENT = createTableElem();
+    const ROOMS_WITH_THREATS = [];
     
     function getSize(){
         return {rows: rowCount, columns: columnCount};
@@ -21,7 +22,7 @@ const BOARD = ((rowCount, columnCount) => {
             rowElem.className = "row";
 
             for (let j=0; j < columnCount; j++) {
-                const newRoom = RoomElement(rowElem);
+                const newRoom = RoomElement(rowElem, `${i}-${j}`);
                 row.push(newRoom);
             }
             ROOMS.push(row);
@@ -53,6 +54,10 @@ const BOARD = ((rowCount, columnCount) => {
     function roomExists(coordinate){
         return coordinate[0] < rowCount && coordinate[1] < columnCount;
     }
+    /**
+     * @param {string} roomString e.g. 0-0 
+     * @returns RoomElement 
+     */
     const parseMoveableRoom = (roomString) =>{
         let [i, j] = parseRoomToIndexes(roomString);
         if(!roomExists([i,j])){
@@ -70,8 +75,22 @@ const BOARD = ((rowCount, columnCount) => {
     function getRoom(row, column){
         return ROOMS[row][column];
     }
+    /**
+     * 
+     * @param {RoomElement} room  
+     * @returns {boolean} whether room contains a threat or not
+     */
     function roomHasThreat(room){
-        return false; //TODO
+        return ROOMS_WITH_THREATS.indexOf(room.ROOM_STRING) !== -1;
+    }
+    /**
+     * @param {string} threatType e.g. "fire", "invader", "breach"
+     * @param {string} room e.g. "0-0"
+     */
+    const spawnThreat = (threatType, room) => {
+        ROOMS_WITH_THREATS.push(room);
+        const roomElement = parseMoveableRoom(room);
+        roomElement.setThreat(threatType);
     }
     
     return {
@@ -80,7 +99,8 @@ const BOARD = ((rowCount, columnCount) => {
         getRoom,
         getRoomFromString,
         getSize,
-        roomHasThreat
+        roomHasThreat,
+        spawnThreat,
     };;
 })(3,3);
 
