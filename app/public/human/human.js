@@ -23,6 +23,7 @@ const HUMAN = (() => {
       username: USERNAME_COOKIE,
       gameId: GAME_ID_COOKIE,
     });
+    console.log("human click" + toolName);
   };
 
   return {

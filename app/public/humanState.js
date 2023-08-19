@@ -26,7 +26,7 @@ const HUMAN_STATE = (() => {
   }
 
   function switchCurrentTool(toolName) {
-    console.log("Button clicked: ", toolName);
+    console.log("human state Button clicked: ", toolName);
 
     currentTool = toolName;
 

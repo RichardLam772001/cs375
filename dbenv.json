@@ -1,7 +1,7 @@
 {
-    "user": "ENTER_USERNAME_HERE",
-    "host": "localhost",
-    "database": "cyberspace",
-    "password": "ENTER_PASSWORD_HERE",
-    "port": 5432
+  "user": "postgres",
+  "host": "localhost",
+  "database": "cyberspace",
+  "password": "no_password",
+  "port": 5432
 }

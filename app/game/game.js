@@ -85,6 +85,8 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     } else {
       threatCooldown -= 1;
     }
+
+    switchUserCurrentTool;
   };
 
   const spawnThreat = () => {
@@ -102,6 +104,12 @@ const GAME = (humanUsername, aiUsername, gameId) => {
 
   const randomlySelectThreat = () => {
     return THREAT_TYPES[randomInt(0, THREAT_TYPES.length - 1)];
+  };
+
+  // try to send tool to user
+  const switchUserCurrentTool = (currentTool, username) => {
+    console.log(currentTool);
+    sendDataToPlayer(GAME_ID, username, CurrentToolUpdateData(currentTool));
   };
 
   /**
