@@ -41,11 +41,12 @@ const validateData = (username, gameId, actionName) => {
 
 const onReceiveDataFromClient = (clientId, byteData) => {
   let data = JSON.parse(byteData.toString());
+  console.log("WSS Receive :", data);
   let action = data.action;
   let username = data.username;
   let gameId = data.gameId;
   let currentRoom;
-  let currentTool;
+  let currentTool = data.currentTool;
 
   console.log("WSS Receive :", data);
 

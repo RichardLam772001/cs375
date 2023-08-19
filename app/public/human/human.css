@@ -1,5 +1,4 @@
 /* For stylings used only on the human's screen */
-<<<<<<< HEAD
 /* default as unselected */
 .button {
   width: 100px;
@@ -7,14 +6,6 @@
   background-color: #a9a9a9; /* Gray background */
   color: #696969;
   border: none; /* No border */
-=======
-.button {
-  width: 100px;
-  height: 100px;
-  background-color: #4caf50; /* Green background */
-  border: none; /* No border */
-  color: white; /* White text */
->>>>>>> origin
   padding: 10px 20px; /* Padding around text */
   text-align: center; /* Centered text */
   text-decoration: none; /* No underline */
@@ -25,7 +16,6 @@
   border-radius: 12px; /* Rounded corners */
 }
 
-<<<<<<< HEAD
 /* default icon color */
 .button i {
   font-size: 60px;
@@ -52,12 +42,4 @@
 
 .button.selected:hover {
   background-color: #4caf50;
-=======
-.button i {
-  font-size: 60px;
-  color: white;
-}
-.button:hover {
-  background-color: #45a049; /* Darker green on hover */
->>>>>>> origin
 }

@@ -41,6 +41,9 @@ WS.onReceive((data) => {
     case "humanRoomUpdate":
       HUMAN_STATE.setCurrentRoom(data.room);
       break;
+    case "currentToolUpdate":
+      HUMAN_STATE.switchCurrentTool(data.tool);
+      break;
     case "threatSpawned":
       BOARD.spawnThreat(data.threatType, data.room);
       break;

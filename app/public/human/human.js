@@ -44,11 +44,13 @@ window.onload = () => {
   }
   document
     .querySelector("#fire-extinguisher-button")
-    .addEventListener("click", () => HUMAN.switchTool("Fire Extinguisher"));
+    .addEventListener("click", () =>
+      HUMAN.switchCurrentTool("Fire Extinguisher")
+    );
   document
     .querySelector("#wrench-button")
-    .addEventListener("click", () => HUMAN.switchTool("Wrench"));
+    .addEventListener("click", () => HUMAN.switchCurrentTool("Wrench"));
   document
     .querySelector("#gun-button")
-    .addEventListener("click", () => HUMAN.switchTool("Gun"));
+    .addEventListener("click", () => HUMAN.switchCurrentTool("Gun"));
 };
