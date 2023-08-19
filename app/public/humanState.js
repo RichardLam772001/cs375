@@ -25,10 +25,9 @@ const HUMAN_STATE = (() => {
     onRoomChange = onRoomChangeFunc;
   }
 
-  function switchCurrentTool(toolName) {
-    console.log("human state Button clicked: ", toolName);
-
-    currentTool = toolName;
+  function switchCurrentTool(tool) {
+    currentTool = tool;
+    console.log("human state Button clicked: ", tool);
 
     // remove all color before color to selected button
     document.querySelectorAll(".button").forEach((btn) => {
@@ -36,13 +35,13 @@ const HUMAN_STATE = (() => {
       btn.classList.add("unselected");
     });
     // color to the selected button
-    const currentToolButton = document.getElementById(toolName);
+    const currentToolButton = document.getElementById(tool);
     if (currentToolButton) {
       currentToolButton.classList.remove("unselected");
       currentToolButton.classList.add("selected");
     }
     CONSOLE.addConsoleLine({
-      message: `Human set tool ${toolName}`,
+      message: `Human set tool ${tool}`,
       style: "public",
     });
   }

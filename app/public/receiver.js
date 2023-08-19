@@ -10,10 +10,20 @@ const getCurrentRoom = () => {
   });
 };
 
-const getCurrentTool = () => {
+// const getCurrentTool = () => {
+//   WS.send({
+//     action: {
+//       name: "getCurrentTool",
+//     },
+//     username: USERNAME_COOKIE,
+//     gameId: GAME_ID_COOKIE,
+//   });
+// };
+
+const switchCurrentTool = () => {
   WS.send({
     action: {
-      name: "getCurrentTool",
+      name: "switchCurrentTool",
     },
     username: USERNAME_COOKIE,
     gameId: GAME_ID_COOKIE,
@@ -42,6 +52,7 @@ WS.onReceive((data) => {
       HUMAN_STATE.setCurrentRoom(data.room);
       break;
     case "currentToolUpdate":
+      console.log("send to HumanState.", data.tool);
       HUMAN_STATE.switchCurrentTool(data.tool);
       break;
     case "threatSpawned":

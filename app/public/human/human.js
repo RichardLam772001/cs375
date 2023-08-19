@@ -12,18 +12,18 @@ const HUMAN = (() => {
     });
   };
 
-  const switchCurrentTool = (toolName) => {
+  const switchCurrentTool = (tool) => {
     WS.send({
       action: {
         name: "switchCurrentTool",
         args: {
-          tool: toolName,
+          tool: tool,
         },
       },
       username: USERNAME_COOKIE,
       gameId: GAME_ID_COOKIE,
     });
-    console.log("human click" + toolName);
+    console.log("human click ", tool);
   };
 
   return {

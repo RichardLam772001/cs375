@@ -2,7 +2,7 @@ const { ROLES, GAME_TICK_DELAY_MS } = require("../constants");
 const { Threat, THREAT_COOLDOWN_SECONDS, THREAT_TTL } = require("./threat");
 const { randomInt } = require("../utils.js");
 const { sendDataToPlayer } = require("../broadcaster.js");
-const { ThreatSpawnedData } = require("../dataObjects");
+const { ThreatSpawnedData, CurrentToolUpdateData } = require("../dataObjects");
 const { CLIENTS_HANDLER } = require("../clientsHandler");
 
 const GAMES = {};
@@ -22,7 +22,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
   let AI_USERNAME = aiUsername;
   let room = "0-0";
   let threatCooldown = THREAT_COOLDOWN_SECONDS;
-  let currentTool = null;
+  let currentTool;
 
   const THREATS_INDEXED_BY_ROOM = {};
   const AVAILABLE_ROOMS = [
@@ -64,9 +64,11 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     return room;
   };
 
-  const getCurrentTool = () => {
-    return currentTool;
-  };
+  // const getCurrentTool = () => {
+  //   console.log("game.js", currentTool);
+  //   return currentTool;
+  // };
+
   // This is called once every second
   const tick = () => {
     // Pause game if clients in game aren't registered (client hasn't connected yet, or one of them logged out)
@@ -86,7 +88,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
       threatCooldown -= 1;
     }
 
-    switchUserCurrentTool;
+    // switchUserCurrentTool();
   };
 
   const spawnThreat = () => {
@@ -108,7 +110,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
 
   // try to send tool to user
   const switchUserCurrentTool = (currentTool, username) => {
-    console.log(currentTool);
+    // console.log("game.js switchUserCurrentTool ", currentTool);
     sendDataToPlayer(GAME_ID, username, CurrentToolUpdateData(currentTool));
   };
 
@@ -156,7 +158,8 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     getRole,
     enterRoom,
     getCurrentRoom,
-    getCurrentTool,
+    // getCurrentTool,
+    switchUserCurrentTool,
   };
 };
 

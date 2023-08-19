@@ -11,7 +11,8 @@ const GAME_TICK_DELAY_MS = 1000;
 const HUMAN_ACTIONS = {
   enterRoom: "enterRoom",
   getCurrentRoom: "getCurrentRoom",
-  getCurrentTool: "getCurrentTool",
+  // getCurrentTool: "getCurrentTool",
+  switchCurrentTool: "switchCurrentTool",
 };
 const AI_ACTIONS = {
   getCurrentRoom: "getCurrentRoom",

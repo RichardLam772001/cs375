@@ -46,8 +46,9 @@ const onReceiveDataFromClient = (clientId, byteData) => {
   let username = data.username;
   let gameId = data.gameId;
   let currentRoom;
-  let currentTool = data.currentTool;
-
+  let currentTool;
+  console.log("Action is ", action);
+  // console.log("WSS Receive :", currentTool);
   console.log("WSS Receive :", data);
 
   const isValid = validateData(username, gameId, action.name);
@@ -72,8 +73,13 @@ const onReceiveDataFromClient = (clientId, byteData) => {
       currentRoom = game.getCurrentRoom();
       sendToAllClients(HumanRoomUpdateData(currentRoom));
       break;
-    case HUMAN_ACTIONS.getCurrentTool:
-      currentTool = game.getCurrentTool();
+    // case HUMAN_ACTIONS.getCurrentTool:
+    //   currentTool = game.getCurrentTool();
+    //   sendToAllClients(CurrentToolUpdateData(currentTool));
+    //   break;
+    case HUMAN_ACTIONS.switchCurrentTool:
+      currentTool = game.switchUserCurrentTool();
+      console.log("send to all clients. current tool is ", currentTool);
       sendToAllClients(CurrentToolUpdateData(currentTool));
       break;
     default:
