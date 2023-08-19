@@ -47,9 +47,13 @@ const HUMAN_STATE = (() => {
     });
   }
 
+  function setCurrentTool(newTool) {
+    currentTool = newTool;
+  }
+
   return {
     setCurrentRoom,
     setRoomChangeCallback,
-    switchCurrentTool,
+    setCurrentTool,
   };
 })();

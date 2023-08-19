@@ -4,6 +4,7 @@ const ROLES = {
   AI: "Ai",
 };
 const ANONY_COOKIE_DURATION_MS = 5 * 60 * 1000; // 5 mins
+const KNOWN_USER_COOKIE_DURATION_MS = 12 * 60 * 60 * 1000; // 12 hrs
 
 const GAME_TICK_DELAY_MS = 1000;
 
@@ -23,4 +24,5 @@ module.exports = {
   HUMAN_ACTIONS,
   AI_ACTIONS,
   GAME_TICK_DELAY_MS,
+  KNOWN_USER_COOKIE_DURATION_MS,
 };
