@@ -10,7 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.395.0",
     "argon2": "^0.30.3",
+    "aws-sdk": "^2.1440.0",
     "axios": "^1.4.0",
     "cookie-parser": "^1.4.6",
     "crypto": "^1.0.1",
