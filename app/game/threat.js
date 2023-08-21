@@ -7,7 +7,7 @@ const Threat = (threatType, onThreatUnresolved) => {
     const THREAT_TYPE = threatType;
 
     const tick = () => {
-        currentAge -= THREAT_TICK_SPEED*0.001;
+        currentAge -= 1;
         if (currentAge <= 0) {
             onThreatUnresolved();
         }

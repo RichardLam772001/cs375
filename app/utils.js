@@ -13,5 +13,4 @@ const idGenerator = () => {
 	return () => id++;
 };
 
-
-module.exports = { randomInt, idGenerator}
+module.exports = { randomInt, idGenerator }
