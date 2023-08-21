@@ -39,5 +39,8 @@ WS.onReceive((data) => {
             break;      
         case "consoleLine":
             CONSOLE.addConsoleLine(data);
+            break;
+        case "threatResolved":
+            BOARD.removeThreat(data.room);
     }
 });

@@ -7,8 +7,9 @@ const DATA_TYPES = {
     HUMAN_ROOM_UPDATE : "humanRoomUpdate",
     CONSOLE_LINE : "consoleLine",
     GAME_READY : "gameReady",
-    LOBBY_LIST : "lobbyList"
+    LOBBY_LIST : "lobbyList",
     THREAT_SPAWNED: "threatSpawned",
+    THREAT_RESOLVED: "threatResolved"
 }
 
 const HumanRoomUpdateData = (room) => ({
@@ -43,5 +44,9 @@ const ThreatSpawnedData = (room, threatType, duration, isPaused) => ({
     isPaused,
 });
 
+const ThreatResolvedData = (room) => ({
+    name: DATA_TYPES.THREAT_RESOLVED,
+    room: room
+});
 
-module.exports = { HumanRoomUpdateData, ConsoleLineData, GameReadyData, LobbyListData, ThreatSpawnedData };
+module.exports = { HumanRoomUpdateData, ConsoleLineData, GameReadyData, LobbyListData, ThreatSpawnedData, ThreatResolvedData };
