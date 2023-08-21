@@ -28,6 +28,11 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     let room = "0-0";
     let threatCooldown = THREAT_COOLDOWN_SECONDS;
 
+    //ROOMS
+    const SHIP_SIZE = [3,3];
+    const SHIP_ROWS = SHIP_SIZE[0];
+    const SHIP_COLS = SHIP_SIZE[1];
+
     const THREATS_INDEXED_BY_ROOM = {};
     const AVAILABLE_ROOMS = ["0-0", "0-1", "0-2", "1-0", "1-1", "1-2", "2-0", "2-1", "2-2"]; // Richard: Yes I know it's hardcoded, we can make a dynamic room generator later TO DO
     const ROOMS_WITH_THREATS = [];
@@ -56,16 +61,14 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         }
         else {
             room = newRoom;
-            if (ifRoomHasThreat(newRoom)) {
-                alertHumanPlayerOfThreat(newRoom);
+            if (ifRoomHasThreat(room)) {
+                alertHumanPlayerOfThreat(room);
             }
         }
     }
-    //Retuns string representation
     const getCurrentRoom = () => {
         return room;
     }
-    
     // This is called once every second
     const tick = () => {
 
@@ -80,7 +83,8 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         // Threats
         if (threatCooldown <= 0 && ROOMS_WITH_THREATS.length < MAX_ACTIVE_THREATS) {
             spawnThreat();
-        }else{
+        }
+        else{
             threatCooldown -= 1;
         }
     }
@@ -91,7 +95,6 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         THREATS_INDEXED_BY_ROOM[threatRoom] = threat;
         ROOMS_WITH_THREATS.push(threatRoom);
         console.log(`Threat spawned in room ${threatRoom}`);
-
         threatCooldown = THREAT_COOLDOWN_SECONDS;
         alertAIPlayerOfThreat(threatRoom);
     }
@@ -123,12 +126,13 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     const onThreatUnresolved = (room) => {
         delete THREATS_INDEXED_BY_ROOM[room] // Remove threat from THREATS object
         AVAILABLE_ROOMS.splice(AVAILABLE_ROOMS.indexOf(room), 1);
+        console.log(`Threat was unresolved room ${room} is no longer available`);
     }
 
     //Attempt to ping a room, but randomly scramble it first
     const scrambleThenPing = (row, column, threatType) =>{
 
-        let line = ConsoleLineData(gameTime, `Attempting to ping <threatType> at ${ROOMS[row][column].name}`, "ai", "private");
+        let line = ConsoleLineData(gameTime, `Attempting to ping <threatType> at ${row}-${column}`, "ai", "private");
         addConsoleLineAndBroadcast(line);
 
         let scrambleCount = RandomBag([[50, 0], [30, 1], [20, 2]]).pull();
@@ -166,12 +170,11 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     const pingRoom = (row, column, threatType) => {
         if(!validateRoomPos(row,column)) return;
 
-        let room = ROOMS[row][column];
-
-        let message = `AI pings ${threatType} at ${room.name}`
+        let message = `AI pings ${threatType} at ${row}-${column}`;
         let line = ConsoleLineData(gameTime, message);
         addConsoleLineAndBroadcast(line);
     }
+    setInterval(()=> scrambleThenPing(0,0,"fire"), 2000);
 
     function addConsoleLineAndBroadcast(consoleLine){
         consoleLine.time = Math.round(gameTime);
@@ -226,10 +229,10 @@ const lookUpGame = (gameId) => GAMES[gameId];
 
 const tickGames = () => {
     for (const gameId of Object.keys(GAMES)) {
-        GAMES[gameId].tick(GAME_TICK_DELAY_MS*0.001);
+        GAMES[gameId].tick();
     }
 }
 
-setInterval(tickGames);
+setInterval(tickGames, GAME_TICK_DELAY_MS);
 
 module.exports = { startGame, lookUpRole, lookUpGame }
