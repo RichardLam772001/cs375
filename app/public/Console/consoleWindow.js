@@ -17,7 +17,8 @@ const CONSOLE = (() => {
         let stringMessage = "";
 
         if(time !== undefined){
-            const timeString = `${time.minutes}:${String(time.seconds).padStart(2,"0")}`;
+            const timeObj = secondsToTimeObj(time);
+            const timeString = `${timeObj.minutes}:${String(timeObj.seconds).padStart(2,"0")}`;
             stringMessage += `${timeString} `;
         }
 
@@ -62,7 +63,7 @@ const CONSOLE = (() => {
     function addRandomLine(){
         const classString = randomListElem(modes);
         const lineObj = {
-            time: secondsToTimeObj(seconds), 
+            time: seconds, 
             message: `${classString} message`, 
             style: classString};
         addConsoleLine(lineObj);
@@ -87,7 +88,7 @@ const CONSOLE = (() => {
         secondsToTimeObj,
 
         //TESTING
-        addRandomLines
+        //addRandomLines
     }
 })();
 
@@ -98,8 +99,8 @@ let testLines = [
     {message:"Distress beacon activated", style: "public"},
     {message:"Scanning AI companion system...", style: "public"},
     {message:"Scan result: 50% chance that AI system has been hacked by hostile forces", style: "critical"},
-    {time: CONSOLE.secondsToTimeObj(60*4), message:"Rescue arrives in 4 minutes", style: "important"}
+    {time: 60*4, message:"Rescue arrives in 4 minutes", style: "important"}
 ]
 CONSOLE.setConsoleLines(testLines);
 
-setInterval(() => CONSOLE.addRandomLines(1),1000);
+//setInterval(() => CONSOLE.addRandomLines(1),1000);

@@ -6,7 +6,7 @@ const { ThreatSpawnedData } = require("../dataObjects");
 const { CLIENTS_HANDLER } = require("../clientsHandler");
 
 const { RandomBag } = require("../randomBag.js");
-const { ConsoleLinesLog } = require("../consoleLinesLog.js");
+const { ConsoleLinesLog, isLineVisibleToHuman, isLineVisibleToAI } = require("../consoleLinesLog.js");
 const { ConsoleLineData } = require("../dataObjects.js");
 
 const { Room } = require("./room.js");
@@ -183,6 +183,10 @@ const GAME = (humanUsername, aiUsername, gameId) => {
 
     //Attempt to ping a room, but randomly scramble it first
     const scrambleThenPing = (row, column, threatType) =>{
+
+        let line = ConsoleLineData(gameTime, `Attempting to ping <threatType> at ${ROOMS[row][column].name}`, "ai", "private");
+        addConsoleLineAndBroadcast(line);
+
         let scrambleCount = RandomBag([[50, 0], [30, 1], [20, 2]]).pull();
 
         const scrambleBag = RandomBag([[1,"row"], [1, "col"], [1,"type"]]); //Different scramble categories may be given different weights
@@ -226,9 +230,16 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     }
 
     function addConsoleLineAndBroadcast(consoleLine){
+        consoleLine.time = Math.round(gameTime);
         consoleLinesLog.addConsoleLine(consoleLine);
         console.log(consoleLine.message);
-        //TODO: either broadcast this line now, or have the ConsoleLinesLog broadcast it when appended
+
+        if(isLineVisibleToHuman(consoleLine)){
+            sendDataToPlayer(GAME_ID, HUMAN_USERNAME, consoleLine);        
+        }
+        if(isLineVisibleToAI(consoleLine)){
+            sendDataToPlayer(GAME_ID, AI_USERNAME, consoleLine);   
+        }
     }
 
     function onTimeUp(){
@@ -281,7 +292,7 @@ const lookUpGame = (gameId) => GAMES[gameId];
 
 const tickGames = () => {
     for (const gameId of Object.keys(GAMES)) {
-        GAMES[gameId].tick(GAME_TICK_DELAY_MS*0.01);
+        GAMES[gameId].tick(GAME_TICK_DELAY_MS*0.001);
     }
 }
 
