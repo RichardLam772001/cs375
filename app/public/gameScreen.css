@@ -4,16 +4,6 @@ body{
     background-color: rgb(54, 3, 54);
     color: white;
 }
-
-#game-board {
-    border: 1px solid black;
-    border-collapse: collapse;
-}
-#game-board td {
-    width: 10rem;
-    
-    border: 1px solid black;
-}
 #body {
     display: flex;
     flex-direction: row;
@@ -33,17 +23,53 @@ body{
 #main-container {
     display: flex;
 }
+#game-board {
+    border-collapse: collapse;
 
-td.hidden {
-    background-color: black;
+    width: 100vh;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    align-items: stretch;
+}
+#game-board .row{
+    justify-content: center;
+
+    flex: 1 1 auto;
+    display: flex;
 }
 
-td.selected {
-    background-color: white;
-    background-image: url("./images/temp-room.png");
-    background-size: contain;
+.room {
+    position: relative;
+  
+    flex: 0 1 auto;
+    aspect-ratio: 1/1;
 }
 
+.room>* {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    width: 100%;
+    height: 100%;
+}
+
+.room .visible {
+    background-image: url("./images/Room.png");
+}
+
+.room .hidden {
+    background-image: url("./images/Room_Fog.png");
+}
+
+.room img{
+    width: 100%;
+    height: auto;
+    position: absolute;
+}
 
 #sidebar{
     display: flex;

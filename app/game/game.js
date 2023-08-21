@@ -1,24 +1,30 @@
 const { ROLES, GAME_TICK_DELAY_MS } = require("../constants");
-const { Threat, THREAT_COOLDOWN_SECONDS, MAX_THREATS_ACTIVE } = require("./threat");
+const { Threat, THREAT_COOLDOWN_SECONDS, THREAT_TTL } = require("./threat");
 const { randomInt } = require("../utils.js");
-const { RandomBag } = require("../randomBag.js");
+const { sendDataToPlayer } = require("../broadcaster.js");
+const { ThreatSpawnedData } = require("../dataObjects");
+const { CLIENTS_HANDLER } = require("../clientsHandler");
 
+const { RandomBag } = require("../randomBag.js");
 const { ConsoleLinesLog } = require("../consoleLinesLog.js");
 const { ConsoleLineData } = require("../dataObjects.js");
+
 const { Room } = require("./room.js");
 
 const GAMES = {
     
 };
 
-const selectThreatRoom = (availableRooms, roomsWithThreats) => {
-    const roomCandidates = availableRooms.filter((room) => !(room in roomsWithThreats));
-    return roomCandidates[randomInt(0, roomCandidates.length - 1)];
+const selectThreatRoom = (avilableRooms, roomsWithThreats) => {
+    const rooms = avilableRooms.filter((room) => roomsWithThreats.indexOf(room) === -1);
+    return rooms[randomInt(0, rooms.length - 1)];
 }
 
-const GAME = (humanUsername, aiUsername) => {
-    let timeRemaining = 4*60;
+const GAME = (humanUsername, aiUsername, gameId) => {
 
+    const GAME_ID = gameId;
+
+    let gameTime = 4*60;
     let HUMAN_USERNAME = humanUsername;
     let AI_USERNAME = aiUsername;
 
@@ -32,12 +38,11 @@ const GAME = (humanUsername, aiUsername) => {
     generateRooms();
     let humanRoom = ROOMS[0][0];
 
-
-    // THREATS
-    // Temp for testing: Spawns threat right away, TO DO: Determine when to spawn threats
-    let threatCooldown = THREAT_COOLDOWN_SECONDS;
-    const THREATS = [];    
+    //THREATS
+    const THREATS_INDEXED_BY_ROOM = {};
     const ROOMS_WITH_THREATS = [];
+    const THREAT_TYPES = ["fire", "breach", "invader"];
+    const MAX_ACTIVE_THREATS = 3;
     const MAX_ROOMS_DESTROYED = 3; //The game ends when this many rooms are destroyed
     
     let roomsDestroyed = 0;
@@ -85,41 +90,75 @@ const GAME = (humanUsername, aiUsername) => {
         }
         else {
             humanRoom = room;
+            if (ifRoomHasThreat(room)) {
+                alertHumanPlayerOfThreat(room);
+            }
         }
     }
     //Retuns string representation
     const getCurrentRoom = () => {
         return `${humanRoom.x}-${humanRoom.y}`;
     }
-    const trySpawnThreat= () => {
-        if(THREATS.length >= MAX_THREATS_ACTIVE) return; //too many threats
-
-        const threatRoom = selectThreatRoom(AVAILABLE_ROOMS, ROOMS_WITH_THREATS);
-        if(!threatRoom) return; // No valid room was picked
-        const threat = Threat(() => onThreatUnresolved(threatRoom, THREATS.length));
-        THREATS.push(threat);
-        console.log(`Threat spawned in room ${threatRoom.name}`);
-    }
+    
     // This is called once every second
     const tick = (deltaSeconds) => {
-        timeRemaining -= deltaSeconds;
+
+        // Pause game if clients in game aren't registered (client hasn't connected yet, or one of them logged out)
+        if (!CLIENTS_HANDLER.doesGameHaveRegisteredClients(gameId)) {
+            console.log(`Game paused. There are not 2 clients connected to the gameId ${gameId}`);
+            return;
+        }
+
+        gameTime -= deltaSeconds;
 
         // Threats
-        if (threatCooldown <= 0) {
-            trySpawnThreat();
-            threatCooldown = THREAT_COOLDOWN_SECONDS;
+        if (threatCooldown <= 0 && ROOMS_WITH_THREATS.length < MAX_ACTIVE_THREATS) {
+            spawnThreat();
         }
         else {
             threatCooldown -= deltaSeconds;
         }
+    }
 
+    const spawnThreat = () => {
+        const threatRoom = selectThreatRoom(AVAILABLE_ROOMS, ROOMS_WITH_THREATS);
+        const threat = Threat(randomlySelectThreat(), () => onThreatUnresolved(threatRoom));
+        THREATS_INDEXED_BY_ROOM[threatRoom] = threat;
+        ROOMS_WITH_THREATS.push(threatRoom);
+        console.log(`Threat spawned in room ${threatRoom}`);
+        
         if(timeRemaining <= 0){
             return onTimeUp();
-        }
+        }        threatCooldown = THREAT_COOLDOWN_SECONDS;
+        alertAIPlayerOfThreat(threatRoom);
     }
-    
-    const onThreatUnresolved = (room, threatId) => {
-        THREATS.splice(threatId, 1); // Remove threat from THREATS list
+
+    const randomlySelectThreat = () => {
+        return THREAT_TYPES[randomInt(0, THREAT_TYPES.length-1)];
+    }
+
+    /**
+     * Used by both alertAIPlayerOfThreat and alertHumanPlayerOfThreat
+     */
+    const alertPlayerOfThreat = (threat, username, room) => {
+        console.log(threat, room);
+        console.log(THREATS_INDEXED_BY_ROOM);
+        sendDataToPlayer(GAME_ID, username, ThreatSpawnedData(room, threat.THREAT_TYPE, THREAT_TTL, false));        
+    }
+    /**
+     * @param {string} room e.g. 0-0 to index with 
+     */
+    const alertAIPlayerOfThreat = (room) => {
+        alertPlayerOfThreat(THREATS_INDEXED_BY_ROOM[room], AI_USERNAME, room);
+    }
+    /**
+     * @param {string} room e.g. 0-0 to index with 
+     */
+    const alertHumanPlayerOfThreat = (room) => {
+        alertPlayerOfThreat(THREATS_INDEXED_BY_ROOM[room], HUMAN_USERNAME, room);
+    }
+    const onThreatUnresolved = (room) => {
+        delete THREATS[THREATS_INDEXED_BY_ROOM] // Remove threat from THREATS object
         AVAILABLE_ROOMS.splice(AVAILABLE_ROOMS.indexOf(room), 1);
         const message = `ROOM ${room.name} HAS BEEN DESTROYED BY ${"<threatType>"}`;
         const line = ConsoleLineData(timeRemaining, message, undefined, "critical");
@@ -191,6 +230,15 @@ const GAME = (humanUsername, aiUsername) => {
         //TODO: Remove this Game object from the collection of games and direct the players to the end screen
     }
 
+    /**
+     * 
+     * @param {string} room e.g. 0-0 
+     * @returns {boolean}
+     */
+    const ifRoomHasThreat = (room) => {
+        return ROOMS_WITH_THREATS.indexOf(room) !== -1;
+    }
+
     return {
         tick,
         getRole,
@@ -204,8 +252,10 @@ const addGame = (gameId, game) => {
 }
 
 const startGame = (humanUsername, aiUsername) => {
+    // Temp: TO DO - Replace with idGenerator when we want to test multiple games running at once
+    // For now priority is getting 1 game working beginning to end
     const gameId = 1;
-    addGame(gameId, GAME(humanUsername, aiUsername));
+    addGame(gameId, GAME(humanUsername, aiUsername, gameId));
     return gameId;
 }
 

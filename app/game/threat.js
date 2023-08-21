@@ -1,10 +1,10 @@
 const THREAT_TTL = 30;
 const THREAT_TICK_SPEED = 1000;
 const THREAT_COOLDOWN_SECONDS = 5;
-const MAX_THREATS_ACTIVE = 3; //how many threats may be on the board simultaneosly
 
-const Threat = (onThreatUnresolved) => {
+const Threat = (threatType, onThreatUnresolved) => {
     let currentAge = THREAT_TTL;
+    const THREAT_TYPE = threatType;
 
     const tick = () => {
         currentAge -= 1;
@@ -16,6 +16,10 @@ const Threat = (onThreatUnresolved) => {
         }
     };
     setTimeout(tick, THREAT_TICK_SPEED);
+
+    return {
+        THREAT_TYPE
+    }
 }
 
-module.exports = { Threat, THREAT_COOLDOWN_SECONDS, MAX_THREATS_ACTIVE }
+module.exports = { Threat, THREAT_COOLDOWN_SECONDS, THREAT_TTL }

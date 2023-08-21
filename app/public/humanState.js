@@ -2,53 +2,34 @@
 
 const HUMAN_STATE = (() => {
 
-    let currentRoom = "";
+    let currentRoom;
     let currentTool = "";
 
-    function setCurrentRoom(newRoom){
+    let onRoomChange;
+
+    function setCurrentRoom(newRoomString){
+        const newRoom = BOARD.parseMoveableRoom(newRoomString);
+        if(newRoom === undefined) return;
+        const oldRoom = currentRoom;
         currentRoom = newRoom;
-        CONSOLE.addConsoleLine({message:`Human enters room ${newRoom}`, style: "public"}); //TODO: console line should be in a seperate WS send
-        BOARD.setCurrentRoom(newRoom);
+        CONSOLE.addConsoleLine({message:`Human enters room ${newRoomString}`, style: "public"});
+        HUMAN_ELEM.moveToRoom(newRoom);
+        if(onRoomChange){
+            onRoomChange(oldRoom, newRoom);
+        }
     }
+
+    function setRoomChangeCallback(onRoomChangeFunc){
+        onRoomChange = onRoomChangeFunc;
+    }
+
     function setCurrentTool(newTool){
         currentTool = newTool;
     } 
 
     return {
         setCurrentRoom,
+        setRoomChangeCallback,
         setCurrentTool
     }
 })();
-
-const getCurrentRoom = () => {
-    WS.send({
-        action: {
-            name: "getCurrentRoom"
-        },
-        username: USERNAME_COOKIE,
-        gameId: GAME_ID_COOKIE
-    });
-}
-
-WS.onConnect(() => {
-    console.log("We are connected");
-    getCurrentRoom();
-});
-WS.onDisconnect(() => {
-    
-});
-
-WS.onReceive((data) => {
-    switch(data.name){
-        case "humanRoomUpdate":
-            HUMAN_STATE.setCurrentRoom(data.room);
-            break;
-        case "consoleLine":
-            CONSOLE.addConsoleLine(ConsoleLineData(data.time, data.message, data.visibility, data.style));
-            break;
-        default:
-            break; 
-    }
-    
-});
-
