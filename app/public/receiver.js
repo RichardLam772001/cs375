@@ -36,6 +36,8 @@ WS.onReceive((data) => {
             break;
         case "threatSpawned":
             BOARD.spawnThreat(data.threatType, data.room);
-            break;                                
+            break;      
+        case "consoleLine":
+            CONSOLE.addConsoleLine(data);
     }
 });
