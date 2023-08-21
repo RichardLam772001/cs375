@@ -44,6 +44,9 @@ const connectToAWSDatabase = async () => {
 
 const connectToLocalDatabase = () => {
 	pool = new Pool(dbenv);
+	pool.connect().then(() => {
+		console.log("Connected to database");
+	});
 }
 
 if (IS_PROD) {
