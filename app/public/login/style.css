@@ -1,0 +1,100 @@
+body {
+  font-family: Georgia, sans-serif;
+  display: grid;
+  justify-content: center;
+  background: linear-gradient(to right, #07bdf5, #0a005e);
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.login-container {
+  padding: 20px;
+  border: 1px solid #ccc;
+  box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.2);
+  background-color: #fff;
+
+  max-width: 600px;
+  width: 90%;
+  margin: 0 auto;
+}
+
+.create-container {
+  padding: 20px;
+  border: 1px solid #ccc;
+  box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.2);
+  background-color: #fff;
+
+  max-width: 600px;
+  width: 90%;
+  margin: 0 auto;
+}
+
+.input-group {
+  margin-bottom: 10px;
+}
+
+input {
+  padding: 5px;
+  border: none;
+  outline: none;
+  border-bottom: 2px solid #ccc;
+  /* border-radius: 3px; */
+  width: 80%;
+  user-select: auto;
+  transition-duration: 600ms;
+}
+
+#set {
+  display: block;
+  position: relative;
+  margin: auto;
+}
+
+#count {
+  display: inline-block;
+  position: relative;
+  margin: 1%;
+  margin-bottom: 1%;
+  color: black;
+  font-weight: lighter;
+}
+
+#see {
+  display: inline-block;
+  position: relative;
+  margin: 1%;
+  margin-bottom: 1%;
+  color: gray;
+  cursor: pointer;
+  transition-duration: 0.2ms;
+}
+
+i {
+  font-size: 15px;
+  transition-duration: 600ms;
+}
+
+#lengthGreatThanEight,
+#containsNumber,
+#containsSpecialCharacter,
+#containUppercaseLetter,
+#containLowercaseLetter,
+#notContainSpace,
+#matchNewPassword {
+  display: block;
+  position: relative;
+  margin: 2%;
+  color: lightgray;
+}
+
+span {
+  margin: 10px;
+  font-weight: lighter;
+}
+
+input:hover {
+  border-bottom: 2px solid black;
+}

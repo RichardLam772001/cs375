@@ -18,6 +18,7 @@ const WS = (() => {
     }
 
     return {
+        webSocket,
         send,
         onConnect,
         onDisconnect,
