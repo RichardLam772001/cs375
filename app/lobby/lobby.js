@@ -62,4 +62,8 @@ const getPlayersInLobby = (lobbyId) => {
     return players[0].role === ROLES.HUMAN ? players : [players[1], players[0]];
 }
 
-module.exports = { joinLobby, getPlayersInLobby, clearLobby }
+const getLobbies = () => {
+	return LOBBIES;
+}
+
+module.exports = { joinLobby, getPlayersInLobby, clearLobby, getLobbies }
