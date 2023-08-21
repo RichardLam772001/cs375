@@ -78,10 +78,7 @@ refreshBtn.addEventListener("click", () => {
 			console.log("ERROR - Something went wrong");
 		}
 		// update table according to list
-		resp.json().then((lobbyList) => {
-			console.log(lobbyList);
-			refreshLobbies(lobbyList);
-		});
+		fetchRefresh();
 		
 	}).catch((e) => {
 		console.log(e);
@@ -99,10 +96,7 @@ WS.onConnect(() => {
 			console.log("ERROR - Something went wrong");
 		}
 		// update table according to list
-		resp.json().then((lobbyList) => {
-			console.log(lobbyList);
-			refreshLobbies(lobbyList);
-		});
+		fetchRefresh();
 		
 	}).catch((e) => {
 		console.log(e);
@@ -137,6 +131,15 @@ const joinGame = (gameId) => {
     }).catch((e) => {
         console.log(e);
     });
+}
+
+const fetchRefresh = () => {
+	resp.json().then((lobbyList) => {
+		console.log(lobbyList);
+		refreshLobbies(lobbyList);
+	}).catch((e) => {
+		// leave table as is
+	});
 }
 
 const refreshLobbies = (lobbies) => {
