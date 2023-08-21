@@ -1,8 +1,9 @@
+// @ts-check
 const { ROLES, GAME_TICK_DELAY_MS } = require("../constants");
 const { Threat, THREAT_COOLDOWN_SECONDS, THREAT_TTL } = require("./threat");
 const { randomInt } = require("../utils.js");
 const { sendDataToPlayer } = require("../broadcaster.js");
-const { ThreatSpawnedData } = require("../dataObjects");
+const { ThreatSpawnedData, ThreatResolvedData } = require("../dataObjects");
 const { CLIENTS_HANDLER } = require("../clientsHandler");
 
 const { RandomBag } = require("../randomBag.js");
@@ -37,9 +38,11 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     const AVAILABLE_ROOMS = ["0-0", "0-1", "0-2", "1-0", "1-1", "1-2", "2-0", "2-1", "2-2"]; // Richard: Yes I know it's hardcoded, we can make a dynamic room generator later TO DO
     const ROOMS_WITH_THREATS = [];
     const THREAT_TYPES = ["fire", "breach", "invader"];
+    const TOOLS = ["fire-extinguisher", "gun", "wrench"]; // Currently unused
     const MAX_ACTIVE_THREATS = 3;
     
     let consoleLinesLog = ConsoleLinesLog();
+    let currentTool = "wrench";
 
     const getRole = (username) => {
         if (username == HUMAN_USERNAME) {
@@ -63,6 +66,9 @@ const GAME = (humanUsername, aiUsername, gameId) => {
             room = newRoom;
             if (ifRoomHasThreat(room)) {
                 alertHumanPlayerOfThreat(room);
+
+                const threat = THREATS_INDEXED_BY_ROOM[room];
+                threat.resolve(currentTool);
             }
         }
     }
@@ -91,7 +97,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
 
     const spawnThreat = () => {
         const threatRoom = selectThreatRoom(AVAILABLE_ROOMS, ROOMS_WITH_THREATS);
-        const threat = Threat(randomlySelectThreat(), () => onThreatUnresolved(threatRoom));
+        const threat = Threat(randomlySelectThreat(), () => onThreatUnresolved(threatRoom), () => onThreatResolved(threatRoom));
         THREATS_INDEXED_BY_ROOM[threatRoom] = threat;
         ROOMS_WITH_THREATS.push(threatRoom);
         console.log(`Threat spawned in room ${threatRoom}`);
@@ -124,9 +130,19 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         alertPlayerOfThreat(THREATS_INDEXED_BY_ROOM[room], HUMAN_USERNAME, room);
     }
     const onThreatUnresolved = (room) => {
-        delete THREATS_INDEXED_BY_ROOM[room] // Remove threat from THREATS object
-        AVAILABLE_ROOMS.splice(AVAILABLE_ROOMS.indexOf(room), 1);
+        delete THREATS_INDEXED_BY_ROOM[room] // Remove threat
+        AVAILABLE_ROOMS.splice(AVAILABLE_ROOMS.indexOf(room), 1); // Room no longer available
+        ROOMS_WITH_THREATS.splice(ROOMS_WITH_THREATS.indexOf(room), 1); // Removes room from rooms_with_threats
         console.log(`Threat was unresolved room ${room} is no longer available`);
+    }
+    const onThreatResolved = (room) => {
+        delete THREATS_INDEXED_BY_ROOM[room] // Remove threat
+        ROOMS_WITH_THREATS.splice(ROOMS_WITH_THREATS.indexOf(room), 1); // Removes room from rooms_with_threats
+        console.log(`Threat was resolved in room ${room}`);
+
+        // Alert players threat was resolved
+        sendDataToPlayer(GAME_ID, AI_USERNAME, ThreatResolvedData(room));
+        sendDataToPlayer(GAME_ID, HUMAN_USERNAME, ThreatResolvedData(room));
     }
 
     //Attempt to ping a room, but randomly scramble it first
@@ -188,7 +204,6 @@ const GAME = (humanUsername, aiUsername, gameId) => {
             sendDataToPlayer(GAME_ID, AI_USERNAME, consoleLine);   
         }
     }
-
     /**
      * 
      * @param {string} room e.g. 0-0 
