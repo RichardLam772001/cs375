@@ -137,11 +137,11 @@ const GAME = (humanUsername, aiUsername, gameId) => {
 
     const onThreatUnresolved = (room) => {
         removeThreat(room);
+        AVAILABLE_ROOMS.splice(AVAILABLE_ROOMS.indexOf(room), 1); // Room no longer available
         console.log(`Threat was unresolved room ${room} is no longer available`);
     }
     const onThreatResolved = (room) => {
         removeThreat(room);
-        AVAILABLE_ROOMS.splice(AVAILABLE_ROOMS.indexOf(room), 1); // Room no longer available
         console.log(`Threat was resolved in room ${room}`);
 
         // Alert players threat was resolved
