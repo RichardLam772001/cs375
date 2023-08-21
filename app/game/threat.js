@@ -4,16 +4,17 @@ const THREAT_COOLDOWN_SECONDS = 5;
 
 const THREAT_RESOLVE_TIME_MS = 3*1000; // How long it takes when a player enters a room w/ the right tool for the threat to disappear
 
+const MAP_THREAT_TO_TOOL = {
+    "fire" : "fire-extinguisher",
+    "breach" : "wrench",
+    "invader" : "gun"
+}
+
 const Threat = (threatType, onThreatUnresolved, onThreatResolved) => {
     let currentAge = THREAT_TTL;
     const THREAT_TYPE = threatType;
     let resolved = false;
     let isResolving = false;
-    const MAP_THREAT_TO_TOOL = {
-        "fire" : "fire-extinguisher",
-        "breach" : "wrench",
-        "invader" : "gun"
-    }
 
     const tick = () => {
         currentAge -= 1;
