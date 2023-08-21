@@ -132,7 +132,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     //Attempt to ping a room, but randomly scramble it first
     const scrambleThenPing = (row, column, threatType) =>{
 
-        let line = ConsoleLineData(gameTime, `Attempting to ping <threatType> at ${row}-${column}`, "ai", "private");
+        let line = ConsoleLineData(gameTime, `Attempting to ping ${threatType} at ${row}-${column}`, "ai", "private");
         addConsoleLineAndBroadcast(line);
 
         let scrambleCount = RandomBag([[50, 0], [30, 1], [20, 2]]).pull();
