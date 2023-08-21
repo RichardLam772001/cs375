@@ -44,6 +44,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     const THREAT_TYPES = ["fire", "breach", "invader"];
     const MAX_ACTIVE_THREATS = 3;
     const MAX_ROOMS_DESTROYED = 3; //The game ends when this many rooms are destroyed
+    let threatCooldown = THREAT_COOLDOWN_SECONDS;
     
     let roomsDestroyed = 0;
 
@@ -99,6 +100,10 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     const getCurrentRoom = () => {
         return `${humanRoom.x}-${humanRoom.y}`;
     }
+
+    const threatCount = () =>{
+        return ROOMS_WITH_THREATS.length;
+    }
     
     // This is called once every second
     const tick = (deltaSeconds) => {
@@ -111,12 +116,17 @@ const GAME = (humanUsername, aiUsername, gameId) => {
 
         gameTime -= deltaSeconds;
 
-        // Threats
-        if (threatCooldown <= 0 && ROOMS_WITH_THREATS.length < MAX_ACTIVE_THREATS) {
-            spawnThreat();
+        if(gameTime <= 0){
+            return onTimeUp();
         }
-        else {
+
+        // Threats
+        if(threatCount() < MAX_ACTIVE_THREATS){
             threatCooldown -= deltaSeconds;
+            if (threatCooldown <= 0) {
+                spawnThreat();
+                threatCooldown += THREAT_COOLDOWN_SECONDS;
+            }
         }
     }
 
@@ -125,11 +135,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         const threat = Threat(randomlySelectThreat(), () => onThreatUnresolved(threatRoom));
         THREATS_INDEXED_BY_ROOM[threatRoom] = threat;
         ROOMS_WITH_THREATS.push(threatRoom);
-        console.log(`Threat spawned in room ${threatRoom}`);
-        
-        if(timeRemaining <= 0){
-            return onTimeUp();
-        }        threatCooldown = THREAT_COOLDOWN_SECONDS;
+        console.log(`Threat spawned in room ${threatRoom}`);  
         alertAIPlayerOfThreat(threatRoom);
     }
 
@@ -143,25 +149,30 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     const alertPlayerOfThreat = (threat, username, room) => {
         console.log(threat, room);
         console.log(THREATS_INDEXED_BY_ROOM);
-        sendDataToPlayer(GAME_ID, username, ThreatSpawnedData(room, threat.THREAT_TYPE, THREAT_TTL, false));        
+        sendDataToPlayer(GAME_ID, username, ThreatSpawnedData(`${room.x}-${room.y}`, threat.THREAT_TYPE, THREAT_TTL, false));        
     }
     /**
-     * @param {string} room e.g. 0-0 to index with 
+     * @param {Room} room
      */
     const alertAIPlayerOfThreat = (room) => {
         alertPlayerOfThreat(THREATS_INDEXED_BY_ROOM[room], AI_USERNAME, room);
     }
     /**
-     * @param {string} room e.g. 0-0 to index with 
+     * @param {Room} room
      */
     const alertHumanPlayerOfThreat = (room) => {
         alertPlayerOfThreat(THREATS_INDEXED_BY_ROOM[room], HUMAN_USERNAME, room);
     }
-    const onThreatUnresolved = (room) => {
-        delete THREATS[THREATS_INDEXED_BY_ROOM] // Remove threat from THREATS object
+    const removeThreatInRoom = (room) =>{
+        if(!ifRoomHasThreat(room)) return;
+        delete THREATS_INDEXED_BY_ROOM[room]; // Remove threat from THREATS object
+        ROOMS_WITH_THREATS.splice(ROOMS_WITH_THREATS.indexOf(room), 1);
         AVAILABLE_ROOMS.splice(AVAILABLE_ROOMS.indexOf(room), 1);
+    }
+    const onThreatUnresolved = (room) => {
+        removeThreatInRoom(room);
         const message = `ROOM ${room.name} HAS BEEN DESTROYED BY ${"<threatType>"}`;
-        const line = ConsoleLineData(timeRemaining, message, undefined, "critical");
+        const line = ConsoleLineData(gameTime, message, undefined, "critical");
         addConsoleLineAndBroadcast(line);
 
         roomsDestroyed++;
@@ -210,7 +221,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         let room = ROOMS[row][column];
 
         let message = `AI pings ${threatType} at ${room.name}`
-        let line = ConsoleLineData(timeRemaining, message);
+        let line = ConsoleLineData(gameTime, message);
         addConsoleLineAndBroadcast(line);
     }
 
@@ -270,7 +281,7 @@ const lookUpGame = (gameId) => GAMES[gameId];
 
 const tickGames = () => {
     for (const gameId of Object.keys(GAMES)) {
-        GAMES[gameId].tick(GAME_TICK_DELAY_MS);
+        GAMES[gameId].tick(GAME_TICK_DELAY_MS*0.01);
     }
 }
 
