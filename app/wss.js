@@ -1,9 +1,6 @@
 const { WEBSOCKET_PORT } = require("../env.json");
 const { WebSocketServer } = require("ws");
-const {
-  HumanRoomUpdateData,
-  CurrentToolUpdateData,
-} = require("./dataObjects.js");
+const { HumanRoomUpdateData } = require("./dataObjects.js");
 const { lookUpRole, lookUpGame } = require("./game/game");
 const { CLIENTS_HANDLER } = require("./clientsHandler");
 const { HUMAN_ACTIONS, ROLES, AI_ACTIONS } = require("./constants.js");
@@ -46,9 +43,7 @@ const onReceiveDataFromClient = (clientId, byteData) => {
   let username = data.username;
   let gameId = data.gameId;
   let currentRoom;
-  let currentTool;
   console.log("Action is ", action);
-  // console.log("WSS Receive :", currentTool);
   console.log("WSS Receive :", data);
 
   const isValid = validateData(username, gameId, action.name);
@@ -73,14 +68,9 @@ const onReceiveDataFromClient = (clientId, byteData) => {
       currentRoom = game.getCurrentRoom();
       sendToAllClients(HumanRoomUpdateData(currentRoom));
       break;
-    // case HUMAN_ACTIONS.getCurrentTool:
-    //   currentTool = game.getCurrentTool();
-    //   sendToAllClients(CurrentToolUpdateData(currentTool));
-    //   break;
-    case HUMAN_ACTIONS.switchCurrentTool:
-      currentTool = game.switchUserCurrentTool();
-      console.log("send to all clients. current tool is ", currentTool);
-      sendToAllClients(CurrentToolUpdateData(currentTool));
+    case HUMAN_ACTIONS.switchHumanTool:
+      console.log("2. wss human action switch human tool ", action.args.tool);
+      currentTool = game.switchHumanTool(action.args.tool);
       break;
     default:
       break;

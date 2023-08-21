@@ -20,10 +20,20 @@ const getCurrentRoom = () => {
 //   });
 // };
 
-const switchCurrentTool = () => {
+// const switchCurrentTool = () => {
+//   WS.send({
+//     action: {
+//       name: "switchCurrentTool",
+//     },
+//     username: USERNAME_COOKIE,
+//     gameId: GAME_ID_COOKIE,
+//   });
+// };
+
+const switchHumanTool = () => {
   WS.send({
     action: {
-      name: "switchCurrentTool",
+      name: "switchHumanTool",
     },
     username: USERNAME_COOKIE,
     gameId: GAME_ID_COOKIE,
@@ -51,9 +61,13 @@ WS.onReceive((data) => {
     case "humanRoomUpdate":
       HUMAN_STATE.setCurrentRoom(data.room);
       break;
-    case "currentToolUpdate":
-      console.log("send to HumanState.", data.tool);
-      HUMAN_STATE.switchCurrentTool(data.tool);
+    // case "currentToolUpdate":
+    //   console.log("send to HumanState.", data.tool);
+    //   HUMAN_STATE.switchCurrentTool(data.tool);
+    //   break;
+    case "humanToolUpdate":
+      console.log("5. client send to HumanState.", data.tool);
+      HUMAN_STATE.switchHumanTool(data.tool);
       break;
     case "threatSpawned":
       BOARD.spawnThreat(data.threatType, data.room);

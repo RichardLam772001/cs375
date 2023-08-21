@@ -5,7 +5,7 @@
 // Sync with dataObjects.js on the frontend
 const DATA_TYPES = {
   HUMAN_ROOM_UPDATE: "humanRoomUpdate",
-  CURRENT_TOOL_UPDATE: "currentToolUpdate",
+  HUMAN_TOOL_UPDATE: "humanToolUpdate",
   CONSOLE_LINE: "consoleLine",
   GAME_READY: "gameReady",
 };
@@ -15,8 +15,8 @@ const HumanRoomUpdateData = (room) => ({
   room,
 });
 
-const CurrentToolUpdateData = (tool) => ({
-  name: DATA_TYPES.CURRENT_TOOL_UPDATE,
+const HumanToolUpdateData = (tool) => ({
+  name: DATA_TYPES.HUMAN_TOOL_UPDATE,
   tool,
 });
 

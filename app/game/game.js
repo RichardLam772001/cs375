@@ -2,7 +2,7 @@ const { ROLES, GAME_TICK_DELAY_MS } = require("../constants");
 const { Threat, THREAT_COOLDOWN_SECONDS, THREAT_TTL } = require("./threat");
 const { randomInt } = require("../utils.js");
 const { sendDataToPlayer } = require("../broadcaster.js");
-const { ThreatSpawnedData, CurrentToolUpdateData } = require("../dataObjects");
+const { ThreatSpawnedData, HumanToolUpdateData } = require("../dataObjects");
 const { CLIENTS_HANDLER } = require("../clientsHandler");
 
 const GAMES = {};
@@ -64,11 +64,6 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     return room;
   };
 
-  // const getCurrentTool = () => {
-  //   console.log("game.js", currentTool);
-  //   return currentTool;
-  // };
-
   // This is called once every second
   const tick = () => {
     // Pause game if clients in game aren't registered (client hasn't connected yet, or one of them logged out)
@@ -87,8 +82,6 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     } else {
       threatCooldown -= 1;
     }
-
-    // switchUserCurrentTool();
   };
 
   const spawnThreat = () => {
@@ -108,10 +101,12 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     return THREAT_TYPES[randomInt(0, THREAT_TYPES.length - 1)];
   };
 
-  // try to send tool to user
+  // function will send back current tool to human client.
   const switchUserCurrentTool = (currentTool, username) => {
-    // console.log("game.js switchUserCurrentTool ", currentTool);
-    sendDataToPlayer(GAME_ID, username, CurrentToolUpdateData(currentTool));
+    console.log(
+      `4. game id is ${GAME_ID}, username is ${username}, switch current tool is ${currentTool} `
+    );
+    sendDataToPlayer(GAME_ID, username, HumanToolUpdateData(currentTool));
   };
 
   /**
@@ -144,6 +139,12 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     AVAILABLE_ROOMS.splice(AVAILABLE_ROOMS.indexOf(room), 1);
     console.log(`Threat was unresolved room ${room} is no longer available`);
   };
+
+  const switchHumanTool = (tool) => {
+    console.log("3. game switch human tool ", tool);
+    switchUserCurrentTool(tool, HUMAN_USERNAME);
+  };
+
   /**
    *
    * @param {string} room e.g. 0-0
@@ -158,8 +159,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     getRole,
     enterRoom,
     getCurrentRoom,
-    // getCurrentTool,
-    switchUserCurrentTool,
+    switchHumanTool,
   };
 };
 

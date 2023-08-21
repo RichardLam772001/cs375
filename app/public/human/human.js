@@ -12,10 +12,11 @@ const HUMAN = (() => {
     });
   };
 
-  const switchCurrentTool = (tool) => {
+  const switchHumanTool = (tool) => {
+    console.log("1. human switch human tool ", tool);
     WS.send({
       action: {
-        name: "switchCurrentTool",
+        name: "switchHumanTool",
         args: {
           tool: tool,
         },
@@ -23,12 +24,11 @@ const HUMAN = (() => {
       username: USERNAME_COOKIE,
       gameId: GAME_ID_COOKIE,
     });
-    console.log("human click ", tool);
   };
 
   return {
     enterRoom,
-    switchCurrentTool,
+    switchHumanTool,
   };
 })();
 
@@ -46,12 +46,12 @@ window.onload = () => {
   document
     .querySelector("#fire-extinguisher-button")
     .addEventListener("click", () =>
-      HUMAN.switchCurrentTool("Fire Extinguisher")
+      HUMAN.switchHumanTool("Fire Extinguisher")
     );
   document
     .querySelector("#wrench-button")
-    .addEventListener("click", () => HUMAN.switchCurrentTool("Wrench"));
+    .addEventListener("click", () => HUMAN.switchHumanTool("Wrench"));
   document
     .querySelector("#gun-button")
-    .addEventListener("click", () => HUMAN.switchCurrentTool("Gun"));
+    .addEventListener("click", () => HUMAN.switchHumanTool("Gun"));
 };
