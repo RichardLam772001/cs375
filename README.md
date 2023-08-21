@@ -36,3 +36,9 @@ Then:
 cd app
 node server.js
 ```
+
+# To change for production configuration
+
+Update env.json to have IS_PROD key set to true
+Update public/constants.js IS_PROD to true
+node server.js (or use pm2 manager)

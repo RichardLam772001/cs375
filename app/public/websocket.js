@@ -1,7 +1,8 @@
 const WS = (() => {
     
-    const webSocket = new WebSocket(`ws://localhost:${WEBSOCKET_PORT}/`);
-    
+    const WEBSOCKET_ORIGIN = IS_PROD ? ELASTIC_IP_ADDRESS : "localhost";
+    const webSocket = new WebSocket(`ws://${WEBSOCKET_ORIGIN}:${WEBSOCKET_PORT}/`);
+
     const send = (data) => {
         webSocket.send(JSON.stringify(data));
     }
