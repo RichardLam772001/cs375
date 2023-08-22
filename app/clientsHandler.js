@@ -1,7 +1,6 @@
 const { idGenerator } = require("./utils.js");
 
 const generateUniqueClientId = idGenerator();
-const { validateToken } = require("../login.js")
 
 const CLIENTS_HANDLER = (() => {
 
@@ -20,11 +19,9 @@ const CLIENTS_HANDLER = (() => {
      * This method registers a clientId to a specific game
      */
     const registerClient = (clientId, username, gameId) => {
-        const validToken = validateToken(token);
         REGISTERED_CLIENTS[clientId] = {
             gameId,
-            username,
-            loggedIn: validToken
+            username
         };
         if (REGISTERED_CLIENTS_BY_GAME[gameId]) {
             REGISTERED_CLIENTS_BY_GAME[gameId][username] = clientId;
