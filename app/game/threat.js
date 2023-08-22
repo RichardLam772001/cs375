@@ -15,6 +15,8 @@ const Threat = (threatType, onThreatUnresolved, onThreatResolved) => {
     const THREAT_TYPE = threatType;
     let resolved = false;
     let isResolving = false;
+const Threat = (onThreatUnresolved) => {
+    let currentAge = THREAT_TTL;
 
     const tick = () => {
         currentAge -= 1;

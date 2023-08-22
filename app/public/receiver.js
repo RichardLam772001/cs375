@@ -44,3 +44,4 @@ WS.onReceive((data) => {
             BOARD.removeThreat(data.room);
     }
 });
+
