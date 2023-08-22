@@ -14,7 +14,16 @@ const WS = (() => {
     }
     const onReceive = (func) => {
         webSocket.onmessage = (event) => {
-            func(JSON.parse(event.data));
+            const data=JSON.parse(event.data)
+            //Modified to handle the situation when game ends   --xmy
+            if (data.messageType === 'gameEnd') {
+                const result = data.result;
+                const gameResultElement = document.getElementById('game-result');
+                gameResultElement.textContent = result === 'win' ? 'You win!' : 'You lost.';
+                gameResultElement.style.zIndex = '9999';  
+            } else {
+                func(JSON.parse(event.data));
+            }
         };
     }
 

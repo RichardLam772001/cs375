@@ -15,7 +15,7 @@ const GAMES = {
 };
 
 const selectThreatRoom = (avilableRooms, roomsWithThreats) => {
-    const rooms = avilableRooms.filter((room) => roomsWithThreats.indexOf(room) === -1);
+    const rooms = avilableRooms.filter((room) => !(room in roomsWithThreats));
     return rooms[randomInt(0, rooms.length - 1)];
 }
 
@@ -85,9 +85,23 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         }
 
         gameTime -= 1;
+        
+
+        //When game ends   --xmy
+        if (gameTime === 0) {
+            // Check if both players are logged in
+            if (CLIENTS_HANDLER.areBothPlayersLoggedIn(gameId)) {
+                // Send game end message to both players
+                sendDataToPlayer(gameId, HUMAN_USERNAME, { messageType: 'gameEnd', result: 'loss' });
+                sendDataToPlayer(gameId, AI_USERNAME, { messageType: 'gameEnd', result: 'win' });
+                // Update player stats
+                CLIENTS_HANDLER.updatePlayerStats(gameId, HUMAN_USERNAME, 'loss');
+                CLIENTS_HANDLER.updatePlayerStats(gameId, AI_USERNAME, 'win');
+            }
+        }
 
         // Threats
-        if (threatCooldown <= 0 && ROOMS_WITH_THREATS.length < MAX_ACTIVE_THREATS) {
+        if (threatCooldown <= 0) {
             spawnThreat();
         }
         else{
@@ -117,17 +131,14 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         console.log(THREATS_INDEXED_BY_ROOM);
         sendDataToPlayer(GAME_ID, username, ThreatSpawnedData(room, threat.THREAT_TYPE, THREAT_TTL, false));  
     }
+
+    const alertHumanPlayerOfThreat = (room) => {
+        alertPlayerOfThreat(THREATS_INDEXED_BY_ROOM[room], HUMAN_USERNAME, room);}
     /**
      * @param {string} room e.g. 0-0 to index with 
      */
     const alertAIPlayerOfThreat = (room) => {
-        alertPlayerOfThreat(THREATS_INDEXED_BY_ROOM[room], AI_USERNAME, room);
-    }
-    /**
-     * @param {string} room e.g. 0-0 to index with 
-     */
-    const alertHumanPlayerOfThreat = (room) => {
-        alertPlayerOfThreat(THREATS_INDEXED_BY_ROOM[room], HUMAN_USERNAME, room);
+        sendDataToPlayer(GAME_ID, AI_USERNAME, ThreatSpawnedData(room, "fire", THREAT_TTL, false));
     }
 
     const removeThreat = (room) => {

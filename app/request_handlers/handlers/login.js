@@ -12,6 +12,16 @@ const cookieOptions = {
   maxAge: KNOWN_USER_COOKIE_DURATION_MS 
 };
 
+// --xmy
+const validateToken = (token) => {
+  // Check if the token exists in the tokenStorage
+  if (tokenStorage[token]) {
+      return tokenStorage[token];
+  } else {
+      return null; // Token is invalid or not found
+  }
+};
+
 
 const login = async (req, res) => {
     
@@ -80,4 +90,4 @@ const createAccount = async (req, res) => {
     }
 };
 
-module.exports = { createAccount, login };
+module.exports = { createAccount, login, validateToken };
