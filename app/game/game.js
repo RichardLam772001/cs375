@@ -3,12 +3,11 @@ const { ROLES, GAME_TICK_DELAY_MS } = require("../constants");
 const { Threat, THREAT_COOLDOWN_SECONDS, THREAT_TTL } = require("./threat");
 const { randomInt } = require("../utils.js");
 const { sendDataToPlayer } = require("../broadcaster.js");
-const { ThreatSpawnedData, ThreatResolvedData } = require("../dataObjects");
+const { ThreatSpawnedData, ThreatResolvedData, PingData, ConsoleLineData } = require("../dataObjects");
 const { CLIENTS_HANDLER } = require("../clientsHandler");
 
 const { RandomBag } = require("../randomBag.js");
 const { ConsoleLinesLog, isLineVisibleToHuman, isLineVisibleToAI } = require("../consoleLinesLog.js");
-const { ConsoleLineData } = require("../dataObjects.js");
 
 const GAMES = {
     
@@ -97,12 +96,16 @@ const GAME = (humanUsername, aiUsername, gameId) => {
 
     const spawnThreat = () => {
         const threatRoom = selectThreatRoom(AVAILABLE_ROOMS, ROOMS_WITH_THREATS);
-        const threat = Threat(randomlySelectThreat(), () => onThreatUnresolved(threatRoom), () => onThreatResolved(threatRoom));
+        const threatType = randomlySelectThreat();
+        const threat = Threat(threatType, () => onThreatUnresolved(threatRoom), () => onThreatResolved(threatRoom));
         THREATS_INDEXED_BY_ROOM[threatRoom] = threat;
         ROOMS_WITH_THREATS.push(threatRoom);
         console.log(`Threat spawned in room ${threatRoom}`);
         threatCooldown = THREAT_COOLDOWN_SECONDS;
         alertAIPlayerOfThreat(threatRoom);
+
+        //For testing
+        scrambleThenPing(0,0,threatType); //try to ping this threat on the top-right room
     }
 
     const randomlySelectThreat = () => {
@@ -164,7 +167,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
                 case "row":
                     let newRow;
                     do{
-                        newRow = randomInt(0, SHIP_ROWS);
+                        newRow = randomInt(0, SHIP_ROWS-1);
                     }while(newRow === row);
                     row = newRow;
                     break;
@@ -172,13 +175,17 @@ const GAME = (humanUsername, aiUsername, gameId) => {
                 case "col":
                     let newCol;
                     do{
-                        newCol = randomInt(0, SHIP_COLS);
+                        newCol = randomInt(0, SHIP_COLS-1);
                     }while(newCol === column);
                     column = newCol;
                     break;
 
                 case "type":
-                    //TODO: Scamble threat type before pinging
+                    let newType;
+                    do{
+                        newType = THREAT_TYPES[randomInt(0, THREAT_TYPES.length-1)]
+                    }while(newType === threatType);
+                    threatType = newType;
                     break;
             }
         }
@@ -186,15 +193,22 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         pingRoom(row, column, threatType);
     }
 
+    const sendDataToBothPlayers = (data) =>{
+        sendDataToPlayer(GAME_ID, HUMAN_USERNAME, data);
+        sendDataToPlayer(GAME_ID, AI_USERNAME, data);
+    }
+
     //Actually ping this room
     const pingRoom = (row, column, threatType) => {
         if(!validateRoomPos(row,column)) return;
 
+        sendDataToBothPlayers(PingData(row, column, threatType));
+
         let message = `AI pings ${threatType} at ${row}-${column}`;
         let line = ConsoleLineData(gameTime, message);
         addConsoleLineAndBroadcast(line);
+        
     }
-    setInterval(()=> scrambleThenPing(0,0,"fire"), 2000);
 
     function addConsoleLineAndBroadcast(consoleLine){
         consoleLine.time = Math.round(gameTime);

@@ -42,5 +42,9 @@ WS.onReceive((data) => {
             break;
         case "threatResolved":
             BOARD.removeThreat(data.room);
+            break
+        case "ping":
+            BOARD.pingRoom(data.row, data.col, data.threatType);
+            break;
     }
 });

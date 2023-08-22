@@ -7,7 +7,8 @@ const DATA_TYPES = {
     HUMAN_ROOM_UPDATE : "humanRoomUpdate",
     CONSOLE_LINE : "consoleLine",
     GAME_READY : "gameReady",
-	LOBBY_LIST : "lobbyList"
+	LOBBY_LIST : "lobbyList",
+    PING : "ping"
 }
 
 const HumanRoomUpdateData = (room) => ({
@@ -37,3 +38,10 @@ const LobbyListData = (lobbies) => ({
 const isMessageType = (data, data_type) => {
     return data.name === data_type
 }
+
+const PingData = (row, col, threatType) =>({
+    name: DATA_TYPES.PING,
+    row,
+    col,
+    threatType
+});
