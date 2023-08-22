@@ -63,10 +63,9 @@ const createAccount = async (req, res) => {
 
       if (!user) {
         const hashpassword = await argon2.hash(password);
-        await pool.query('INSERT INTO userdata (username, password, loggedin) VALUES ($1, $2, $3)', [
+        await pool.query('INSERT INTO userdata (username, password) VALUES ($1, $2)', [
           username,
-          hashpassword,
-          true, 
+          hashpassword
         ]);
   
         res.sendStatus(200);

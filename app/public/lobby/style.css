@@ -85,3 +85,12 @@ th, td {
 	padding: 5px;
 	text-align: center;
 }
+
+.host-th {
+	width: 60%;
+}
+
+div.lobby-optn {
+	font-weight: bold;
+	font-size: 18px;
+}

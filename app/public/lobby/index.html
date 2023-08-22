@@ -25,13 +25,13 @@
 		<div>
 			<div class="container">
 				<div class="chat page-cont"></div>
-				<div class="lobby-list page-cont">
+				<div id="lobbycont" class="lobby-list page-cont">
 					<table>
 						<thead class="lobby-tbl-hdr">
 							<tr>
-								<th>Host</th> <!--username of host-->
+								<th>#</th>
+								<th class="host-th">Host</th> <!--username of host-->
 								<th>Players</th> <!--player count?-->
-								<th>Created</th> <!--created t ago-->
 							</tr>
 						</thead>
 						<tbody class="lobby-tbl-body">
@@ -40,8 +40,8 @@
 				</div>
 				<div class="lobby-btn-cont page-cont">
 					<div class="lobby-btns"> <!--having trouble centering this vertically, could be left here though-->
-						<button id="create" class="lobby-optn">Create Game</button>
-						<button id="refresh" class="lobby-optn">Refresh</button>
+						<button id="create" class="lobby-optn">Create Lobby</button>
+						<div id="joined" class="lobby-optn"></div>
 					</div>
 				</div>
 			</div>

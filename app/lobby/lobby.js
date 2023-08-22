@@ -20,12 +20,17 @@ const joinLobby = (lobbyId, username) => {
         if (LOBBIES[lobbyId].length === PLAYERS_PER_GAME) {
             throw Error("Lobby full!");
         }
-        LOBBIES[lobbyId][1] = {username};
+		if (LOBBIES[lobbyId][0] === undefined) {
+			LOBBIES[lobbyId][0] = {username};
+		}
+		else {
+			LOBBIES[lobbyId][1] = {username};
+		}
     }
     else {
         LOBBIES[lobbyId] = [{username}];
     }
-    const isLobbyFull = LOBBIES[lobbyId].length === PLAYERS_PER_GAME;
+    const isLobbyFull = LOBBIES[lobbyId].length === PLAYERS_PER_GAME && LOBBIES[lobbyId][0] !== undefined;
     if (isLobbyFull) {
         assignRoles(lobbyId);
     }
@@ -49,7 +54,20 @@ const assignRoles = (lobbyId) => {
 }
 
 const clearLobby = (lobbyId) => {
-    delete LOBBIES[lobbyId];
+	LOBBIES[lobbyId].pop();
+	LOBBIES[lobbyId].pop();
+}
+
+const leaveLobby = (lobbyId, username) => {
+	if (lobbyId in LOBBIES) {
+		if (LOBBIES[lobbyId].length == 2) {
+			console.log("Game starting soon, cannot leave lobby.");
+			return;
+		}
+		if (LOBBIES[lobbyId][0] !== undefined && LOBBIES[lobbyId][0].username === username) {
+			LOBBIES[lobbyId].pop();
+		}
+	}
 }
 
 /**
@@ -66,4 +84,4 @@ const getLobbies = () => {
 	return LOBBIES;
 }
 
-module.exports = { joinLobby, getPlayersInLobby, clearLobby, getLobbies }
+module.exports = { joinLobby, getPlayersInLobby, clearLobby, leaveLobby, getLobbies }
