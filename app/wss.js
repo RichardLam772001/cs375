@@ -1,9 +1,13 @@
 const { WEBSOCKET_PORT } = require("../env.json");
 const { WebSocketServer } = require("ws");
-const { HumanRoomUpdateData } = require("./dataObjects.js");
+const {
+  HumanRoomUpdateData,
+  AIPingThreatUpdateData,
+} = require("./dataObjects.js");
 const { lookUpRole, lookUpGame } = require("./game/game");
 const { CLIENTS_HANDLER } = require("./clientsHandler");
 const { HUMAN_ACTIONS, ROLES, AI_ACTIONS } = require("./constants.js");
+const { sendDataToPlayer } = require("./broadcaster");
 
 const webSockServer = new WebSocketServer({ port: WEBSOCKET_PORT });
 
@@ -43,6 +47,8 @@ const onReceiveDataFromClient = (clientId, byteData) => {
   let username = data.username;
   let gameId = data.gameId;
   let currentRoom;
+  let currentTool;
+  let aiPingRoom;
   console.log("Action is ", action);
   console.log("WSS Receive :", data);
 
@@ -63,14 +69,20 @@ const onReceiveDataFromClient = (clientId, byteData) => {
       game.enterRoom(action.args.room);
       currentRoom = game.getCurrentRoom();
       sendToAllClients(HumanRoomUpdateData(currentRoom));
+      console.log("current room is ", currentRoom);
       break;
     case HUMAN_ACTIONS.getCurrentRoom:
       currentRoom = game.getCurrentRoom();
       sendToAllClients(HumanRoomUpdateData(currentRoom));
       break;
     case HUMAN_ACTIONS.switchHumanTool:
-      console.log("2. wss human action switch human tool ", action.args.tool);
       currentTool = game.switchHumanTool(action.args.tool);
+      console.log("2. wss human action switch human tool ", currentTool);
+      break;
+    case AI_ACTIONS.pingRoom:
+      aiPingRoom = game.pingRoom(action.args.room);
+      aiPingRoom = game.getPingRoom();
+      console.log("AI action, wss pingRoom", aiPingRoom);
       break;
     default:
       break;

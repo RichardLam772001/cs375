@@ -2,7 +2,11 @@ const { ROLES, GAME_TICK_DELAY_MS } = require("../constants");
 const { Threat, THREAT_COOLDOWN_SECONDS, THREAT_TTL } = require("./threat");
 const { randomInt } = require("../utils.js");
 const { sendDataToPlayer } = require("../broadcaster.js");
-const { ThreatSpawnedData, HumanToolUpdateData } = require("../dataObjects");
+const {
+  ThreatSpawnedData,
+  HumanToolUpdateData,
+  AIPingThreatUpdateData,
+} = require("../dataObjects");
 const { CLIENTS_HANDLER } = require("../clientsHandler");
 
 const GAMES = {};
@@ -22,7 +26,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
   let AI_USERNAME = aiUsername;
   let room = "0-0";
   let threatCooldown = THREAT_COOLDOWN_SECONDS;
-  let currentTool;
+  let pingedRoom = "";
 
   const THREATS_INDEXED_BY_ROOM = {};
   const AVAILABLE_ROOMS = [
@@ -37,6 +41,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     "2-2",
   ]; // Richard: Yes I know it's hardcoded, we can make a dynamic room generator later TO DO
   const ROOMS_WITH_THREATS = [];
+  const ROOMS_WITH_PINGED_THREATS = [];
   const THREAT_TYPES = ["fire", "breach", "invader"];
   const MAX_ACTIVE_THREATS = 3;
 
@@ -62,6 +67,32 @@ const GAME = (humanUsername, aiUsername, gameId) => {
   };
   const getCurrentRoom = () => {
     return room;
+  };
+
+  const pingRoom = (newRoom) => {
+    pingedRoom = newRoom;
+    ROOMS_WITH_PINGED_THREATS.push(pingedRoom);
+    console.log(`pinged threat room ${pingedRoom}`);
+    sendDataToPlayer(
+      GAME_ID,
+      HUMAN_USERNAME,
+      AIPingThreatUpdateData(pingedRoom)
+    );
+
+    // set pinged room to AI user window
+    // send pinged room to human user
+    // sendDataToPlayer();
+  };
+  const getPingRoom = () => {
+    return pingedRoom;
+  };
+
+  // function will send back current tool to human client.
+  const switchUserCurrentTool = (currentTool, username) => {
+    console.log(
+      `4. game id is ${GAME_ID}, username is ${username}, switch current tool is ${currentTool} `
+    );
+    sendDataToPlayer(GAME_ID, username, HumanToolUpdateData(currentTool));
   };
 
   // This is called once every second
@@ -101,20 +132,15 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     return THREAT_TYPES[randomInt(0, THREAT_TYPES.length - 1)];
   };
 
-  // function will send back current tool to human client.
-  const switchUserCurrentTool = (currentTool, username) => {
-    console.log(
-      `4. game id is ${GAME_ID}, username is ${username}, switch current tool is ${currentTool} `
-    );
-    sendDataToPlayer(GAME_ID, username, HumanToolUpdateData(currentTool));
-  };
-
   /**
    * Used by both alertAIPlayerOfThreat and alertHumanPlayerOfThreat
    */
   const alertPlayerOfThreat = (threat, username, room) => {
     console.log(threat, room);
-    console.log(THREATS_INDEXED_BY_ROOM);
+    console.log(
+      "alert Player Of Threat THREATS_INDEXED_BY_ROOM ",
+      THREATS_INDEXED_BY_ROOM
+    );
     sendDataToPlayer(
       GAME_ID,
       username,
@@ -160,6 +186,8 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     enterRoom,
     getCurrentRoom,
     switchHumanTool,
+    pingRoom,
+    getPingRoom,
   };
 };
 

@@ -14,7 +14,8 @@ const HUMAN_ACTIONS = {
   switchHumanTool: "switchHumanTool",
 };
 const AI_ACTIONS = {
-  getCurrentRoom: "getCurrentRoom",
+  getPingRoom: "getPingRoom",
+  pingRoom: "pingRoom",
 };
 
 module.exports = {

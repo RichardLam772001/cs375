@@ -6,6 +6,7 @@
 const DATA_TYPES = {
   HUMAN_ROOM_UPDATE: "humanRoomUpdate",
   HUMAN_TOOL_UPDATE: "humanToolUpdate",
+  AI_PING_THREAT_UPDATE: "aiPingThreatUpdate",
   CONSOLE_LINE: "consoleLine",
   GAME_READY: "gameReady",
   THREAT_SPAWNED: "threatSpawned",
@@ -19,6 +20,11 @@ const HumanRoomUpdateData = (room) => ({
 const HumanToolUpdateData = (tool) => ({
   name: DATA_TYPES.HUMAN_TOOL_UPDATE,
   tool,
+});
+
+const AIPingThreatUpdateData = (room) => ({
+  name: DATA_TYPES.AI_PING_THREAT_UPDATE,
+  room,
 });
 
 const ConsoleLineData = (time, message, visibility, style) => ({
@@ -46,6 +52,7 @@ const ThreatSpawnedData = (room, threatType, duration, isPaused) => ({
 module.exports = {
   HumanRoomUpdateData,
   HumanToolUpdateData,
+  AIPingThreatUpdateData,
   ConsoleLineData,
   GameReadyData,
   ThreatSpawnedData,

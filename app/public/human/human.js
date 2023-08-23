@@ -33,6 +33,7 @@ const HUMAN = (() => {
 })();
 
 window.onload = () => {
+  console.log("human.js window.onload.");
   if (USERNAME_COOKIE) {
     const size = BOARD.getSize();
     for (let i = 0; i < size.rows; i++) {
@@ -43,15 +44,4 @@ window.onload = () => {
       }
     }
   }
-  document
-    .querySelector("#fire-extinguisher-button")
-    .addEventListener("click", () =>
-      HUMAN.switchHumanTool("Fire Extinguisher")
-    );
-  document
-    .querySelector("#wrench-button")
-    .addEventListener("click", () => HUMAN.switchHumanTool("Wrench"));
-  document
-    .querySelector("#gun-button")
-    .addEventListener("click", () => HUMAN.switchHumanTool("Gun"));
 };
