@@ -14,8 +14,17 @@ const GAMES = {
     
 };
 
-const selectThreatRoom = (avilableRooms, roomsWithThreats) => {
-    const rooms = avilableRooms.filter((room) => roomsWithThreats.indexOf(room) === -1);
+/**
+ * Function selects a room for a threat to spawn in. A threat cannot spawn in the same room as a player, another threat, or a destroyed roomn.
+ * @param {string[]} avilableRooms 
+ * @param {string[]} roomsWithThreats 
+ * @param {string} playerRoom 
+ * @returns Threat room
+ */
+const selectThreatRoom = (avilableRooms, roomsWithThreats, playerRoom) => {
+    const rooms = avilableRooms
+        .filter((room) => roomsWithThreats.indexOf(room) === -1)
+        .filter((room) => room !== playerRoom);
     return rooms[randomInt(0, rooms.length - 1)];
 }
 
@@ -96,7 +105,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     }
 
     const spawnThreat = () => {
-        const threatRoom = selectThreatRoom(AVAILABLE_ROOMS, ROOMS_WITH_THREATS);
+        const threatRoom = selectThreatRoom(AVAILABLE_ROOMS, ROOMS_WITH_THREATS, room);
         const threat = Threat(randomlySelectThreat(), () => onThreatUnresolved(threatRoom), () => onThreatResolved(threatRoom));
         THREATS_INDEXED_BY_ROOM[threatRoom] = threat;
         ROOMS_WITH_THREATS.push(threatRoom);
