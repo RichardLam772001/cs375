@@ -3,12 +3,14 @@ const { ROLES, GAME_TICK_DELAY_MS } = require("../constants");
 const { Threat, THREAT_COOLDOWN_SECONDS, THREAT_TTL } = require("./threat");
 const { randomInt } = require("../utils.js");
 const { sendDataToPlayer } = require("../broadcaster.js");
-const { ThreatSpawnedData, ThreatResolvedData, RoomDestroyedData} = require("../dataObjects");
+const { ThreatSpawnedData, ThreatResolvedData, RoomDestroyedData, HumanRoomUpdateData} = require("../dataObjects");
 const { CLIENTS_HANDLER } = require("../clientsHandler");
 
 const { RandomBag } = require("../randomBag.js");
 const { ConsoleLinesLog, isLineVisibleToHuman, isLineVisibleToAI } = require("../consoleLinesLog.js");
 const { ConsoleLineData } = require("../dataObjects.js");
+
+const { DelayedAction } = require("./delayedAction.js");
 
 const GAMES = {
     
@@ -43,6 +45,12 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     const SHIP_ROWS = SHIP_SIZE[0];
     const SHIP_COLS = SHIP_SIZE[1];
 
+    //ACTIONS
+    let humanAction;
+    const humanCanAct = () => {return humanAction === undefined || !humanAction.getIsRunning();};
+    let aiAction;
+    const aiCanAct = () => {return aiAction === undefined || !aiAction.getIsRunning();};
+
     const THREATS_INDEXED_BY_ROOM = {};
     const AVAILABLE_ROOMS = ["0-0", "0-1", "0-2", "1-0", "1-1", "1-2", "2-0", "2-1", "2-2"]; // Richard: Yes I know it's hardcoded, we can make a dynamic room generator later TO DO
     const ROOMS_WITH_THREATS = [];
@@ -66,20 +74,35 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     const validateRoomPos = (x, y) =>{
         return x >= 0 && x < SHIP_ROWS && y >= 0 && y < SHIP_COLS;
     }
+    const roomCanBeEntered = (room) => {
+        return AVAILABLE_ROOMS.indexOf(room) !== -1;
+    }
     const enterRoom = (newRoom) => {
-        // If room not available (cause destroyed), cant enter
-        if (AVAILABLE_ROOMS.indexOf(newRoom) === -1) {
-            console.log(`GAME - Cannot enter room ${newRoom}`);
-        }
-        else {
-            room = newRoom;
-            if (ifRoomHasThreat(room)) {
-                alertHumanPlayerOfThreat(room);
+        if(!humanCanAct()) return;
 
-                const threat = THREATS_INDEXED_BY_ROOM[room];
-                threat.resolve(currentTool);
-            }
+        if (!roomCanBeEntered(newRoom)) {
+            console.log(`GAME - Cannot enter room ${newRoom}`);
+            return;
         }
+
+        humanAction = DelayedAction(2);
+        humanAction.setOnFinish(() => doEnterRoom(newRoom));
+        
+    }
+    const doEnterRoom = (newRoom) =>{
+        if (!roomCanBeEntered(newRoom)) { //we must check again, because the room might have been destroyed while the action was charging
+            console.log(`GAME - Cannot enter room ${newRoom}`);
+            return;
+        }
+
+        room = newRoom;
+        if (ifRoomHasThreat(room)) {
+            alertHumanPlayerOfThreat(room);
+
+            const threat = THREATS_INDEXED_BY_ROOM[room];
+            threat.resolve(currentTool);
+        }
+        sendDataToBothPlayers(HumanRoomUpdateData(room));
     }
     const getCurrentRoom = () => {
         return room;
@@ -94,6 +117,9 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         }
 
         gameTime -= 1;
+
+        humanAction?.tick(1);
+        aiAction?.tick(1);
 
         // Threats
         if (threatCooldown <= 0 && ROOMS_WITH_THREATS.length < MAX_ACTIVE_THREATS) {

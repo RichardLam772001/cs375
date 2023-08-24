@@ -10,7 +10,8 @@ const DATA_TYPES = {
     LOBBY_LIST : "lobbyList",
     THREAT_SPAWNED: "threatSpawned",
     THREAT_RESOLVED: "threatResolved",
-    ROOM_DESTROYED: "roomDestroyed"
+    ROOM_DESTROYED: "roomDestroyed",
+    DELAY_DATA: "delayData",
 }
 
 const HumanRoomUpdateData = (room) => ({
@@ -53,5 +54,10 @@ const RoomDestroyedData = (room) => ({
     name: DATA_TYPES.ROOM_DESTROYED,
     room
 });
+const DelayData = (description, time) => ({
+    name: DELAY_DATA,
+    description,
+    time
+});
 
-module.exports = { HumanRoomUpdateData, ConsoleLineData, GameReadyData, LobbyListData, ThreatSpawnedData, ThreatResolvedData, RoomDestroyedData };
+module.exports = { HumanRoomUpdateData, ConsoleLineData, GameReadyData, LobbyListData, ThreatSpawnedData, ThreatResolvedData, RoomDestroyedData, DelayData};

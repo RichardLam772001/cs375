@@ -57,8 +57,6 @@ const onReceiveDataFromClient = (clientId, byteData) => {
     switch(action.name) {
         case HUMAN_ACTIONS.enterRoom:
             game.enterRoom(action.args.room);
-            currentRoom = game.getCurrentRoom();
-            sendToAllClients(HumanRoomUpdateData(currentRoom));
             break;
         case HUMAN_ACTIONS.getCurrentRoom:
             currentRoom = game.getCurrentRoom();
