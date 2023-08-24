@@ -27,6 +27,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
   let room = "0-0";
   let threatCooldown = THREAT_COOLDOWN_SECONDS;
   let pingedRoom = "";
+  let pingedThreatType = "";
 
   const THREATS_INDEXED_BY_ROOM = {};
   const AVAILABLE_ROOMS = [
@@ -69,14 +70,17 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     return room;
   };
 
-  const pingRoom = (newRoom, thread) => {
+  const pingRoom = (newRoom, threatType) => {
     pingedRoom = newRoom;
+    pingedThreatType = threatType;
     ROOMS_WITH_PINGED_THREATS.push(pingedRoom);
-    console.log(`2. pinged room ${pingedRoom}`);
+    console.log(
+      `4. game.pingRoom:pinged room ${pingedRoom} threat is ${pingedThreatType}, sendDataToPlayer`
+    );
     sendDataToPlayer(
       GAME_ID,
       HUMAN_USERNAME,
-      AIPingThreatUpdateData(pingedRoom)
+      AIPingThreatUpdateData(pingedRoom, pingedThreatType)
     );
 
     // set pinged room to AI user window

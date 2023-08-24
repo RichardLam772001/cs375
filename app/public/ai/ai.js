@@ -3,47 +3,54 @@ const AI = (() => {
   //     CONSOLE.addConsoleLine({message:`ping room ${row}-${column}`, style: "private"});
   // }
 
-  let threadType = "";
+  let currentThreatType = "";
+  let currentPingRoom = "";
 
-  const pingRoom = (room) => {
+  const pingRoom = (room, threatType) => {
     WS.send({
       action: {
         name: "pingRoom",
         args: {
           room: room,
+          threatType: threatType,
         },
       },
       username: USERNAME_COOKIE,
       gameId: GAME_ID_COOKIE,
     });
 
-    CONSOLE.addConsoleLine({
-      message: `ping room ${row}-${column}`,
-      style: "private",
-    });
+    // CONSOLE.addConsoleLine({
+    //   message: `ping room ${row}-${column}`,
+    //   style: "private",
+    // });
+  };
+  const getPingRoom = (room) => {
+    currentPingRoom = room;
+    pingRoom(room, currentThreatType);
   };
 
-  const switchThreadType = (thread) => {
-    threadType = thread;
-    console.log("1. AI switch thread type ", thread);
+  const switchThreatType = (threatType) => {
+    currentThreatType = threatType;
+    console.log("1. AI switch threat type ", currentThreatType);
     document.querySelectorAll(".button").forEach((btn) => {
       btn.classList.remove("selected");
       btn.classList.add("unselected");
     });
-    const currentThreadButton = document.getElementById(thread);
-    if (currentThreadButton) {
-      currentThreadButton.classList.remove("unselected");
-      currentThreadButton.classList.add("selected");
+    const currentThreatButton = document.getElementById(threatType);
+    if (currentThreatButton) {
+      currentThreatButton.classList.remove("unselected");
+      currentThreatButton.classList.add("selected");
     }
     CONSOLE.addConsoleLine({
-      message: `AI set thread ${thread}`,
+      message: `AI set threat ${threatType}`,
       style: "public",
     });
   };
 
   return {
     pingRoom,
-    switchThreadType,
+    getPingRoom,
+    switchThreatType,
   };
 })();
 
@@ -53,7 +60,7 @@ window.onload = () => {
     for (let i = 0; i < size.rows; i++) {
       for (let j = 0; j < size.columns; j++) {
         BOARD.getRoom(i, j).rootElem.addEventListener("click", () =>
-          AI.pingRoom(`${i}-${j}`)
+          AI.getPingRoom(`${i}-${j}`)
         );
       }
     }

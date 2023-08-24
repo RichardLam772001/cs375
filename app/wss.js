@@ -1,9 +1,6 @@
 const { WEBSOCKET_PORT } = require("../env.json");
 const { WebSocketServer } = require("ws");
-const {
-  HumanRoomUpdateData,
-  AIPingThreatUpdateData,
-} = require("./dataObjects.js");
+const { HumanRoomUpdateData } = require("./dataObjects.js");
 const { lookUpRole, lookUpGame } = require("./game/game");
 const { CLIENTS_HANDLER } = require("./clientsHandler");
 const { HUMAN_ACTIONS, ROLES, AI_ACTIONS } = require("./constants.js");
@@ -49,7 +46,7 @@ const onReceiveDataFromClient = (clientId, byteData) => {
   let currentRoom;
   let currentTool;
   let aiPingRoom;
-  let aiPingThreadType;
+  let aiPingThreatType;
   console.log("WSS Receive :", data);
 
   const isValid = validateData(username, gameId, action.name);
@@ -81,12 +78,15 @@ const onReceiveDataFromClient = (clientId, byteData) => {
       console.log("2. wss human action switch human tool ", currentTool);
       break;
     case AI_ACTIONS.pingRoom:
-      console.log("1. enter wss pingRoom, AI action");
+      console.log("2.wss.js AI action pingRoom Start", data);
       aiPingRoom = action.args.room;
-      aiPingThreadType = action.args.thread;
-      game.pingRoom(aiPingRoom);
-      console.log("AI action pingRoom ", aiPingRoom);
-
+      aiPingThreatType = action.args.threatType;
+      console.log(
+        "3. wss.js AI action pingRoom Goto Game.pingRoom() ",
+        aiPingRoom,
+        aiPingThreatType
+      );
+      game.pingRoom(aiPingRoom, aiPingThreatType);
       break;
     default:
       break;

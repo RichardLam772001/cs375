@@ -3,6 +3,7 @@
 const HUMAN_STATE = (() => {
   let currentRoom;
   let pingedRoom;
+  let pingedThreatType;
   let currentTool = "";
 
   let onRoomChange;
@@ -47,9 +48,10 @@ const HUMAN_STATE = (() => {
     });
   }
 
-  function aiPingRoom(room) {
+  function aiPingRoom(room, threatType) {
     pingedRoom = room;
-    console.log("ai Ping Room", pingedRoom);
+    pingedThreatType = threatType;
+    console.log("6.HumanState aiPingRoom() ", pingedRoom, pingedThreatType);
   }
 
   return {

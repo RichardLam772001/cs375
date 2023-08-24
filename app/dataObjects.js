@@ -22,9 +22,10 @@ const HumanToolUpdateData = (tool) => ({
   tool,
 });
 
-const AIPingThreatUpdateData = (room) => ({
+const AIPingThreatUpdateData = (room, threatType) => ({
   name: DATA_TYPES.AI_PING_THREAT_UPDATE,
   room,
+  threatType,
 });
 
 const ConsoleLineData = (time, message, visibility, style) => ({
