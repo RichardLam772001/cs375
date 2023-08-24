@@ -3,7 +3,7 @@ const { ROLES, GAME_TICK_DELAY_MS } = require("../constants");
 const { Threat, THREAT_COOLDOWN_SECONDS, THREAT_TTL } = require("./threat");
 const { randomInt } = require("../utils.js");
 const { sendDataToPlayer } = require("../broadcaster.js");
-const { ThreatSpawnedData, ThreatResolvedData } = require("../dataObjects");
+const { ThreatSpawnedData, ThreatResolvedData, RoomDestroyedData} = require("../dataObjects");
 const { CLIENTS_HANDLER } = require("../clientsHandler");
 
 const { RandomBag } = require("../randomBag.js");
@@ -148,15 +148,26 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     const alertHumanPlayerOfThreat = (room) => {
         alertPlayerOfThreat(THREATS_INDEXED_BY_ROOM[room], HUMAN_USERNAME, room);
     }
+    const sendDataToBothPlayers = (data) =>{
+        sendDataToPlayer(GAME_ID, HUMAN_USERNAME, data);        
+        sendDataToPlayer(GAME_ID, AI_USERNAME, data);   
+    }
 
     const removeThreat = (room) => {
         delete THREATS_INDEXED_BY_ROOM[room] // Remove threat
         ROOMS_WITH_THREATS.splice(ROOMS_WITH_THREATS.indexOf(room), 1); // Removes room from rooms_with_threats
     }
 
-    const onThreatUnresolved = (room) => {
-        removeThreat(room);
+    const destroyRoom = (room, threatString) =>{
         AVAILABLE_ROOMS.splice(AVAILABLE_ROOMS.indexOf(room), 1); // Room no longer available
+        const consoleLine = ConsoleLineData(gameTime, `ROOM ${room} HAS BEEN DESTROYED BY ${threatString.toUpperCase()}`, undefined, "critical");
+        addConsoleLineAndBroadcast(consoleLine);
+        sendDataToBothPlayers(RoomDestroyedData(room));
+    }
+
+    const onThreatUnresolved = (room) => {
+        destroyRoom(room, THREATS_INDEXED_BY_ROOM[room].THREAT_TYPE);
+        removeThreat(room);
         console.log(`Threat was unresolved room ${room} is no longer available`);
     }
     const onThreatResolved = (room) => {

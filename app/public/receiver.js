@@ -45,5 +45,9 @@ WS.onReceive((data) => {
             BOARD.removeThreat(data.room);
         case "GameEnd":
             BOARD.showGameEndMessage(data.result)
+            break;
+        case "roomDestroyed":
+            BOARD.destroyRoom(data.room);
+            break;
     }
 });

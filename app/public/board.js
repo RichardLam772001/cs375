@@ -140,6 +140,10 @@ const BOARD = ((rowCount, columnCount) => {
         // Show the message container
         messageContainer.style.display = "block";
     }
+    const destroyRoom = (room) =>{
+        const roomElement = parseMoveableRoom(room);
+        roomElement.setDestroyed();
+    }
     
     return {
         setAllToHidden,
@@ -150,7 +154,8 @@ const BOARD = ((rowCount, columnCount) => {
         roomHasThreat,
         spawnThreat,
         removeThreat,
-        showGameEndMessage
+        showGameEndMessage,
+        destroyRoom,
     };;
 })(3,3);
 

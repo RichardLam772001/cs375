@@ -58,11 +58,14 @@ body{
 }
 
 .room .visible {
-    background-image: url("./images/Room.png");
+    background-image: url("./images/Room/Room.png");
 }
 
 .room .hidden {
-    background-image: url("./images/Room_Fog.png");
+    background-image: url("./images/Room/Room_Fog.png");
+}
+.room .destroyed {
+    background-image: url("./images/Room/Room_Destroyed.png");
 }
 
 .room img{

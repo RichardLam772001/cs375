@@ -7,7 +7,8 @@ const DATA_TYPES = {
     HUMAN_ROOM_UPDATE : "humanRoomUpdate",
     CONSOLE_LINE : "consoleLine",
     GAME_READY : "gameReady",
-	LOBBY_LIST : "lobbyList"
+	LOBBY_LIST : "lobbyList",
+    ROOM_DESTROYED: "roomDestroyed"
 }
 
 const HumanRoomUpdateData = (room) => ({
@@ -32,6 +33,10 @@ const GameReadyData = (lobbyId, gameId) => ({
 const LobbyListData = (lobbies) => ({
 	name : DATA_TYPES.LOBBY_LIST,
 	lobbies
+});
+const RoomDestroyedData = (room) => ({
+    name: DATA_TYPES.ROOM_DESTROYED,
+    room
 });
 
 const isMessageType = (data, data_type) => {
