@@ -14,9 +14,13 @@ const RoomElement = (parentElem, roomString) => {
 
     function setVisible(visible){
         backElem.className = visible ? "visible" : "hidden";
-        console.log(`set room visible ${visible}`);
     }
     setVisible(true); //visible by default
+
+    function setDestroyed(){
+        backElem.className = "destroyed";
+        setThreat("");
+    }
 
     function createElemUnderParent(elemType, parentElem){
         const newElem = document.createElement(elemType);
@@ -46,6 +50,7 @@ const RoomElement = (parentElem, roomString) => {
         humanParent : backElem,
         setVisible,
         setThreat,
+        setDestroyed,
         ROOM_STRING
     }
 }
