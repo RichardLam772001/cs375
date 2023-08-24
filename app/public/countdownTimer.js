@@ -1,8 +1,8 @@
 const timerData = {
     name: "timer",
     time: {
-        "minutes": 4,
-        "seconds": 0,
+        "minutes": 0,
+        "seconds": 12,
         "countdown": () => {
             const timeElem = document.getElementById("timer");
             let mins = timerData.time.minutes;
@@ -18,9 +18,14 @@ const timerData = {
                 }
                 else {
                     clearInterval(interval);
+                    timeElem.textContent = `Time is up: Player Wins`;
+                    return;
                 }
 
-                timeElem.textContent = `${mins} minutes ${secs} seconds`;
+                timeElem.textContent = `0${mins}:${secs}`;
+                if (secs < 10) {
+                    timeElem.textContent = `0${mins}:0${secs}`
+                }
             }, 1000);
         }
     }
