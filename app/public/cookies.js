@@ -8,5 +8,6 @@ const COOKIES = (() => {
     return cookiesObject;
 })();
 
-const USERNAME_COOKIE = COOKIES.username ?? null;
+const USERNAME_COOKIE = COOKIES.username ?? Math.floor(Math.random()*10000);
 const GAME_ID_COOKIE = COOKIES.gameId ?? null;
+const TOKEN_COOKIE = COOKIES.token ?? null;

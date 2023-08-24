@@ -5,6 +5,31 @@ const BOARD = ((rowCount, columnCount) => {
     const ROOMS = [];
 
     const TABLE_PARENT = document.getElementById("main-container");
+    const messageContainer = document.getElementById("message-container");
+    const messageText = document.getElementById("message-text");
+    /*
+        <div id="message-container">
+            <p id="message-text"></p>
+        </div>
+        #message-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-align: center;
+        z-index: 2;
+        display: none; 
+        }
+
+        #message-text {
+        font-size: 24px;
+        margin: 0;
+        }
+     */
     const TABLE_ELEMENT = createTableElem();
     const ROOMS_WITH_THREATS = [];
     
@@ -101,6 +126,20 @@ const BOARD = ((rowCount, columnCount) => {
         const roomElement = parseMoveableRoom(room);
         roomElement.setThreat("");
     }
+
+    function showGameEndMessage(result) {
+        const messageContainer = document.getElementById("message-container");
+        const messageText = document.getElementById("message-text");
+      
+        if (result === "You win") {
+          messageText.textContent = "You Win!";
+        } else if (result === "You lost") {
+          messageText.textContent = "You Lost!";
+        }
+      
+        // Show the message container
+        messageContainer.style.display = "block";
+    }
     
     return {
         setAllToHidden,
@@ -111,6 +150,7 @@ const BOARD = ((rowCount, columnCount) => {
         roomHasThreat,
         spawnThreat,
         removeThreat,
+        showGameEndMessage
     };;
 })(3,3);
 

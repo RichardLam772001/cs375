@@ -9,6 +9,7 @@ const { CLIENTS_HANDLER } = require("../clientsHandler");
 const { RandomBag } = require("../randomBag.js");
 const { ConsoleLinesLog, isLineVisibleToHuman, isLineVisibleToAI } = require("../consoleLinesLog.js");
 const { ConsoleLineData } = require("../dataObjects.js");
+const { GameEndData } = require("../dataObjects.js");
 
 const GAMES = {
     
@@ -23,7 +24,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
 
     const GAME_ID = gameId;
 
-    let gameTime = 4*60;
+    let gameTime = 3;
     let HUMAN_USERNAME = humanUsername;
     let AI_USERNAME = aiUsername;
     let room = "0-0";
@@ -85,7 +86,25 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         }
 
         gameTime -= 1;
-
+        if (gameTime === 0) {
+            console.log("game-----------------------------------------------end");
+            // Check if both players are logged in
+            if (CLIENTS_HANDLER.areBothPlayersLoggedIn(gameId,AI_USERNAME,HUMAN_USERNAME)) {
+                // Send game end message to both players
+                sendDataToPlayer(gameId, HUMAN_USERNAME, GameEndData('You lost'));
+                sendDataToPlayer(gameId, AI_USERNAME, GameEndData('You lost'));
+                // Update player stats
+                CLIENTS_HANDLER.updatePlayerStats(HUMAN_USERNAME, 'You lost');
+                CLIENTS_HANDLER.updatePlayerStats(AI_USERNAME, 'You lost');
+                removeGame(gameId);
+            } else {
+                sendDataToPlayer(gameId, HUMAN_USERNAME, GameEndData('You lost'));
+                sendDataToPlayer(gameId, AI_USERNAME, GameEndData('You lost'));
+                console.log("At least one user is not loggedin");
+                removeGame(gameId);
+            }
+        }
+        
         // Threats
         if (threatCooldown <= 0 && ROOMS_WITH_THREATS.length < MAX_ACTIVE_THREATS) {
             spawnThreat();
@@ -150,6 +169,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     }
 
     //Attempt to ping a room, but randomly scramble it first
+    // TODO-Richard hook up to winston's logic for ai ping
     const scrambleThenPing = (row, column, threatType) =>{
 
         let line = ConsoleLineData(gameTime, `Attempting to ping ${threatType} at ${row}-${column}`, "ai", "private");
@@ -194,7 +214,6 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         let line = ConsoleLineData(gameTime, message);
         addConsoleLineAndBroadcast(line);
     }
-    setInterval(()=> scrambleThenPing(0,0,"fire"), 2000);
 
     function addConsoleLineAndBroadcast(consoleLine){
         consoleLine.time = Math.round(gameTime);
@@ -247,11 +266,18 @@ const lookUpRole = (gameId, username) => {
 const lookUpGame = (gameId) => GAMES[gameId];
 
 const tickGames = () => {
-    for (const gameId of Object.keys(GAMES)) {
+    const gameIds = Object.keys(GAMES);
+    for (const gameId of gameIds) {
         GAMES[gameId].tick();
     }
 }
 
+const removeGame = (gameId) => {
+    delete GAMES[gameId];
+    console.log("game has been removed", GAMES);
+}
+
 setInterval(tickGames, GAME_TICK_DELAY_MS);
+setTimeout(() => removeGame(1), 5000);
 
 module.exports = { startGame, lookUpRole, lookUpGame }

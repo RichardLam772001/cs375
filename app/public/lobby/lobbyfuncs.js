@@ -4,9 +4,6 @@ const refreshBtn = document.getElementById("refresh");
 
 const secretBtn = document.getElementsByClassName("header-btn")[0]; // for testing
 
-
-const username = Math.floor(Math.random()*10000);
-
 // move this stuff to backend later
 let lobbyId = 1;
 let joinedLobbyId = 0;
@@ -25,7 +22,7 @@ const addRowToTopOfTable = (table, values) => {
 		joinedLobbyId = values[0];
 		post(
 			"/lobby/join",
-			{"lobbyId" : joinedLobbyId, "username" : username}
+			{"lobbyId" : joinedLobbyId, "username" : USERNAME_COOKIE}
 		).then((resp) => {
 			if (resp.status !== 200) {
 				// TO DO: Handle errors in joining lobby when lobby system is done
@@ -44,7 +41,7 @@ createBtn.addEventListener("click", () => {
 		getValidId();
 		post(
 			"/lobby/make",
-			{"lobbyId" : lobbyId, "username" : username}
+			{"lobbyId" : lobbyId, "username" : USERNAME_COOKIE}
 		).then((resp) => {
 			if (resp.status !== 200) {
 				// TO DO: Handle errors in joining lobby when lobby system is done
@@ -116,7 +113,7 @@ WS.onReceive((data) => {
 const joinGame = (gameId) => {
     post(
         "/lobby/join-game",
-        {"gameId" : gameId, "username" : username}
+        {"gameId" : gameId, "username" : USERNAME_COOKIE}
     ).then((resp) => {
         resp.json().then((body) => {
             if (body.role === ROLES.HUMAN) {

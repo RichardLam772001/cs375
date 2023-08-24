@@ -39,6 +39,7 @@ const onReceiveDataFromClient = (clientId, byteData) => {
     let username = data.username;
     let gameId = data.gameId;
     let currentRoom;
+    let token = data.token;
 
     console.log("WSS Receive :", data);
 
@@ -49,7 +50,7 @@ const onReceiveDataFromClient = (clientId, byteData) => {
     }
 
     if (!CLIENTS_HANDLER.isRegisteredClient(clientId)) {
-        CLIENTS_HANDLER.registerClient(clientId, username, gameId);
+        CLIENTS_HANDLER.registerClient(clientId, username, gameId, token);
     }
 
     const game = lookUpGame(gameId);

@@ -5,5 +5,7 @@ CREATE DATABASE cyberspace;
 
 CREATE TABLE userdata (
 	username VARCHAR(50) PRIMARY KEY,
-	password VARCHAR
+	password VARCHAR,
+	wins INT DEFAULT 0,
+	losses INT DEFAULT 0
 );
