@@ -3,7 +3,7 @@ const AI = (() => {
   //     CONSOLE.addConsoleLine({message:`ping room ${row}-${column}`, style: "private"});
   // }
 
-  let currentThread = "";
+  let threadType = "";
 
   const pingRoom = (room) => {
     WS.send({
@@ -24,7 +24,7 @@ const AI = (() => {
   };
 
   const switchThreadType = (thread) => {
-    currentThread = thread;
+    threadType = thread;
     console.log("1. AI switch thread type ", thread);
     document.querySelectorAll(".button").forEach((btn) => {
       btn.classList.remove("selected");
@@ -53,7 +53,7 @@ window.onload = () => {
     for (let i = 0; i < size.rows; i++) {
       for (let j = 0; j < size.columns; j++) {
         BOARD.getRoom(i, j).rootElem.addEventListener("click", () =>
-          AI.pingRoom(i, j)
+          AI.pingRoom(`${i}-${j}`)
         );
       }
     }

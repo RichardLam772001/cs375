@@ -49,7 +49,7 @@ const onReceiveDataFromClient = (clientId, byteData) => {
   let currentRoom;
   let currentTool;
   let aiPingRoom;
-  console.log("Action is ", action);
+  let aiPingThreadType;
   console.log("WSS Receive :", data);
 
   const isValid = validateData(username, gameId, action.name);
@@ -76,13 +76,17 @@ const onReceiveDataFromClient = (clientId, byteData) => {
       sendToAllClients(HumanRoomUpdateData(currentRoom));
       break;
     case HUMAN_ACTIONS.switchHumanTool:
-      currentTool = game.switchHumanTool(action.args.tool);
+      currentTool = action.args.tool;
+      game.switchHumanTool(currentTool);
       console.log("2. wss human action switch human tool ", currentTool);
       break;
     case AI_ACTIONS.pingRoom:
-      aiPingRoom = game.pingRoom(action.args.room);
-      aiPingRoom = game.getPingRoom();
-      console.log("AI action, wss pingRoom", aiPingRoom);
+      console.log("1. enter wss pingRoom, AI action");
+      aiPingRoom = action.args.room;
+      aiPingThreadType = action.args.thread;
+      game.pingRoom(aiPingRoom);
+      console.log("AI action pingRoom ", aiPingRoom);
+
       break;
     default:
       break;

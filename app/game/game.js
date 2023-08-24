@@ -69,10 +69,10 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     return room;
   };
 
-  const pingRoom = (newRoom) => {
+  const pingRoom = (newRoom, thread) => {
     pingedRoom = newRoom;
     ROOMS_WITH_PINGED_THREATS.push(pingedRoom);
-    console.log(`pinged threat room ${pingedRoom}`);
+    console.log(`2. pinged room ${pingedRoom}`);
     sendDataToPlayer(
       GAME_ID,
       HUMAN_USERNAME,

@@ -2,6 +2,7 @@
 
 const HUMAN_STATE = (() => {
   let currentRoom;
+  let pingedRoom;
   let currentTool = "";
 
   let onRoomChange;
@@ -46,9 +47,15 @@ const HUMAN_STATE = (() => {
     });
   }
 
+  function aiPingRoom(room) {
+    pingedRoom = room;
+    console.log("ai Ping Room", pingedRoom);
+  }
+
   return {
     setCurrentRoom,
     setRoomChangeCallback,
     switchHumanTool,
+    aiPingRoom,
   };
 })();

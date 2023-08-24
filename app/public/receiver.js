@@ -45,6 +45,9 @@ WS.onReceive((data) => {
       console.log("5. client send to HumanState.", data.tool);
       HUMAN_STATE.switchHumanTool(data.tool);
       break;
+    case "aiPingThreatUpdate":
+      console.log(`receiver.js ai Ping room ${data.room}`);
+      HUMAN_STATE.aiPingRoom(data.room);
     case "threatSpawned":
       BOARD.spawnThreat(data.threatType, data.room);
       break;
