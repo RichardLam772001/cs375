@@ -16,15 +16,16 @@ const Threat = (threatType, onThreatUnresolved, onThreatResolved) => {
     let resolved = false;
     let isResolving = false;
 
-    const tick = () => {
-        currentAge -= 1;
-        if (!resolved) {
-            if (currentAge <= 0) {
-                onThreatUnresolved();
-                return;
-            }
-            setTimeout(tick, THREAT_TICK_SPEED);
+    const tick = (deltaSeconds) => {
+        if(isResolving || resolved) return; //Threat timer is disarmed once human starts fixing it
+
+        currentAge -= deltaSeconds;
+        if (currentAge <= 0) {
+            onThreatUnresolved();
+            return;
         }
+        setTimeout(()=> tick(THREAT_TICK_SPEED*0.001), THREAT_TICK_SPEED);
+        
     };
     /**
      * Starts a countdown to resolve the threat if the correct tool is passed in
@@ -34,11 +35,16 @@ const Threat = (threatType, onThreatUnresolved, onThreatResolved) => {
     const resolve = (tool) => {
         const hasCorrectTool = MAP_THREAT_TO_TOOL[threatType] === tool;
         if (!isResolving && hasCorrectTool) {
-            setTimeout(onThreatResolved, THREAT_RESOLVE_TIME_MS);
+            setTimeout(finishResolve, THREAT_RESOLVE_TIME_MS);
             isResolving = true;
         }
     }
-    setTimeout(tick, THREAT_TICK_SPEED);
+    const finishResolve = () =>{
+        resolved = true;
+        isResolving = false;
+        onThreatResolved();
+    }
+    setTimeout(()=> tick(THREAT_TICK_SPEED*0.001), THREAT_TICK_SPEED);
 
     return {
         THREAT_TYPE,
