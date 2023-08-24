@@ -10,7 +10,8 @@ const DATA_TYPES = {
     LOBBY_LIST : "lobbyList",
     THREAT_SPAWNED: "threatSpawned",
     THREAT_RESOLVED: "threatResolved",
-    PING: "ping"
+    PING: "ping",
+    ROOM_DESTROYED: "roomDestroyed"
 }
 
 const HumanRoomUpdateData = (room) => ({
@@ -49,6 +50,10 @@ const ThreatResolvedData = (room) => ({
     name: DATA_TYPES.THREAT_RESOLVED,
     room: room
 });
+const RoomDestroyedData = (room) => ({
+    name: DATA_TYPES.ROOM_DESTROYED,
+    room
+});
 
 const PingData = (row, col, threatType) =>({
     name: DATA_TYPES.PING,
@@ -64,5 +69,6 @@ module.exports = {
     LobbyListData, 
     ThreatSpawnedData, 
     ThreatResolvedData,
-    PingData
+    PingData,
+    RoomDestroyedData
 };

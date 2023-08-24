@@ -107,6 +107,10 @@ const BOARD = ((rowCount, columnCount) => {
         console.log("roomelem to ping: "+roomElement);
         roomElement.setPing(threatType);
     }
+    const destroyRoom = (room) =>{
+        const roomElement = parseMoveableRoom(room);
+        roomElement.setDestroyed();
+    }
     
     return {
         setAllToHidden,
@@ -117,7 +121,8 @@ const BOARD = ((rowCount, columnCount) => {
         roomHasThreat,
         spawnThreat,
         removeThreat,
-        pingRoom
+        pingRoom,
+        destroyRoom,
     };;
 })(3,3);
 

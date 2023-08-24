@@ -8,7 +8,8 @@ const DATA_TYPES = {
     CONSOLE_LINE : "consoleLine",
     GAME_READY : "gameReady",
 	LOBBY_LIST : "lobbyList",
-    PING : "ping"
+    PING : "ping",
+    ROOM_DESTROYED: "roomDestroyed",
 }
 
 const HumanRoomUpdateData = (room) => ({
@@ -33,6 +34,10 @@ const GameReadyData = (lobbyId, gameId) => ({
 const LobbyListData = (lobbies) => ({
 	name : DATA_TYPES.LOBBY_LIST,
 	lobbies
+});
+const RoomDestroyedData = (room) => ({
+    name: DATA_TYPES.ROOM_DESTROYED,
+    room
 });
 
 const isMessageType = (data, data_type) => {
