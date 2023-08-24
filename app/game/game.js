@@ -204,11 +204,6 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         pingRoom(row, column, threatType);
     }
 
-    const sendDataToBothPlayers = (data) =>{
-        sendDataToPlayer(GAME_ID, HUMAN_USERNAME, data);
-        sendDataToPlayer(GAME_ID, AI_USERNAME, data);
-    }
-
     //Actually ping this room
     const pingRoom = (row, column, threatType) => {
         if(!validateRoomPos(row,column)) return;
