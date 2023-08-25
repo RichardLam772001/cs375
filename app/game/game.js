@@ -3,7 +3,7 @@ const { ROLES, GAME_TICK_DELAY_MS } = require("../constants");
 const { Threat, THREAT_COOLDOWN_SECONDS, THREAT_TTL } = require("./threat");
 const { randomInt } = require("../utils.js");
 const { sendDataToPlayer } = require("../broadcaster.js");
-const { ThreatSpawnedData, ThreatResolvedData, RoomDestroyedData, HumanRoomUpdateData} = require("../dataObjects");
+const { ThreatSpawnedData, ThreatResolvedData, RoomDestroyedData, HumanRoomUpdateData, DelayData} = require("../dataObjects");
 const { CLIENTS_HANDLER } = require("../clientsHandler");
 
 const { RandomBag } = require("../randomBag.js");
@@ -85,8 +85,10 @@ const GAME = (humanUsername, aiUsername, gameId) => {
             return;
         }
 
-        humanAction = DelayedAction(2);
+        const moveTime = 2;
+        humanAction = DelayedAction(moveTime);
         humanAction.setOnFinish(() => doEnterRoom(newRoom));
+        sendDataToHuman(DelayData(`Moving to ${newRoom}...`, moveTime));
         
     }
     const doEnterRoom = (newRoom) =>{
@@ -108,7 +110,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         return room;
     }
     // This is called once every second
-    const tick = () => {
+    const tick = (deltaSeconds) => {
 
         // Pause game if clients in game aren't registered (client hasn't connected yet, or one of them logged out)
         if (!CLIENTS_HANDLER.doesGameHaveRegisteredClients(gameId)) {
@@ -116,17 +118,17 @@ const GAME = (humanUsername, aiUsername, gameId) => {
             return;
         }
 
-        gameTime -= 1;
+        gameTime -= deltaSeconds;
 
-        humanAction?.tick(1);
-        aiAction?.tick(1);
+        humanAction?.tick(deltaSeconds);
+        aiAction?.tick(deltaSeconds);
 
         // Threats
         if (threatCooldown <= 0 && ROOMS_WITH_THREATS.length < MAX_ACTIVE_THREATS) {
             spawnThreat();
         }
         else{
-            threatCooldown -= 1;
+            threatCooldown -= deltaSeconds;
         }
     }
 
@@ -167,6 +169,9 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     const sendDataToBothPlayers = (data) =>{
         sendDataToPlayer(GAME_ID, HUMAN_USERNAME, data);        
         sendDataToPlayer(GAME_ID, AI_USERNAME, data);   
+    }
+    const sendDataToHuman = (data) =>{
+        sendDataToPlayer(GAME_ID, HUMAN_USERNAME, data);    
     }
 
     const removeThreat = (room) => {
@@ -292,12 +297,12 @@ const lookUpRole = (gameId, username) => {
 }
 const lookUpGame = (gameId) => GAMES[gameId];
 
-const tickGames = () => {
+const tickGames = (deltaSeconds) => {
     for (const gameId of Object.keys(GAMES)) {
-        GAMES[gameId].tick();
+        GAMES[gameId].tick(deltaSeconds);
     }
 }
 
-setInterval(tickGames, GAME_TICK_DELAY_MS);
+setInterval(() => tickGames(GAME_TICK_DELAY_MS*0.001), GAME_TICK_DELAY_MS);
 
 module.exports = { startGame, lookUpRole, lookUpGame }

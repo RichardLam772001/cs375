@@ -55,7 +55,7 @@ const RoomDestroyedData = (room) => ({
     room
 });
 const DelayData = (description, time) => ({
-    name: DELAY_DATA,
+    name: DATA_TYPES.DELAY_DATA,
     description,
     time
 });
