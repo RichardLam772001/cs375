@@ -10,6 +10,16 @@ const getCurrentRoom = () => {
     });
 }
 
+const switchHumanTool = () => {
+    WS.send({
+      action: {
+        name: "switchHumanTool",
+      },
+      username: USERNAME_COOKIE,
+      gameId: GAME_ID_COOKIE,
+    });
+  };
+
 WS.onConnect(() => {
     console.log("We are connected");
 });
@@ -33,6 +43,12 @@ WS.onReceive((data) => {
     switch (data.name) {
         case "humanRoomUpdate":
             HUMAN_STATE.setCurrentRoom(data.room);
+            break;
+        case "humanToolUpdate":
+            HUMAN_STATE.switchHumanTool(data.tool);
+            break;
+        case "aiPingThreatUpdate":
+            BOARD.pingRoom(data.room, data.threatType);
             break;
         case "threatSpawned":
             BOARD.spawnThreat(data.threatType, data.room);

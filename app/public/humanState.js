@@ -1,3 +1,4 @@
+// @ts-check
 //This human state is shared between both players
 
 const HUMAN_STATE = (() => {
@@ -18,18 +19,40 @@ const HUMAN_STATE = (() => {
             onRoomChange(oldRoom, newRoom);
         }
     }
+    /**
+     * @returns string representation of the room (e.g. 0-0)
+     */
+    const getCurrentRoom = () => {
+        return currentRoom.ROOM_STRING;
+    }
 
     function setRoomChangeCallback(onRoomChangeFunc){
         onRoomChange = onRoomChangeFunc;
     }
 
-    function setCurrentTool(newTool){
-        currentTool = newTool;
-    } 
-
+    function switchHumanTool(tool) {
+        currentTool = tool;
+        // remove all color before color to selected button
+        document.querySelectorAll(".button").forEach((btn) => {
+            btn.classList.remove("selected");
+            btn.classList.add("unselected");
+        });
+        // color to the selected button
+        const currentToolButton = document.getElementById(tool);
+        if (currentToolButton) {
+            currentToolButton.classList.remove("unselected");
+            currentToolButton.classList.add("selected");
+        }
+        CONSOLE.addConsoleLine({
+            message: `Human set tool ${tool}`,
+            style: "public",
+        });
+    }
+    
     return {
         setCurrentRoom,
         setRoomChangeCallback,
-        setCurrentTool
+        switchHumanTool,
+        getCurrentRoom,
     }
 })();

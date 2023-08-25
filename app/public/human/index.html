@@ -25,25 +25,31 @@
       <div id="main-container"></div>
       <div id="vertical-divider"></div>
       <div id="tools">
-        <button id="fire-extinguisher-button" class="button">
+        <button
+          class="button"
+          id="fire-extinguisher"
+          onclick="HUMAN.switchHumanTool('fire-extinguisher')">
           <i class="fa-solid fa-fire-extinguisher"></i>
         </button>
-        <button id="wrench-button" class="button">
+        <button
+          class="button"
+          id="wrench"
+          onclick="HUMAN.switchHumanTool('wrench')">
           <i class="fa-solid fa-wrench"></i>
         </button>
-        <button id="gun-button" class="button"><i class="fa-solid fa-gun"></i></button>
+        <button class="button" id="gun" onclick="HUMAN.switchHumanTool('gun')"><i class="fa-solid fa-gun"></i></button>
       </div>
     </div>
 </body>
 <script src="../cookies.js"></script>
 <script src="../constants.js"></script>
 <script src="../websocket.js"></script>
-<script src="../receiver.js"></script>
 <script src="../game/game.js"></script>
 <script src="../Console/consoleWindow.js"></script>
 <script src="../roomElement.js"></script>
 <script src="../human/humanElem.js"></script>
 <script src="../board.js"></script>
+<script src="../receiver.js"></script>
 <script src="../humanState.js"></script>
 <script src="./human.js"></script>
 </html>

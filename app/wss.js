@@ -64,6 +64,16 @@ const onReceiveDataFromClient = (clientId, byteData) => {
             currentRoom = game.getCurrentRoom();
             sendToAllClients(HumanRoomUpdateData(currentRoom));
             break;
+        case HUMAN_ACTIONS.switchHumanTool:
+            const newTool = action.args.tool;
+            game.switchHumanTool(newTool);
+            break;
+        case AI_ACTIONS.pingRoom:
+            const aiPingRoom = action.args.room;
+            const aiPingThreatType = action.args.threatType;
+            console.log(action);
+            game.scrambleThenPing(aiPingRoom, aiPingThreatType);
+            break;
         default:
             break;
     }
@@ -79,4 +89,4 @@ webSockServer.on('connection', ws => {
     ws.onerror = onError;
 });
 
-module.exports = { sendToAllClients }
+module.exports = { sendToAllClients };
