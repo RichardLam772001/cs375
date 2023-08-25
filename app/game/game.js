@@ -238,7 +238,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
             return;
         }
         currentTool = newTool;
-        sendDataToPlayer(GAME_ID, HUMAN_USERNAME, HumanToolUpdateData(currentTool));
+        sendDataToBothPlayers(HumanToolUpdateData(currentTool));
     };
 
     /**

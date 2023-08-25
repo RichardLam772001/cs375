@@ -10,16 +10,6 @@ const getCurrentRoom = () => {
     });
 }
 
-const switchHumanTool = () => {
-    WS.send({
-      action: {
-        name: "switchHumanTool",
-      },
-      username: USERNAME_COOKIE,
-      gameId: GAME_ID_COOKIE,
-    });
-  };
-
 WS.onConnect(() => {
     console.log("We are connected");
 });

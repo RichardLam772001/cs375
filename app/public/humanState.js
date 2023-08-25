@@ -13,7 +13,6 @@ const HUMAN_STATE = (() => {
         if(newRoom === undefined) return;
         const oldRoom = currentRoom;
         currentRoom = newRoom;
-        CONSOLE.addConsoleLine({message:`Human enters room ${newRoomString}`, style: "public"});
         HUMAN_ELEM.moveToRoom(newRoom);
         if(onRoomChange){
             onRoomChange(oldRoom, newRoom);
@@ -43,10 +42,6 @@ const HUMAN_STATE = (() => {
             currentToolButton.classList.remove("unselected");
             currentToolButton.classList.add("selected");
         }
-        CONSOLE.addConsoleLine({
-            message: `Human set tool ${tool}`,
-            style: "public",
-        });
     }
     
     return {
