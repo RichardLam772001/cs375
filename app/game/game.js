@@ -40,6 +40,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     let room = "0-0";
     let threatCooldown = THREAT_COOLDOWN_SECONDS;
 
+
     //ROOMS
     const SHIP_SIZE = [3,3];
     const SHIP_ROWS = SHIP_SIZE[0];
@@ -50,6 +51,11 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     const humanCanAct = () => {return humanAction === undefined || !humanAction.getIsRunning();};
     let aiAction;
     const aiCanAct = () => {return aiAction === undefined || !aiAction.getIsRunning();};
+
+    //ACTION DELAYS
+    const pingTime = 7;
+    const moveTime = 2;
+    
 
     const THREATS_INDEXED_BY_ROOM = {};
     const AVAILABLE_ROOMS = ["0-0", "0-1", "0-2", "1-0", "1-1", "1-2", "2-0", "2-1", "2-2"]; // Richard: Yes I know it's hardcoded, we can make a dynamic room generator later TO DO
@@ -84,8 +90,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
             console.log(`GAME - Cannot enter room ${newRoom}`);
             return;
         }
-
-        const moveTime = 2;
+        
         humanAction = DelayedAction(moveTime);
         humanAction.setOnFinish(() => doEnterRoom(newRoom));
         sendDataToHuman(DelayData(`Moving to ${newRoom}...`, moveTime));
@@ -167,11 +172,14 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         alertPlayerOfThreat(THREATS_INDEXED_BY_ROOM[room], HUMAN_USERNAME, room);
     }
     const sendDataToBothPlayers = (data) =>{
-        sendDataToPlayer(GAME_ID, HUMAN_USERNAME, data);        
-        sendDataToPlayer(GAME_ID, AI_USERNAME, data);   
+        sendDataToHuman(data);
+        sendDataToAI(data);
     }
     const sendDataToHuman = (data) =>{
         sendDataToPlayer(GAME_ID, HUMAN_USERNAME, data);    
+    }
+    const sendDataToAI = (data) =>{
+        sendDataToPlayer(GAME_ID, AI_USERNAME, data);
     }
 
     const removeThreat = (room) => {
@@ -200,11 +208,22 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         sendDataToPlayer(GAME_ID, HUMAN_USERNAME, ThreatResolvedData(room));
     }
 
-    //Attempt to ping a room, but randomly scramble it first
-    const scrambleThenPing = (row, column, threatType) =>{
+    //Called when AI player tries to ping
+    const requestPing = (row, column, threatType) =>{
+        if(!aiCanAct()) return;
 
         let line = ConsoleLineData(gameTime, `Attempting to ping ${threatType} at ${row}-${column}`, "ai", "private");
         addConsoleLineAndBroadcast(line);
+
+        
+        aiAction = DelayedAction(pingTime);
+
+        aiAction.setOnFinish(() => scrambleThenPing(row, column, threatType));
+        sendDataToAI(DelayData(`Pinging ${threatType} at ${row}-${column}...`, pingTime));
+    }
+
+    //Attempt to ping a room, but randomly scramble it first
+    const scrambleThenPing = (row, column, threatType) =>{
 
         let scrambleCount = RandomBag([[50, 0], [30, 1], [20, 2]]).pull();
 
