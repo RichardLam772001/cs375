@@ -7,9 +7,9 @@ const DelayedAction = (remainingTime) => {
 
     let isRunning = true;
 
-    function tick(deltaSeconds){
+    function tick(deltaSeconds, speedFactor = 1){
         if(!isRunning) return;
-        remainingTime -= deltaSeconds;
+        remainingTime -= deltaSeconds*speedFactor;
         if(remainingTime <= 0){
             finish();
         }

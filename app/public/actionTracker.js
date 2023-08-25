@@ -14,36 +14,45 @@ const ACTION_TRACKER = (() => {
     progressBarElement.id = "progress-bar";
     const PROGRESS_BAR = ProgressBar(progressBarElement);
 
-    let totalTime = 0;
-    let timeRemaining = 0;
     let interval = null;
     let allowCompletion = true;
 
-    
-
-    function startFromTime(t){
-        totalTime = t;
-        timeRemaining = totalTime;
-        startFill();
-    }
+    let progress = 0;
+    let totalTime = 0;
+    let speedFactor = 1;
 
     function tick(deltaSeconds){
-        timeRemaining = Math.max(timeRemaining-deltaSeconds, 0);
-        if(timeRemaining <= 0){
+        progress = Math.min(1, progress + (deltaSeconds/totalTime)*speedFactor);
+
+        if(progress >= 1){
             if(allowCompletion){
                 stopBar();
-                setVisible(false);
             }
             return;
         }
-        PROGRESS_BAR.setFillRatio(1-timeRemaining/totalTime);
-        PROGRESS_BAR.setMessage(Math.round(timeRemaining)+"s");
+        updateProgress();
+    }
+    function updateProgress(){
+        PROGRESS_BAR.setFillRatio(progress);
+        PROGRESS_BAR.setMessage(Math.round(timeLeft())+"s");
+    }
+    function timeLeft(){
+        return (1 - progress)*totalTime/speedFactor;
     }
 
     function setDelayData(delayData){
-        console.log("delay data: "+delayData);
+        console.log("set data: "+delayData);
         setDescription(delayData.description);
-        startFromTime(delayData.time);
+
+        totalTime = delayData.time;
+        progress = delayData.progress;
+        speedFactor = delayData.speedFactor;
+        
+        if(totalTime > 0 && speedFactor > 0){
+            startBar();
+        }else{
+            stopBar();
+        }
     }
 
     function setVisible(v){
@@ -57,12 +66,13 @@ const ACTION_TRACKER = (() => {
     function stopBar() {
         clearInterval(interval);
         interval = null;
+        setVisible(false);
     }
 
-    function startFill() {
-        PROGRESS_BAR.setFillRatio(0);
-        setVisible(true);
+    function startBar() {
         stopBar();
+        updateProgress();
+        setVisible(true);
         interval = setInterval(()=>tick(TICK_RATE*0.001), TICK_RATE);   
     }
 

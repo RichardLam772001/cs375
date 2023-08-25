@@ -54,10 +54,12 @@ const RoomDestroyedData = (room) => ({
     name: DATA_TYPES.ROOM_DESTROYED,
     room
 });
-const DelayData = (description, time) => ({
+const DelayData = (description, time, speedFactor = 1, progress = 0) => ({
     name: DATA_TYPES.DELAY_DATA,
     description,
-    time
+    time,
+    speedFactor,
+    progress,
 });
 
 module.exports = { HumanRoomUpdateData, ConsoleLineData, GameReadyData, LobbyListData, ThreatSpawnedData, ThreatResolvedData, RoomDestroyedData, DelayData};
