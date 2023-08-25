@@ -217,7 +217,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         let message = `AI pings ${threatType} at ${row}-${column}`;
         let line = ConsoleLineData(gameTime, message);
         addConsoleLineAndBroadcast(line);
-        sendDataToPlayer(GAME_ID, HUMAN_USERNAME, AIPingThreatUpdateData(`${row}-${column}`, threatType));
+        sendDataToBothPlayers(AIPingThreatUpdateData(`${row}-${column}`, threatType));
     }
 
     function addConsoleLineAndBroadcast(consoleLine){
