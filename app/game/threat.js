@@ -1,4 +1,4 @@
-const THREAT_TTL = 10;
+const THREAT_TTL = 18;
 const THREAT_TICK_SPEED = 1000;
 const THREAT_COOLDOWN_SECONDS = 5;
 

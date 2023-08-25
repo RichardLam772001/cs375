@@ -1,9 +1,9 @@
 // @ts-check
 const { ROLES, GAME_TICK_DELAY_MS } = require("../constants");
 const { Threat, THREAT_COOLDOWN_SECONDS, THREAT_TTL } = require("./threat");
-const { randomInt } = require("../utils.js");
+const { randomInt, randomSelect } = require("../utils.js");
 const { sendDataToPlayer } = require("../broadcaster.js");
-const { ThreatSpawnedData, ThreatResolvedData, RoomDestroyedData, HumanRoomUpdateData, DelayData} = require("../dataObjects");
+const { ThreatSpawnedData, ThreatResolvedData, RoomDestroyedData, HumanToolUpdateData, AIPingThreatUpdateData, HumanRoomUpdateData, DelayData} = require("../dataObjects");
 const { CLIENTS_HANDLER } = require("../clientsHandler");
 
 const { RandomBag } = require("../randomBag.js");
@@ -53,7 +53,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     const aiCanAct = () => {return aiAction === undefined || !aiAction.getIsRunning();};
 
     //ACTION DELAYS
-    const pingTime = 7;
+    const pingTime = 5;
     const moveTime = 2;
     
 
@@ -208,23 +208,31 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         sendDataToPlayer(GAME_ID, HUMAN_USERNAME, ThreatResolvedData(room));
     }
 
-    //Called when AI player tries to ping
-    const requestPing = (row, column, threatType) =>{
+    /**
+     * Queue up a ping action for the AI player
+     * @param {string} room 
+     * @param {string} threatType 
+     */
+    const requestPing = (room, threatType) =>{
         if(!aiCanAct()) return;
 
-        let line = ConsoleLineData(gameTime, `Attempting to ping ${threatType} at ${row}-${column}`, "ai", "private");
-        addConsoleLineAndBroadcast(line);
+        addConsoleLineAndBroadcast(
+            ConsoleLineData(gameTime, `Attempting to ping ${threatType} at ${room}`, "ai", "private")
+        );
 
-        
         aiAction = DelayedAction(pingTime);
-
-        aiAction.setOnFinish(() => scrambleThenPing(row, column, threatType));
-        sendDataToAI(DelayData(`Pinging ${threatType} at ${row}-${column}...`, pingTime));
+        aiAction.setOnFinish(() => scrambleThenPing(room, threatType));
+        sendDataToAI(DelayData(`Pinging ${threatType} at ${room}...`, pingTime));
     }
 
-    //Attempt to ping a room, but randomly scramble it first
-    const scrambleThenPing = (row, column, threatType) =>{
-
+    /**
+     * Attempt to ping a room, but randomly scramble it first
+     * @param {string} room e.g. 0-0 
+     * @param {string} threatType
+     */
+    const scrambleThenPing = (room, threatType) =>{
+        let row = Number(room[0]);
+        let column = Number(room[2]);
         let scrambleCount = RandomBag([[50, 0], [30, 1], [20, 2]]).pull();
 
         const scrambleBag = RandomBag([[1,"row"], [1, "col"], [1,"type"]]); //Different scramble categories may be given different weights
@@ -232,44 +240,40 @@ const GAME = (humanUsername, aiUsername, gameId) => {
             let scrambleFunc = scrambleBag.pull(false);
             switch(scrambleFunc){
                 case "row":
-                    let newRow;
-                    do{
-                        newRow = randomInt(0, SHIP_ROWS);
-                    }while(newRow === row);
-                    row = newRow;
+                    row = randomSelect([0,1,2], row);
                     break;
-
                 case "col":
-                    let newCol;
-                    do{
-                        newCol = randomInt(0, SHIP_COLS);
-                    }while(newCol === column);
-                    column = newCol;
+                    column = randomSelect([0,1,2], row);
                     break;
-
                 case "type":
-                    //TODO: Scamble threat type before pinging
+                    threatType = randomSelect(THREAT_TYPES, threatType);
                     break;
             }
         }
-
         pingRoom(row, column, threatType);
     }
 
-    //Actually ping this room
+    /**
+     * Actually sends the ping, will almost always be called by scrambleThenPing
+     * @param {number} row 
+     * @param {number} column 
+     * @param {string} threatType 
+     */
     const pingRoom = (row, column, threatType) => {
-        if(!validateRoomPos(row,column)) return;
+        if(!validateRoomPos(row,column)) {
+            console.log(`DEBUG - Invalid row and column ${row}-${column}`);
+            return;
+        }
 
         let message = `AI pings ${threatType} at ${row}-${column}`;
         let line = ConsoleLineData(gameTime, message);
         addConsoleLineAndBroadcast(line);
+        sendDataToBothPlayers(AIPingThreatUpdateData(`${row}-${column}`, threatType));
     }
-    setInterval(()=> scrambleThenPing(0,0,"fire"), 2000);
 
     function addConsoleLineAndBroadcast(consoleLine){
         consoleLine.time = Math.round(gameTime);
         consoleLinesLog.addConsoleLine(consoleLine);
-        console.log(consoleLine.message);
 
         if(isLineVisibleToHuman(consoleLine)){
             sendDataToPlayer(GAME_ID, HUMAN_USERNAME, consoleLine);        
@@ -278,6 +282,16 @@ const GAME = (humanUsername, aiUsername, gameId) => {
             sendDataToPlayer(GAME_ID, AI_USERNAME, consoleLine);   
         }
     }
+
+    const switchHumanTool = (newTool) => {
+        // currentTool isnt valid tool
+        if (TOOLS.indexOf(newTool) === -1) {
+            return;
+        }
+        currentTool = newTool;
+        sendDataToBothPlayers(HumanToolUpdateData(currentTool));
+    };
+
     /**
      * 
      * @param {string} room e.g. 0-0 
@@ -291,7 +305,9 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         tick,
         getRole,
         enterRoom,
-        getCurrentRoom
+        getCurrentRoom,
+        switchHumanTool,
+        requestPing,
     }
 }
 

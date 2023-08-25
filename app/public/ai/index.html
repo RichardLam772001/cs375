@@ -12,9 +12,7 @@
     <h1 id="role-text">You are the AI</h1>
 
     <div id="body">
-        <div id="console">
-
-        </div>
+        <div id="console"></div>
         <div id="console-window"></div>
         <div id="vertical-divider"></div>
         <div id="main-container"></div>
@@ -22,9 +20,24 @@
         <div id="sidebar">
             <div class="tool-group">
                 <div>Pings</div>
-                <button class="button"> Fire</button>
-                <button class="button"> Breach </button>
-                <button class="button"> Intruder </button>
+                <button
+                  id="fire"
+                  class="button"
+                  onclick="AI.switchThreatType('fire')">
+                  <img src="../images/ai/fire.png" alt="fire" class="button-icon" />
+                </button>
+                <button
+                  id="breach"
+                  class="button"
+                  onclick="AI.switchThreatType('breach')">
+                  <img src="../images/ai/breach.png" alt="breach" class="button-icon" />
+                </button>
+                <button
+                  id="invader"
+                  class="button"
+                  onclick="AI.switchThreatType('invader')">
+                  <img src="../images/ai/invader.png" alt="invader" class="button-icon" />
+                </button>
             </div>
             <div class="tool-group">
                 <div>Manage Threats</div>
@@ -38,12 +51,12 @@
 </body>
 <script src="../cookies.js"></script>
 <script src="../constants.js"></script>
-<script src="../websocket.js"></script>
-<script src="../receiver.js"></script>
 <script src="../Console/consoleWindow.js"></script>
 <script src="../roomElement.js"></script>
 <script src="../human/humanElem.js"></script>
+<script src="../websocket.js"></script>
 <script src="../board.js"></script>
+<script src="../receiver.js"></script>
 <script src="../actionTracker.js"></script>
 <script src="../humanState.js"></script>
 <script src="./ai.js"></script>
