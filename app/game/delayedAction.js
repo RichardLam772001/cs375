@@ -1,16 +1,14 @@
 //This class works similar to a timeout, but it can be ticked or cancelled
 
-const DelayedAction = (remainingTime) => {
-
-    let onFinish;
-    let onCancel;
+const DelayedAction = (remainingTime, onFinish, onCancel) => {
 
     let isRunning = true;
+    let allowCompletion = true; // i.e. Resolving threats may not be finished until minigame is completed
 
     function tick(deltaSeconds, speedFactor = 1){
         if(!isRunning) return;
         remainingTime -= deltaSeconds*speedFactor;
-        if(remainingTime <= 0){
+        if(remainingTime <= 0 && allowCompletion){
             finish();
         }
     }
@@ -32,13 +30,17 @@ const DelayedAction = (remainingTime) => {
     function getIsRunning(){
         return isRunning;
     }
+    function setAllowCompletion(allow){
+        allowCompletion = allow;
+    }
 
     return {
         tick,
         setOnFinish,
         setOnCancel,
         cancel,
-        getIsRunning
+        getIsRunning,
+        setAllowCompletion,
     }
 }
 

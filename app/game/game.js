@@ -55,6 +55,8 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     //ACTION DELAYS
     const pingTime = 5;
     const moveTime = 2;
+    const toolSwitchTime = 2;
+    const resolveThreatTime = 3;
     
 
     const THREATS_INDEXED_BY_ROOM = {};
@@ -107,12 +109,22 @@ const GAME = (humanUsername, aiUsername, gameId) => {
             alertHumanPlayerOfThreat(room);
 
             const threat = THREATS_INDEXED_BY_ROOM[room];
-            threat.resolve(currentTool);
+            if(threat.correctTool(currentTool)){
+                startResolvingThreat(threat);
+            }
         }
         sendDataToBothPlayers(HumanRoomUpdateData(room));
     }
     const getCurrentRoom = () => {
         return room;
+    }
+    const startResolvingThreat = (threat) => {
+        if(!humanCanAct()) return;
+
+        threat.startResolving();
+
+        humanAction = DelayedAction(resolveThreatTime, () => threat.finishResolve());
+        sendDataToHuman(DelayData(`Resolving ${threat.THREAT_TYPE}...`, resolveThreatTime));
     }
     // This is called once every second
     const tick = (deltaSeconds) => {
@@ -284,13 +296,21 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     }
 
     const switchHumanTool = (newTool) => {
+        if(!humanCanAct()) return;
+
         // currentTool isnt valid tool
         if (TOOLS.indexOf(newTool) === -1) {
             return;
         }
+
+        humanAction = DelayedAction(toolSwitchTime, () => doSwitchHumanTool(newTool));
+        sendDataToHuman(DelayData(`Switching tool to ${newTool}...`, toolSwitchTime));
+    };
+
+    const doSwitchHumanTool = (newTool) => {
         currentTool = newTool;
         sendDataToBothPlayers(HumanToolUpdateData(currentTool));
-    };
+    }
 
     /**
      * 
