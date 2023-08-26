@@ -5,8 +5,9 @@ const { PLAYERS_PER_GAME, ROLES } = require("../constants.js");
 // will have roles if game is starting. e.g. {1: [{'username' : 1, 'role' : ROLES.AI}, {'username' : 2, 'role' : ROLES.HUMAN}]}
 const LOBBIES = {};
 
-// For quick lookup
-const USERS_IN_A_LOBBY = new Set();
+// For quick lookup (maps username to lobby id)
+// e.g. {'some_username' : 1}
+const USERS_IN_A_LOBBY = {};
 
 /**
  * Populates LOBBIES with empty lobbies
@@ -35,20 +36,15 @@ const joinLobby = (lobbyId, username) => {
         if (LOBBIES[lobbyId].length === PLAYERS_PER_GAME) {
             throw Error("Lobby full!");
         }
-		if (LOBBIES[lobbyId][0] === undefined) {
-			LOBBIES[lobbyId][0] = {username};
-		}
-		else {
-			LOBBIES[lobbyId][1] = {username};
-		}
+        LOBBIES[lobbyId].push({username});
     }
     else {
         LOBBIES[lobbyId] = [{username}];
     }
 
-    USERS_IN_A_LOBBY.add(username);
+    USERS_IN_A_LOBBY[username] = lobbyId;
 
-    const isLobbyFull = LOBBIES[lobbyId].length === PLAYERS_PER_GAME && LOBBIES[lobbyId][0] !== undefined;
+    const isLobbyFull = LOBBIES[lobbyId].length === PLAYERS_PER_GAME;
     if (isLobbyFull) {
         assignRoles(lobbyId);
     }
@@ -94,7 +90,7 @@ const leaveLobby = (lobbyId, username) => {
 		else if (LOBBIES[lobbyId][1].username === username) {
             LOBBIES[lobbyId].splice(1, 1);
 		}
-        USERS_IN_A_LOBBY.delete(username);
+        delete USERS_IN_A_LOBBY[username];
 	}
     return true;
 }
@@ -125,7 +121,19 @@ const getFormattedLobbies = () => {
 
 
 const isUserInLobby = (username) => {
-	return USERS_IN_A_LOBBY.has(username);
+	return username in USERS_IN_A_LOBBY;
+}
+const getLobbyUserIsIn = (username) => {
+    return USERS_IN_A_LOBBY[username];
 }
 
-module.exports = { joinLobby, getPlayersInLobby, clearLobby, leaveLobby, getLobbies, getFormattedLobbies, isUserInLobby };
+module.exports = {
+    joinLobby,
+    getPlayersInLobby,
+    clearLobby,
+    leaveLobby,
+    getLobbies,
+    getFormattedLobbies,
+    isUserInLobby,
+    getLobbyUserIsIn
+};

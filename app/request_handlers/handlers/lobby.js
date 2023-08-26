@@ -1,4 +1,4 @@
-const { joinLobby, getPlayersInLobby, clearLobby, leaveLobby, isUserInLobby, getFormattedLobbies } = require("../../lobby/lobby.js");
+const { joinLobby, getPlayersInLobby, clearLobby, leaveLobby, isUserInLobby, getFormattedLobbies, getLobbyUserIsIn } = require("../../lobby/lobby.js");
 const { sendToAllClients } = require("../../wss.js");
 const { GameReadyData, LobbyListData } = require("../../dataObjects.js");
 const { ANONY_COOKIE_DURATION_MS } = require("../../constants.js");
@@ -34,6 +34,7 @@ const lobbyJoin = (req, res) => {
     console.log(`Player ${username} joined lobby ${lobbyId}`);
 	
 	refreshLobbyPage();
+	res.cookie('username', username, { maxAge: ANONY_COOKIE_DURATION_MS, httpOnly: false});
     res.send({ lobbyId });
     setTimeout(() => startGameIfReady(isGameReady, lobbyId), 1000);
 }
@@ -76,4 +77,14 @@ const refreshLobbyPage = () => {
 	sendToAllClients(LobbyListData(getFormattedLobbies()));
 }
 
-module.exports = { lobbyJoin, lobbyJoinGame, lobbyLeave, lobbiesGet };
+const lobbyIsJoined = (req, res) => {
+	const body = req.body;
+	const username = body.username;
+	if (isUserInLobby(username)) {
+		return res.send({"lobbyId" : getLobbyUserIsIn(username)});
+	}
+	res.statusCode = 400;
+	return res.send({"lobbyId" : false});
+}
+
+module.exports = { lobbyJoin, lobbyJoinGame, lobbyLeave, lobbiesGet, lobbyIsJoined };

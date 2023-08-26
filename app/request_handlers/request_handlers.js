@@ -1,4 +1,4 @@
-const { lobbyJoin, lobbyJoinGame, lobbyLeave, lobbiesGet } = require("./handlers/lobby.js");
+const { lobbyJoin, lobbyJoinGame, lobbyLeave, lobbiesGet, lobbyIsJoined } = require("./handlers/lobby.js");
 const { createAccount, login } = require("./handlers/login.js");
 
 const setRequestHandlers = (app) => {
@@ -13,7 +13,7 @@ const setRequestHandlers = (app) => {
     app.post("/lobby/join", lobbyJoin);
 	app.post("/lobby/leave", lobbyLeave);
     app.get("/lobby/list", lobbiesGet);
-	// app.post("/lobby/joinstatus", joinStatusGet);
+	app.post("/lobby/isjoined", lobbyIsJoined);
 
     app.post("/login/create", createAccount);
     app.post("/login/login", login)

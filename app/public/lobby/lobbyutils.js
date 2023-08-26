@@ -3,10 +3,11 @@ const lobbyTbl = document.getElementsByClassName("lobby-tbl-body")[0];
 const createBtn = document.getElementById("create"); // not really createbtn anymore but
 const joinedDiv = document.getElementById("joined");
 
-const username = Math.floor(Math.random()*10000);
-
 // This is the lobbyId that the client is currently in (-1 for not in a lobby)
 let JOINED_LOBBY_ID = -1;
+
+// Set username to be cookie
+const username = USERNAME_COOKIE;
 
 const joinLobby = (lobbyId) =>{
 	post(
@@ -68,6 +69,26 @@ const getLobbyData = async () => {
 		updateLobbyData(lobbyListData.lobbies);
 	}
 	else {
+		console.log("ERROR - Something went wrong");
+	}
+}
+
+/**
+ * Will show the leave lobby button and do necessary UI changes if user is in lobby
+ * Usually run once on page load
+ */
+const checkIfUserIsInLobby = async () => {
+	const resp = await post("/lobby/isJoined", {username: USERNAME_COOKIE});
+	if (resp.status === 200) {
+		const isJoinedData = await resp.json();
+		JOINED_LOBBY_ID = isJoinedData.lobbyId;
+		setRocketShipAsJoined(JOINED_LOBBY_ID);
+	}
+	else {
+		// User not in lobby
+		if (resp.status === 400) {
+			return;
+		}
 		console.log("ERROR - Something went wrong");
 	}
 }

@@ -90,4 +90,8 @@ const clearLobbies = () => {
     lobbies.innerText = "";
 }
 
-getLobbyData();
+const init = () => {
+	getLobbyData();
+	checkIfUserIsInLobby();
+}
+init();
