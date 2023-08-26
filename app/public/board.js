@@ -123,11 +123,6 @@ const BOARD = ((rowCount, columnCount) => {
         const roomElement = parseMoveableRoom(room);
         roomElement.setDestroyed();
     }
-
-    const destroyRoom = (room) =>{
-        const roomElement = parseMoveableRoom(room);
-        roomElement.setDestroyed();
-    }
     
     return {
         setAllToHidden,
