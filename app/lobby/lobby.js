@@ -1,7 +1,22 @@
 const { randomInt } = require("../utils.js");
 const { PLAYERS_PER_GAME, ROLES } = require("../constants.js");
 
+// e.g. {1: [{'username' : 1}, {'username' : 2}]}
+// will have roles if game is starting. e.g. {1: [{'username' : 1, 'role' : ROLES.AI}, {'username' : 2, 'role' : ROLES.HUMAN}]}
 const LOBBIES = {};
+
+// For quick lookup
+const USERS_IN_A_LOBBY = new Set();
+
+/**
+ * Populates LOBBIES with empty lobbies
+ */
+const populateLOBBIES = () => {
+	for (let i=0; i < 20; i++) {
+		LOBBIES[i] = [];
+	}
+}
+populateLOBBIES();
 
 const throwOnInvalidLobbyId = (lobbyId) => {
     if (!(lobbyId in LOBBIES)) {
@@ -30,6 +45,9 @@ const joinLobby = (lobbyId, username) => {
     else {
         LOBBIES[lobbyId] = [{username}];
     }
+
+    USERS_IN_A_LOBBY.add(username);
+
     const isLobbyFull = LOBBIES[lobbyId].length === PLAYERS_PER_GAME && LOBBIES[lobbyId][0] !== undefined;
     if (isLobbyFull) {
         assignRoles(lobbyId);
@@ -54,25 +72,36 @@ const assignRoles = (lobbyId) => {
 }
 
 const clearLobby = (lobbyId) => {
-	LOBBIES[lobbyId].pop();
-	LOBBIES[lobbyId].pop();
+	LOBBIES[lobbyId] = [];
 }
 
+/**
+ * Does nothing if username is not in lobby or if lobbyId is invalid
+ * @param {number} lobbyId 
+ * @param {string} username
+ * @returns {boolean} whether username left lobby or not
+ */
 const leaveLobby = (lobbyId, username) => {
 	if (lobbyId in LOBBIES) {
 		if (LOBBIES[lobbyId].length == 2) {
 			console.log("Game starting soon, cannot leave lobby.");
-			return;
+			return false;
 		}
-		if (LOBBIES[lobbyId][0] !== undefined && LOBBIES[lobbyId][0].username === username) {
-			LOBBIES[lobbyId].pop();
+        // Removes user
+        if (LOBBIES[lobbyId][0].username === username) {
+            LOBBIES[lobbyId].splice(0, 1);
+        }
+		else if (LOBBIES[lobbyId][1].username === username) {
+            LOBBIES[lobbyId].splice(1, 1);
 		}
+        USERS_IN_A_LOBBY.delete(username);
 	}
+    return true;
 }
 
 /**
  * 
- * @param {*} lobbyId 
+ * @param {number} lobbyId 
  * @returns array of size 2, 1st element will be player w/ human role, 2nd element will be player w/ ai role
  */
 const getPlayersInLobby = (lobbyId) => {
@@ -83,5 +112,20 @@ const getPlayersInLobby = (lobbyId) => {
 const getLobbies = () => {
 	return LOBBIES;
 }
+/**
+ * @returns e.g. [{lobbyId: 1, playerCount: 2}, ...]
+ */
+const getFormattedLobbies = () => {
+    const formattedLobbies = [];
+    for (const lobbyId of Object.keys(LOBBIES)) {
+        formattedLobbies.push({ lobbyId, playerCount: LOBBIES[lobbyId].length});
+    }
+    return formattedLobbies;
+}
 
-module.exports = { joinLobby, getPlayersInLobby, clearLobby, leaveLobby, getLobbies }
+
+const isUserInLobby = (username) => {
+	return USERS_IN_A_LOBBY.has(username);
+}
+
+module.exports = { joinLobby, getPlayersInLobby, clearLobby, leaveLobby, getLobbies, getFormattedLobbies, isUserInLobby };

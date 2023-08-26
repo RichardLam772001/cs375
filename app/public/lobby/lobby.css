@@ -1,0 +1,67 @@
+.lobbies {
+    flex: 4;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.lobby {
+    position: relative;
+    margin: 3rem;
+    width: 7rem;
+    height: 10rem;
+    cursor: pointer;
+    animation: spaceship-glow-red 0.5s ease-in-out infinite alternate;
+    transition: animation 0.5s;
+}
+.lobby-title {
+    position: absolute;
+    top: -2rem;
+    color: #00d7c3;
+    font-weight: 600;
+    text-align: center;
+    left: 25%;
+}
+.lobby:hover {
+    animation: spaceship-glow-blue 0.25s ease-in-out infinite alternate;
+}
+.spaceship {
+    width: 100%;
+    height: 100%;
+    background-image: url("../images/spaceship.png");
+    background-size: contain;
+    z-index: 1;
+}
+
+@keyframes spaceship-glow-blue {
+    0% {
+        background: #00d7c3;
+    }
+    100% {
+        background: rgb(0, 162, 255);
+    }
+}
+
+@keyframes spaceship-glow-red {
+    0% {
+        background: #ff8800;
+    }
+    100% {
+        background: rgb(255, 34, 0);
+    }
+}
+
+.buttons {
+    flex: 1;
+}
+.lobbyBody {
+    display: flex;
+    flex-direction: row;
+    overflow-y: scroll;
+}
+.joined-rocket {
+    animation: spaceship-glow-blue 0.25s ease-in-out infinite alternate;
+}
+/* Disabled initially if not in lobby */
+#leave-lobby-button {
+    display: none;
+}

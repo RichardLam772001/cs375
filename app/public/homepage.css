@@ -1,0 +1,114 @@
+.body {
+    margin: 0;
+    background-color: #000;
+    width: 100vw;
+    height: 100vh;
+}
+
+.star {
+    position: absolute;
+    background-color: #fff; /* Color of the stars */
+    animation: moveStars 10s linear infinite;
+    z-index: 1;
+    box-shadow: 0px 0px 2px rgb(208, 208, 208);
+}
+.small-star {
+    width: 1px;
+    height: 1px;
+}
+.medium-star {
+    width: 3px;
+    height: 3px;
+}
+.large-star {
+    width: 5px;
+    height: 5px;
+}
+.main-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 2;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50vw;
+    height: 50vh;
+}
+.title {
+    color: white;
+    font-weight: 700;
+    font-size: 48px;
+    animation: glow 1s ease-in-out infinite alternate;
+}
+.buttons-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    flex: 2;
+}
+
+@keyframes moveStars {
+    0% {
+        opacity: 0;
+        transform: translateY(100vh);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(-100vh);
+    }
+}
+
+@keyframes glow {
+    from {
+      text-shadow: 0 0 10px #fff,
+       0 0 25px #00dee6,
+       0 0 40px #00adb3
+    }
+    to {
+      text-shadow: 0 0 20px #fff,
+       0 0 35px #00ffe5,
+       0 0 50px #009183;
+    }
+  }
+
+.button {
+    width: 14rem;
+    height: 6.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    background-color: transparent;
+    border: 3px solid #00d7c3;
+    border-radius: 50px;
+    -webkit-transition: all .15s ease-in-out;
+    transition: all .15s ease-in-out;
+    color: #00d7c3;
+    cursor: pointer;
+    display: inline-block;
+    font-family: cursive, serif;
+    letter-spacing: 0.1rem;
+    /* font-size: 14px; */
+    margin: 2rem;
+    animation: button-glow 1s ease-in-out infinite alternate;
+}
+
+.button:hover {
+    box-shadow: 0 0 10px 0 #00d7c3 inset, 0 0 20px 2px #00d7c3;
+    animation: none;
+}
+.button:active {
+    box-shadow: 0 0 15px 0 #00d7c3 inset, 0 0 30px 2px #00d7c3;
+}
+
+@keyframes button-glow {
+    from {
+        box-shadow: 0 0 5px 0 #00dee6 inset, 0 0 10px 2px #00dee6;
+    }
+    to {
+        box-shadow: 0 0 10px 0 #00a4aa inset, 0 0 15px 2px #00a4aa;
+    }
+  }
+

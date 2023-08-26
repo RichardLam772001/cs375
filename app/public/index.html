@@ -3,12 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./homepage.css">
     <title></title>
 </head>
-<body>
-    <!-- Richard: This will send a message to the websocket server -->
-    <button id="send">Send message to client</button>
+<body class="body">
+    <div class="main-container">
+        <h1 class="title"> Cyberspace Saboteur </h1>
+        <div class="buttons-container">
+            <button class="button" id="lobby-button"> Lobby </button>
+            <button class="button" id="login-button"> Login </button>
+        </div>
+    </div>
 </body>
-<script src="./constants.js"></script>
-<script src="./script.js"></script>
+<script src="./addStars.js"></script>
+<script src="./router.js"></script>
+<script src="./homepage.js"></script>
 </html>

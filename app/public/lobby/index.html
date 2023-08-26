@@ -3,56 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" type="text/css" href="style.css">
-    <title>Lobby</title>
+	<link rel="stylesheet" type="text/css" href="lobby.css">
+	<link rel="stylesheet" type="text/css" href="../homepage.css"> <!-- Borrows styling from homepage like star background -->
+    <title>Cyberspace Saboteur</title>
 </head>
-<body>
-	<div id="home">
-		<header>
-			<div class="header-cont">
-				<h2 class="title header-elem">Cyberspace Saboteur</h2>
-				<div class="header-info header-elem">
-					<h2 class="name header-elem">username here?</h2>
-					<button class="header-btn header-elem">?</button>
-					<button class="header-btn header-elem">?</button>
-					<button class="header-btn header-elem">?</button> <!--possible header btns for settings, stats, idk-->
-				</div>
-			</div>
-		</header>
-		<div>
-			<h2 class="lobby-header">Lobby</h2>
-		</div>
-		<div>
-			<div class="container">
-				<div class="chat page-cont"></div>
-				<div id="lobbycont" class="lobby-list page-cont">
-					<table>
-						<thead class="lobby-tbl-hdr">
-							<tr>
-								<th>#</th>
-								<th class="host-th">Host</th> <!--username of host-->
-								<th>Players</th> <!--player count?-->
-							</tr>
-						</thead>
-						<tbody class="lobby-tbl-body">
-						</tbody>
-					</table>
-				</div>
-				<div class="lobby-btn-cont page-cont">
-					<div class="lobby-btns"> <!--having trouble centering this vertically, could be left here though-->
-						<button id="create" class="lobby-optn">Create Lobby</button>
-						<div id="joined" class="lobby-optn"></div>
-					</div>
-				</div>
-			</div>
-		</div>
+<body class="body lobbyBody">
+	<div class="lobbies" id="lobbies">
+		<!-- Example of what gets populated -->
+		<!-- <div class="lobby"><div class="lobby-title">Lobby 1 (0/2)</div><div class="players"></div><div class="spaceship"></div></div> -->
+	</div>
+	<div class="buttons">
+		<!-- DISABLED FOR NOW - Making lobbies will be maybe implemented if we have time. -->
+		<!-- <button class="button" id="create-lobby-button"> Create Lobby </button> -->
+			<button class="button" id="leave-lobby-button"> Leave Lobby </button>
 	</div>
 </body>
+<!-- <script src="../addStars.js"></script> -->
 <script src="../constants.js"></script>
 <script src="../api.js"></script>
 <script src="../router.js"></script>
 <script src="../dataObjects.js"></script>
 <script src="../websocket.js"></script>
-<!-- <script src="./lobby.js"></script> -->
-<script src="./lobbyfuncs.js"></script> <!--keeping in a separate js file from lobby.js for now-->
+<script src="./lobbyutils.js"></script> <!--keeping in a separate js file from lobby.js for now-->
+<script src="./lobbyUI.js"></script>
+<script src="./lobbyWS.js"></script>
 </html>

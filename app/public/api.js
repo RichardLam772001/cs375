@@ -7,3 +7,9 @@ const post = (route, body) => {
         body: JSON.stringify(body)
     });
 }
+
+const get = (route) => {
+    return fetch(route, {
+        method: "GET"
+    });
+}

@@ -101,6 +101,11 @@ const BOARD = ((rowCount, columnCount) => {
         const roomElement = parseMoveableRoom(room);
         roomElement.setThreat("");
     }
+
+    const destroyRoom = (room) =>{
+        const roomElement = parseMoveableRoom(room);
+        roomElement.setDestroyed();
+    }
     
     return {
         setAllToHidden,
@@ -111,6 +116,7 @@ const BOARD = ((rowCount, columnCount) => {
         roomHasThreat,
         spawnThreat,
         removeThreat,
+        destroyRoom,
     };;
 })(3,3);
 
