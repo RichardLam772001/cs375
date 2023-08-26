@@ -84,7 +84,7 @@ const lobbyIsJoined = (req, res) => {
 		return res.send({"lobbyId" : getLobbyUserIsIn(username)});
 	}
 	res.statusCode = 400;
-	return res.send({"lobbyId" : false});
+	return res.send({"lobbyId" : -1});
 }
 
 module.exports = { lobbyJoin, lobbyJoinGame, lobbyLeave, lobbiesGet, lobbyIsJoined };
