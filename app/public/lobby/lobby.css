@@ -50,13 +50,14 @@
     }
 }
 
-.buttons {
-    flex: 1;
+.lobby-buttons {
+    flex: 1.5;
 }
 .lobbyBody {
     display: flex;
     flex-direction: row;
     overflow-y: scroll;
+    overflow-x: hidden;
 }
 .joined-rocket {
     animation: spaceship-glow-blue 0.25s ease-in-out infinite alternate;
