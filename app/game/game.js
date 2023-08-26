@@ -53,7 +53,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     const aiCanAct = () => {return aiAction === undefined || !aiAction.getIsRunning();};
 
     //ACTION DELAYS
-    const pingTime = 5;
+    const pingTime = 3;
     const moveTime = 2;
     const toolSwitchTime = 2;
     const resolveThreatTime = 3;
@@ -124,9 +124,18 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         threat.startResolving();
 
         humanAction = DelayedAction(resolveThreatTime, () => threat.finishResolve());
+        //humanAction.setAllowCompletion(false); //uncomment this once threat minigames are implemented
         sendDataToHuman(DelayData(`Resolving ${threat.THREAT_TYPE}...`, resolveThreatTime));
     }
-    // This is called once every second
+
+    /**
+     * Called when the human completed a threat minigame.
+     * This allows the current human action to complete.
+     */
+    const completeThreatMinigame = () => {
+        humanAction.setAllowCompletion(true);
+    }
+
     const tick = (deltaSeconds) => {
 
         // Pause game if clients in game aren't registered (client hasn't connected yet, or one of them logged out)
@@ -213,11 +222,13 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     }
     const onThreatResolved = (room) => {
         removeThreat(room);
-        console.log(`Threat was resolved in room ${room}`);
-
         // Alert players threat was resolved
         sendDataToPlayer(GAME_ID, AI_USERNAME, ThreatResolvedData(room));
         sendDataToPlayer(GAME_ID, HUMAN_USERNAME, ThreatResolvedData(room));
+
+        const message = `Threat was resolved in room ${room}`;
+        console.log(message);
+        addConsoleLineAndBroadcast(ConsoleLineData(gameTime, message, "all", "important"));
     }
 
     /**

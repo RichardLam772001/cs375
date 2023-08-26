@@ -21,6 +21,8 @@ const ACTION_TRACKER = (() => {
     let totalTime = 0;
     let speedFactor = 1;
 
+    setVisible(false);
+
     function tick(deltaSeconds){
         progress = Math.min(1, progress + (deltaSeconds/totalTime)*speedFactor);
 
@@ -47,6 +49,7 @@ const ACTION_TRACKER = (() => {
         totalTime = delayData.time;
         progress = delayData.progress;
         speedFactor = delayData.speedFactor;
+        allowCompletion = true;
         
         if(totalTime > 0 && speedFactor > 0){
             startBar();
