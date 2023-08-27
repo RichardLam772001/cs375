@@ -1,9 +1,9 @@
 // @ts-check
 const { ROLES, GAME_TICK_DELAY_MS } = require("../constants");
 const { Threat, THREAT_COOLDOWN_SECONDS, THREAT_TTL } = require("./threat");
-const { randomInt } = require("../utils.js");
+const { randomInt, randomSelect } = require("../utils.js");
 const { sendDataToPlayer } = require("../broadcaster.js");
-const { ThreatSpawnedData, ThreatResolvedData, RoomDestroyedData} = require("../dataObjects");
+const { ThreatSpawnedData, ThreatResolvedData, RoomDestroyedData, HumanToolUpdateData, AIPingThreatUpdateData } = require("../dataObjects");
 const { CLIENTS_HANDLER } = require("../clientsHandler");
 
 const { RandomBag } = require("../randomBag.js");
@@ -205,7 +205,6 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     let line = ConsoleLineData(gameTime, message);
     addConsoleLineAndBroadcast(line);
     }
-    setInterval(()=> scrambleThenPing(0,0,"fire"), 2000);
 
     function addConsoleLineAndBroadcast(consoleLine){
     consoleLine.time = Math.round(gameTime);
