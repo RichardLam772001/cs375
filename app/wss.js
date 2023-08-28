@@ -39,6 +39,7 @@ const onReceiveDataFromClient = (clientId, byteData) => {
     let username = data.username;
     let gameId = data.gameId;
     let currentRoom;
+    let token = data.token;
 
     console.log("WSS Receive :", data);
 
@@ -49,7 +50,7 @@ const onReceiveDataFromClient = (clientId, byteData) => {
     }
 
     if (!CLIENTS_HANDLER.isRegisteredClient(clientId)) {
-        CLIENTS_HANDLER.registerClient(clientId, username, gameId);
+        CLIENTS_HANDLER.registerClient(clientId, username, gameId, token);
     }
 
     const game = lookUpGame(gameId);
@@ -57,8 +58,6 @@ const onReceiveDataFromClient = (clientId, byteData) => {
     switch(action.name) {
         case HUMAN_ACTIONS.enterRoom:
             game.enterRoom(action.args.room);
-            currentRoom = game.getCurrentRoom();
-            sendToAllClients(HumanRoomUpdateData(currentRoom));
             break;
         case HUMAN_ACTIONS.getCurrentRoom:
             currentRoom = game.getCurrentRoom();
@@ -71,8 +70,7 @@ const onReceiveDataFromClient = (clientId, byteData) => {
         case AI_ACTIONS.pingRoom:
             const aiPingRoom = action.args.room;
             const aiPingThreatType = action.args.threatType;
-            console.log(action);
-            game.scrambleThenPing(aiPingRoom, aiPingThreatType);
+            game.requestPing(aiPingRoom, aiPingThreatType);
             break;
         default:
             break;

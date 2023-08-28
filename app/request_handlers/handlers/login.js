@@ -36,6 +36,7 @@ const login = async (req, res) => {
           tokenStorage[token]=username;
           return res
             .cookie("token", token, cookieOptions)
+            .cookie("username", username, cookieOptions)
             .send({"message" : "Success! Generated token."});
           
           //res.sendStatus(200); 
@@ -65,7 +66,7 @@ const createAccount = async (req, res) => {
         const hashpassword = await argon2.hash(password);
         await pool.query('INSERT INTO userdata (username, password) VALUES ($1, $2)', [
           username,
-          hashpassword
+          hashpassword,
         ]);
   
         res.sendStatus(200);
@@ -79,4 +80,4 @@ const createAccount = async (req, res) => {
     }
 };
 
-module.exports = { createAccount, login };
+module.exports = { createAccount, login, tokenStorage };
