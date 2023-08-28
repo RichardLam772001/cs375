@@ -90,9 +90,13 @@ const leaveLobby = (lobbyId, username) => {
 		else if (LOBBIES[lobbyId][1].username === username) {
             LOBBIES[lobbyId].splice(1, 1);
 		}
-        delete USERS_IN_A_LOBBY[username];
+        deleteUserFromLobby(username);
 	}
     return true;
+}
+
+const deleteUserFromLobby = (username) => {
+    delete USERS_IN_A_LOBBY[username];
 }
 
 /**
@@ -136,5 +140,6 @@ module.exports = {
     getLobbies,
     getFormattedLobbies,
     isUserInLobby,
-    getLobbyUserIsIn
+    getLobbyUserIsIn,
+    deleteUserFromLobby
 };

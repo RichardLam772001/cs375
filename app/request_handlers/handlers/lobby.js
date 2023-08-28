@@ -1,4 +1,4 @@
-const { joinLobby, getPlayersInLobby, clearLobby, leaveLobby, isUserInLobby, getFormattedLobbies, getLobbyUserIsIn } = require("../../lobby/lobby.js");
+const { joinLobby, getPlayersInLobby, clearLobby, leaveLobby, isUserInLobby, getFormattedLobbies, getLobbyUserIsIn, deleteUserFromLobby } = require("../../lobby/lobby.js");
 const { sendToAllClients } = require("../../wss.js");
 const { GameReadyData, LobbyListData } = require("../../dataObjects.js");
 const { ANONY_COOKIE_DURATION_MS } = require("../../constants.js");
@@ -46,6 +46,7 @@ const lobbyJoinGame = (req, res) => {
     console.log("POST /lobby/join-game", body);
 
     const role = lookUpRole(gameId, username);
+	deleteUserFromLobby(username);
 
     res.cookie('username', username, { maxAge: ANONY_COOKIE_DURATION_MS, httpOnly: false});
     // res.cookie('validation-cookie', validation-cookie, { maxAge: ANONY_COOKIE_DURATION_MS, httpOnly: false}); // TO DO!!!
