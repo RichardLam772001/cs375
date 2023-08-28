@@ -24,6 +24,9 @@
 .lobby:hover {
     animation: spaceship-glow-blue 0.25s ease-in-out infinite alternate;
 }
+.lobby-1-player {
+    animation: spaceship-glow-red-blue 1s ease-in-out infinite alternate;
+}
 .spaceship {
     width: 100%;
     height: 100%;
@@ -35,6 +38,15 @@
 @keyframes spaceship-glow-blue {
     0% {
         background: #00d7c3;
+    }
+    100% {
+        background: rgb(0, 162, 255);
+    }
+}
+
+@keyframes spaceship-glow-red-blue {
+    0% {
+        background: #ff8800;
     }
     100% {
         background: rgb(0, 162, 255);

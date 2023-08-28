@@ -35,7 +35,8 @@ const addEventListenersToRocketShip = (rocketShip, lobbyId) => {
  * Makes <div class="lobby"><div class="lobby-title">Lobby 1</div><div class="spaceship"></div></div>
  */
 const RocketShip = (id, playerCount) => {
-	let lobbyDiv = Div(["lobby"]);
+	const lobbyDivClasses = playerCount === 1 ? ["lobby", "lobby-1-player"] : ["lobby"];
+	let lobbyDiv = Div(lobbyDivClasses);
 	// The lobby-id class is actually used for lookup
 	lobbyDiv.id = `lobby-${id}`;
     lobbyDiv = addEventListenersToRocketShip(lobbyDiv, id);
@@ -43,7 +44,7 @@ const RocketShip = (id, playerCount) => {
     const spaceShipDiv = Div(["spaceship"]);
 
     const lobbyTitle = Div(["lobby-title"]);
-	lobbyTitle.innerText = `Lobby ${id} (${playerCount}/2)`;
+	lobbyTitle.innerText = `Lobby ${Number(id)+1} (${playerCount}/2)`;
 
     lobbyDiv.appendChild(lobbyTitle);
 	lobbyDiv.appendChild(spaceShipDiv);
