@@ -2,8 +2,6 @@ const THREAT_TTL = 18;
 const THREAT_TICK_SPEED = 1000;
 const THREAT_COOLDOWN_SECONDS = 5;
 
-const THREAT_RESOLVE_TIME_MS = 3*1000; // How long it takes when a player enters a room w/ the right tool for the threat to disappear
-
 const MAP_THREAT_TO_TOOL = {
     "fire" : "fire-extinguisher",
     "breach" : "wrench",
