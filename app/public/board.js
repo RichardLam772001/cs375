@@ -7,6 +7,8 @@ const BOARD = ((rowCount, columnCount) => {
     const TABLE_PARENT = document.getElementById("main-container");
     const messageContainer = document.getElementById("message-container");
     const messageText = document.getElementById("message-text");
+    const routeToLobbyLink = document.getElementById("route-to-lobby-link");
+    routeToLobbyLink.addEventListener("click", () => ROUTER.route("/lobby"));
     const TABLE_ELEMENT = createTableElem();
     const ROOMS_WITH_THREATS = [];
     
@@ -104,13 +106,10 @@ const BOARD = ((rowCount, columnCount) => {
         roomElement.setThreat("");
     }
 
-    function showGameEndMessage(result) {
-        const messageContainer = document.getElementById("message-container");
-        const messageText = document.getElementById("message-text");
-      
-        if (result === "You win") {
+    function showGameEndMessage(result) {      
+        if (result === "win") {
           messageText.textContent = "You Win!";
-        } else if (result === "You lost") {
+        } else if (result === "lose") {
           messageText.textContent = "You Lost!";
         }
       

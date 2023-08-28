@@ -3,6 +3,7 @@ DROP DATABASE IF EXISTS cyberspace;
 CREATE DATABASE cyberspace;
 \c cyberspace;
 
+DROP TABLE IF EXISTS userdata;
 CREATE TABLE userdata (
 	username VARCHAR(50) PRIMARY KEY,
 	password VARCHAR,

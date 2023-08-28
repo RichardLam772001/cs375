@@ -86,12 +86,13 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         }
 
         gameTime -= 1;
-        if (gameTime === 0) {
-            onTimeout(gameId,AI_USERNAME,HUMAN_USERNAME);
+        if (gameTime <= 0) {
+            resolveGame('win');
+            return;
         }
-
-        if (AVAILABLE_ROOMS.length < 7) {
-            onShipExplode(gameId,AI_USERNAME,HUMAN_USERNAME);
+        if (AVAILABLE_ROOMS.length <= 7) {
+            resolveGame('lose');
+            return;
         }
         
         // Threats
@@ -103,38 +104,13 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         }
     }
 
-    const onTimeout = (gameId,AI_USERNAME,HUMAN_USERNAME) => {
-        console.log("game-----------------------------------------------end");
-        // Check if both players are logged in
-        if (CLIENTS_HANDLER.areBothPlayersLoggedIn(gameId,AI_USERNAME,HUMAN_USERNAME)) {
-            // Send game end message to both players
-            sendDataToPlayer(gameId, HUMAN_USERNAME, GameEndData('win'));
-            sendDataToPlayer(gameId, AI_USERNAME, GameEndData('win'));
-            // Update player stats
-            CLIENTS_HANDLER.updatePlayerStats(HUMAN_USERNAME, 'win');
-            CLIENTS_HANDLER.updatePlayerStats(AI_USERNAME, 'win');
-            removeGame(gameId);
-        } else {
-            console.log("At least one user is not loggedin");
-            removeGame(gameId);
+    const resolveGame = (result) => {
+        if (CLIENTS_HANDLER.areBothPlayersLoggedIn(GAME_ID, AI_USERNAME, HUMAN_USERNAME)) {
+            CLIENTS_HANDLER.updatePlayerStats(HUMAN_USERNAME, result);
+            CLIENTS_HANDLER.updatePlayerStats(AI_USERNAME, result);
         }
-    }
-
-    const onShipExplode = (gameId,AI_USERNAME,HUMAN_USERNAME) => {
-        console.log("game-----------------------------------------------end");
-        // Check if both players are logged in
-        if (CLIENTS_HANDLER.areBothPlayersLoggedIn(gameId,AI_USERNAME,HUMAN_USERNAME)) {
-            // Send game end message to both players
-            sendDataToPlayer(gameId, HUMAN_USERNAME, GameEndData('lose'));
-            sendDataToPlayer(gameId, AI_USERNAME, GameEndData('lose'));
-            // Update player stats
-            CLIENTS_HANDLER.updatePlayerStats(HUMAN_USERNAME, 'lose');
-            CLIENTS_HANDLER.updatePlayerStats(AI_USERNAME, 'lose');
-            removeGame(gameId);
-        } else {
-            console.log("At least one user is not loggedin");
-            removeGame(gameId);
-        }
+        sendDataToBothPlayers(GameEndData(result));
+        removeGame(GAME_ID);
     }
 
 
@@ -308,7 +284,7 @@ const tickGames = () => {
 
 const removeGame = (gameId) => {
     delete GAMES[gameId];
-    console.log("game has been removed", GAMES);
+    console.log(`game ${gameId} has been removed`);
 }
 
 setInterval(tickGames, GAME_TICK_DELAY_MS);
