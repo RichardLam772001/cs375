@@ -39,6 +39,7 @@ const onReceiveDataFromClient = (clientId, byteData) => {
     let username = data.username;
     let gameId = data.gameId;
     let currentRoom;
+    let currentTool;
 
     console.log("WSS Receive :", data);
 
@@ -58,15 +59,15 @@ const onReceiveDataFromClient = (clientId, byteData) => {
         case HUMAN_ACTIONS.enterRoom:
             game.enterRoom(action.args.room);
             currentRoom = game.getCurrentRoom();
-            sendToAllClients(HumanRoomUpdateData(currentRoom));
+            sendToAllClients(HumanRoomUpdateData(currentRoom));     
             break;
         case HUMAN_ACTIONS.getCurrentRoom:
             currentRoom = game.getCurrentRoom();
             sendToAllClients(HumanRoomUpdateData(currentRoom));
             break;
         case HUMAN_ACTIONS.switchHumanTool:
-            const newTool = action.args.tool;
-            game.switchHumanTool(newTool);
+            currentTool = action.args.tool;
+            game.switchHumanTool(currentTool);
             break;
         case AI_ACTIONS.pingRoom:
             const aiPingRoom = action.args.room;

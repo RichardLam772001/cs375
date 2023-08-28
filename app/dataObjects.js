@@ -4,6 +4,7 @@
 
 // Sync with dataObjects.js on the backend
 const DATA_TYPES = {
+    MINI_GAME_TRIGGED: "miniGameTrigged",
     HUMAN_ROOM_UPDATE : "humanRoomUpdate",
     CONSOLE_LINE : "consoleLine",
     HUMAN_TOOL_UPDATE: "humanToolUpdate",
@@ -12,12 +13,17 @@ const DATA_TYPES = {
     LOBBY_LIST : "lobbyList",
     THREAT_SPAWNED: "threatSpawned",
     THREAT_RESOLVED: "threatResolved",
-    ROOM_DESTROYED: "roomDestroyed"
+    ROOM_DESTROYED: "roomDestroyed",
 }
+
+const MiniGameTriggeData =(tool)=>({
+    name: DATA_TYPES.MINI_GAME_TRIGGED,
+    tool,
+});
 
 const HumanRoomUpdateData = (room) => ({
     name : DATA_TYPES.HUMAN_ROOM_UPDATE,
-    room
+    room,
 });
 
 const HumanToolUpdateData = (tool) => ({
@@ -68,6 +74,7 @@ const RoomDestroyedData = (room) => ({
 });
 
 module.exports = {
+  MiniGameTriggeData,
   HumanRoomUpdateData,
   HumanToolUpdateData,
   AIPingThreatUpdateData,

@@ -37,6 +37,9 @@ WS.onReceive((data) => {
         case "humanToolUpdate":
             HUMAN_STATE.switchHumanTool(data.tool);
             break;
+        case "miniGameTrigged":
+            HUMAN_STATE.initiateMiniGame(data.tool);
+            break;
         case "aiPingThreatUpdate":
             BOARD.pingRoom(data.room, data.threatType);
             break;

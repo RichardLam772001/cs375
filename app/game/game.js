@@ -3,7 +3,7 @@ const { ROLES, GAME_TICK_DELAY_MS } = require("../constants");
 const { Threat, THREAT_COOLDOWN_SECONDS, THREAT_TTL } = require("./threat");
 const { randomInt, randomSelect } = require("../utils.js");
 const { sendDataToPlayer } = require("../broadcaster.js");
-const { ThreatSpawnedData, ThreatResolvedData, RoomDestroyedData, HumanToolUpdateData, AIPingThreatUpdateData } = require("../dataObjects");
+const { ThreatSpawnedData, ThreatResolvedData, RoomDestroyedData, HumanToolUpdateData, AIPingThreatUpdateData, MiniGameTriggeData } = require("../dataObjects");
 const { CLIENTS_HANDLER } = require("../clientsHandler");
 
 const { RandomBag } = require("../randomBag.js");
@@ -38,7 +38,12 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     const AVAILABLE_ROOMS = ["0-0", "0-1", "0-2", "1-0", "1-1", "1-2", "2-0", "2-1", "2-2"]; // Richard: Yes I know it's hardcoded, we can make a dynamic room generator later TO DO
   const ROOMS_WITH_THREATS = [];
   const THREAT_TYPES = ["fire", "breach", "invader"];
-  const TOOLS = ["fire-extinguisher", "gun", "wrench"]; // Currently unused
+  const TOOLS = ["fire-extinguisher", "wrench", "gun"]; // Currently unused
+  const THREAT_TOOL_MAPPING = {
+    "fire": "fire-extinguisher",
+    "breach": "wrench",
+    "invader": "gun"
+  };
   const MAX_ACTIVE_THREATS = 3;
 
   let consoleLinesLog = ConsoleLinesLog();
@@ -66,8 +71,15 @@ const GAME = (humanUsername, aiUsername, gameId) => {
       room = newRoom;
       if (ifRoomHasThreat(room)) {
         alertHumanPlayerOfThreat(room);
-
         const threat = THREATS_INDEXED_BY_ROOM[room];
+        const threatType = threat.THREAT_TYPE;
+        const tool = getCurrentTool();
+        console.log(`game.js enter room ${room} with threat ${threatType}, human with tool ${tool}.`)
+        if(THREAT_TOOL_MAPPING[threatType] === tool){
+          console.log("threat mapping the tool, human state initiate mini game.")
+          sendDataToPlayer(GAME_ID, humanUsername, MiniGameTriggeData(tool));
+          
+        }
         threat.resolve(currentTool);
       }
     }
@@ -75,6 +87,10 @@ const GAME = (humanUsername, aiUsername, gameId) => {
   const getCurrentRoom = () => {
     return room;
     }
+
+  const getCurrentTool = () =>{
+    return currentTool;
+  }
   // This is called once every second
   const tick = () => {
 
@@ -108,6 +124,15 @@ const GAME = (humanUsername, aiUsername, gameId) => {
   const randomlySelectThreat = () => {
         return THREAT_TYPES[randomInt(0, THREAT_TYPES.length-1)];
     }
+
+  // function will send back current tool to human client.
+  const switchUserCurrentTool = (newTool, username) => {
+    console.log(
+      `4. game id is ${GAME_ID}, username is ${username}, switch current tool is ${newTool} `
+    );
+    currentTool = newTool;
+    sendDataToPlayer(GAME_ID, username, HumanToolUpdateData(currentTool));
+  };
 
   /**
    * Used by both alertAIPlayerOfThreat and alertHumanPlayerOfThreat
@@ -159,6 +184,11 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     sendDataToPlayer(GAME_ID, AI_USERNAME, ThreatResolvedData(room));
     sendDataToPlayer(GAME_ID, HUMAN_USERNAME, ThreatResolvedData(room));
     }
+
+    const switchHumanTool = (tool) => {
+      console.log("3. game switch human tool ", tool);
+      switchUserCurrentTool(tool, HUMAN_USERNAME);
+    };
 
   //Attempt to ping a room, but randomly scramble it first
     const scrambleThenPing = (row, column, threatType) =>{
@@ -231,7 +261,9 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     tick,
     getRole,
     enterRoom,
-    getCurrentRoom
+    getCurrentRoom,
+    switchHumanTool,
+    getCurrentTool
     }
 }
 
