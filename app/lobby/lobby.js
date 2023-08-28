@@ -106,6 +106,7 @@ const getPlayersInLobby = (lobbyId) => {
 }
 
 const getLobbies = () => {
+    console.log(LOBBIES);
 	return LOBBIES;
 }
 /**
