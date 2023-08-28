@@ -33,10 +33,10 @@
                   <img src="../images/ai/breach.png" alt="breach" class="button-icon" />
                 </button>
                 <button
-                  id="intruder"
+                  id="invader"
                   class="button"
-                  onclick="AI.switchThreatType('intruder')">
-                  <img src="../images/ai/invader.png" alt="intruder" class="button-icon" />
+                  onclick="AI.switchThreatType('invader')">
+                  <img src="../images/ai/invader.png" alt="invader" class="button-icon" />
                 </button>
             </div>
             <div class="tool-group">
@@ -45,6 +45,8 @@
                 <button class="button"> Sabotage </button>
             </div>
         </div>
+    </div>
+    <div id="action-tracker">
     </div>
 </body>
 <script src="../cookies.js"></script>
@@ -55,6 +57,7 @@
 <script src="../websocket.js"></script>
 <script src="../board.js"></script>
 <script src="../receiver.js"></script>
+<script src="../actionTracker.js"></script>
 <script src="../humanState.js"></script>
 <script src="./ai.js"></script>
 </html>

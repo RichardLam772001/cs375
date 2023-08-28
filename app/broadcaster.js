@@ -7,7 +7,7 @@ const sendDataToPlayer = (gameId, username, data) => {
         return;
     }
     console.log(`Sending data to username ${username} in game ${gameId}`, data);
-    client.send(JSON.stringify(data));
+    client?.send(JSON.stringify(data));
 };
 
 

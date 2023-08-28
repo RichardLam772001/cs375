@@ -8,7 +8,8 @@ const DATA_TYPES = {
     CONSOLE_LINE : "consoleLine",
     GAME_READY : "gameReady",
 	LOBBY_LIST : "lobbyList",
-    ROOM_DESTROYED: "roomDestroyed"
+    ROOM_DESTROYED: "roomDestroyed",
+    DELAY_DATA: "delayData",
 }
 
 const HumanRoomUpdateData = (room) => ({
@@ -38,7 +39,15 @@ const RoomDestroyedData = (room) => ({
     name: DATA_TYPES.ROOM_DESTROYED,
     room
 });
+const DelayData = (description, time, speedFactor = 1, progress = 0) => ({
+    name: DATA_TYPES.DELAY_DATA,
+    description,
+    time,
+    speedFactor,
+    progress,
+});
 
 const isMessageType = (data, data_type) => {
     return data.name === data_type
 }
+

@@ -57,8 +57,6 @@ const onReceiveDataFromClient = (clientId, byteData) => {
     switch(action.name) {
         case HUMAN_ACTIONS.enterRoom:
             game.enterRoom(action.args.room);
-            currentRoom = game.getCurrentRoom();
-            sendToAllClients(HumanRoomUpdateData(currentRoom));
             break;
         case HUMAN_ACTIONS.getCurrentRoom:
             currentRoom = game.getCurrentRoom();
@@ -71,8 +69,7 @@ const onReceiveDataFromClient = (clientId, byteData) => {
         case AI_ACTIONS.pingRoom:
             const aiPingRoom = action.args.room;
             const aiPingThreatType = action.args.threatType;
-            console.log(action);
-            game.scrambleThenPing(aiPingRoom, aiPingThreatType);
+            game.requestPing(aiPingRoom, aiPingThreatType);
             break;
         default:
             break;

@@ -52,5 +52,7 @@ WS.onReceive((data) => {
         case "roomDestroyed":
             BOARD.destroyRoom(data.room);
             break;
+        case "delayData":
+            ACTION_TRACKER.setDelayData(data);
     }
 });
