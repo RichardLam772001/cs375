@@ -312,6 +312,6 @@ const removeGame = (gameId) => {
 }
 
 setInterval(tickGames, GAME_TICK_DELAY_MS);
-setTimeout(() => removeGame(1), 5000);
+//setTimeout(() => removeGame(1), 5000);
 
 module.exports = { startGame, lookUpRole, lookUpGame }
