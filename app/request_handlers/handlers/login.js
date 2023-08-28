@@ -1,4 +1,4 @@
-const { pool } = require('../../database/pool.js');
+const { getPool } = require('../../database/pool.js');
 const { KNOWN_USER_COOKIE_DURATION_MS } = require("../../constants.js");
 
 const argon2 = require('argon2');
@@ -7,7 +7,7 @@ const crypto = require("crypto");
 const tokenStorage = {};
 const cookieOptions = {
   httpOnly: false, 
-  secure: true, 
+  secure: false, 
   sameSite: "strict",
   maxAge: KNOWN_USER_COOKIE_DURATION_MS 
 };
@@ -18,6 +18,8 @@ const login = async (req, res) => {
     let body = req.body;
     console.log("POST /login/login");
     let { username, password } = body;
+
+    const pool = getPool();
 
     try {
       let queryResult = await pool.query('SELECT * FROM userdata WHERE username = $1', [username]);
@@ -57,9 +59,9 @@ const createAccount = async (req, res) => {
     let { username, password } = body;  
     
     console.log("POST /login/create", body);
-  
+    const pool = getPool();
+
     try {
-      console.log(pool);
       const queryResult = await pool.query('SELECT * FROM userdata WHERE username = $1', [username]);
       const user = queryResult.rows[0];
 
