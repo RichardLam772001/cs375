@@ -85,13 +85,25 @@ const BOARD = ((rowCount, columnCount) => {
      * @returns {boolean} whether room contains a threat or not
      */
     function roomHasThreat(room){
-        return ROOMS_WITH_THREATS.indexOf(room.ROOM_STRING) !== -1;
+        if(room == undefined) return false;
+        return roomStringHasThreat(room.ROOM_STRING);
+    }
+    /**
+     * 
+     * @param {string} room 
+     * @returns {boolean}
+     */
+    function roomStringHasThreat(room){
+        return ROOMS_WITH_THREATS.indexOf(room) !== -1;
+
     }
     /**
      * @param {string} threatType e.g. "fire", "invader", "breach"
      * @param {string} room e.g. "0-0"
      */
     const spawnThreat = (threatType, room) => {
+        if(roomStringHasThreat(room)) return;
+
         ROOMS_WITH_THREATS.push(room);
         const roomElement = parseMoveableRoom(room);
         roomElement.setThreat(threatType);
@@ -101,6 +113,8 @@ const BOARD = ((rowCount, columnCount) => {
      * @param {string} room e.g. "0-0"
      */
     const removeThreat = (room) => {
+        if(!roomStringHasThreat(room)) return;
+
         ROOMS_WITH_THREATS.splice(ROOMS_WITH_THREATS.indexOf(room), 1);
         const roomElement = parseMoveableRoom(room);
         roomElement.setThreat("");
@@ -135,7 +149,9 @@ const BOARD = ((rowCount, columnCount) => {
     }
     const destroyRoom = (room) =>{
         const roomElement = parseMoveableRoom(room);
+        removeThreat(room);
         roomElement.setDestroyed();
+
     }
     
     return {
