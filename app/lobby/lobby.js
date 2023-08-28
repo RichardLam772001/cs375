@@ -106,7 +106,6 @@ const getPlayersInLobby = (lobbyId) => {
 }
 
 const getLobbies = () => {
-    console.log(LOBBIES);
 	return LOBBIES;
 }
 /**
@@ -114,6 +113,7 @@ const getLobbies = () => {
  */
 const getFormattedLobbies = () => {
     const formattedLobbies = [];
+    console.log(LOBBIES);
     for (const lobbyId of Object.keys(LOBBIES)) {
         formattedLobbies.push({ lobbyId, playerCount: LOBBIES[lobbyId].length});
     }
