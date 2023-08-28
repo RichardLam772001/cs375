@@ -150,7 +150,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
             resolveGame('win');
             return;
         }
-        if (AVAILABLE_ROOMS.length <= 7) {
+        if (AVAILABLE_ROOMS.length < 7) {
             resolveGame('lose');
             return;
         }
