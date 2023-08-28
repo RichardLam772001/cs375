@@ -24,7 +24,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
 
     const GAME_ID = gameId;
 
-    let gameTime = 3;
+    let gameTime = 4*60;
     let HUMAN_USERNAME = humanUsername;
     let AI_USERNAME = aiUsername;
     let room = "0-0";
