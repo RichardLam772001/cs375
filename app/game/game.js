@@ -275,7 +275,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     const scrambleThenPing = (room, threatType) =>{
         let row = Number(room[0]);
         let column = Number(room[2]);
-        let scrambleCount = RandomBag([[50, 0], [30, 1], [20, 2]]).pull();
+        let scrambleCount = RandomBag([[70, 0], [15, 1], [15, 2]]).pull();
 
         const scrambleBag = RandomBag([[1,"row"], [1, "col"], [1,"type"]]); //Different scramble categories may be given different weights
         for(let s = 0; s < scrambleCount; ++s){
