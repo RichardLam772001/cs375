@@ -49,6 +49,7 @@ WS.onReceive((data) => {
             break;
         case "threatResolved":
             BOARD.removeThreat(data.room);
+            break;
         case "GameEnd":
             BOARD.showGameEndMessage(data.result)
             break;
