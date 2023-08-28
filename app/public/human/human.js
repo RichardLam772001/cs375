@@ -9,6 +9,7 @@ const HUMAN = (() => {
       },
       username: USERNAME_COOKIE,
       gameId: GAME_ID_COOKIE,
+      token: TOKEN_COOKIE
     });
   };
 
@@ -22,6 +23,7 @@ const HUMAN = (() => {
       },
       username: USERNAME_COOKIE,
       gameId: GAME_ID_COOKIE,
+      token: TOKEN_COOKIE
     });
   };
 

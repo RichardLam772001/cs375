@@ -6,7 +6,8 @@ const getCurrentRoom = () => {
             name: "getCurrentRoom"
         },
         username: USERNAME_COOKIE,
-        gameId: GAME_ID_COOKIE
+        gameId: GAME_ID_COOKIE,
+        token : TOKEN_COOKIE
     });
 }
 
@@ -48,6 +49,8 @@ WS.onReceive((data) => {
             break;
         case "threatResolved":
             BOARD.removeThreat(data.room);
+        case "GameEnd":
+            BOARD.showGameEndMessage(data.result)
             break;
         case "roomDestroyed":
             BOARD.destroyRoom(data.room);

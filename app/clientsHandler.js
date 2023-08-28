@@ -1,4 +1,6 @@
 const { idGenerator } = require("./utils.js");
+const { tokenStorage } =require("./request_handlers/handlers/login.js");
+const { pool } = require('./database/pool.js');
 
 const generateUniqueClientId = idGenerator();
 
@@ -18,10 +20,15 @@ const CLIENTS_HANDLER = (() => {
      * @param {string} gameId
      * This method registers a clientId to a specific game
      */
-    const registerClient = (clientId, username, gameId) => {
+    const registerClient = (clientId, username, gameId, token) => {
+        let loggedIn = false;
+        if (token in tokenStorage) {
+            loggedIn = true;
+        } 
         REGISTERED_CLIENTS[clientId] = {
             gameId,
-            username
+            username,
+            loggedIn
         };
         if (REGISTERED_CLIENTS_BY_GAME[gameId]) {
             REGISTERED_CLIENTS_BY_GAME[gameId][username] = clientId;
@@ -76,6 +83,37 @@ const CLIENTS_HANDLER = (() => {
         return Object.keys(REGISTERED_CLIENTS_BY_GAME[gameId]).length === 2;
     }
 
+    const updatePlayerStats = async (username, result) => {
+        // Import your database connection module here
+
+        try {
+            if (result === 'win') {
+                // Increment wins for the player
+                await pool.query('UPDATE userdata SET wins = wins + 1 WHERE username = $1', [username]);
+            } else if (result === 'lose') {
+                // Increment losses for the player
+                await pool.query('UPDATE userdata SET losses = losses + 1 WHERE username = $1', [username]);
+                console.log("Userdata has been modified-------------------");
+            }
+
+        } catch (error) {
+            console.error('Error updating player stats:', error);
+        }
+    };
+
+
+    const areBothPlayersLoggedIn = (gameId, aiusername, humanusername) => {
+        ai_clientId=REGISTERED_CLIENTS_BY_GAME[gameId][aiusername];
+        human_clientId=REGISTERED_CLIENTS_BY_GAME[gameId][humanusername];
+        if ((REGISTERED_CLIENTS[ai_clientId].loggedIn) && (REGISTERED_CLIENTS[human_clientId].loggedIn)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+
     return {
         CLIENTS,
         removeClient,
@@ -84,6 +122,8 @@ const CLIENTS_HANDLER = (() => {
         getClientByGameAndUser,
         registerClient,
         doesGameHaveRegisteredClients,
+        updatePlayerStats,
+        areBothPlayersLoggedIn
     }
 })();
 

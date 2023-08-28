@@ -9,6 +9,7 @@ const { CLIENTS_HANDLER } = require("../clientsHandler");
 const { RandomBag } = require("../randomBag.js");
 const { ConsoleLinesLog, isLineVisibleToHuman, isLineVisibleToAI } = require("../consoleLinesLog.js");
 const { ConsoleLineData } = require("../dataObjects.js");
+const { GameEndData } = require("../dataObjects.js");
 
 const { DelayedAction } = require("./delayedAction.js");
 
@@ -145,6 +146,14 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         }
 
         gameTime -= deltaSeconds;
+        if (gameTime <= 0) {
+            resolveGame('win');
+            return;
+        }
+        if (AVAILABLE_ROOMS.length <= 7) {
+            resolveGame('lose');
+            return;
+        }
 
         humanAction?.tick(deltaSeconds);
         aiAction?.tick(deltaSeconds);
@@ -157,6 +166,16 @@ const GAME = (humanUsername, aiUsername, gameId) => {
             threatCooldown -= deltaSeconds;
         }
     }
+
+    const resolveGame = (result) => {
+        if (CLIENTS_HANDLER.areBothPlayersLoggedIn(GAME_ID, AI_USERNAME, HUMAN_USERNAME)) {
+            CLIENTS_HANDLER.updatePlayerStats(HUMAN_USERNAME, result);
+            CLIENTS_HANDLER.updatePlayerStats(AI_USERNAME, result);
+        }
+        sendDataToBothPlayers(GameEndData(result));
+        removeGame(GAME_ID);
+    }
+
 
     const spawnThreat = () => {
         const threatRoom = selectThreatRoom(AVAILABLE_ROOMS, ROOMS_WITH_THREATS, room);
@@ -362,6 +381,11 @@ const lookUpRole = (gameId, username) => {
     return game.getRole(username);
 }
 const lookUpGame = (gameId) => GAMES[gameId];
+
+const removeGame = (gameId) => {
+    delete GAMES[gameId];
+    console.log(`game ${gameId} has been removed`);
+}
 
 const tickGames = (deltaSeconds) => {
     for (const gameId of Object.keys(GAMES)) {
