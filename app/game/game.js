@@ -86,20 +86,18 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         }
 
         gameTime -= 1;
-        if (gameTime === 0) {
+        if (gameTime <= 0) {
             console.log("game-----------------------------------------------end");
             // Check if both players are logged in
             if (CLIENTS_HANDLER.areBothPlayersLoggedIn(gameId,AI_USERNAME,HUMAN_USERNAME)) {
                 // Send game end message to both players
-                sendDataToPlayer(gameId, HUMAN_USERNAME, GameEndData('You lost'));
-                sendDataToPlayer(gameId, AI_USERNAME, GameEndData('You lost'));
+                sendDataToPlayer(gameId, HUMAN_USERNAME, GameEndData('Lose'));
+                sendDataToPlayer(gameId, AI_USERNAME, GameEndData('Lose'));
                 // Update player stats
-                CLIENTS_HANDLER.updatePlayerStats(HUMAN_USERNAME, 'You lost');
-                CLIENTS_HANDLER.updatePlayerStats(AI_USERNAME, 'You lost');
+                CLIENTS_HANDLER.updatePlayerStats(HUMAN_USERNAME, 'Lose');
+                CLIENTS_HANDLER.updatePlayerStats(AI_USERNAME, 'Lose');
                 removeGame(gameId);
             } else {
-                sendDataToPlayer(gameId, HUMAN_USERNAME, GameEndData('You lost'));
-                sendDataToPlayer(gameId, AI_USERNAME, GameEndData('You lost'));
                 console.log("At least one user is not loggedin");
                 removeGame(gameId);
             }
