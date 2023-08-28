@@ -36,6 +36,7 @@ const joinGame = (gameId) => {
         {"gameId" : gameId, "username" : username}
     ).then((resp) => {
         resp.json().then((body) => {
+			JOINED_LOBBY_ID = -1;
             if (body.role === ROLES.HUMAN) {
                 ROUTER.route("/human");
             }
