@@ -87,10 +87,10 @@ const CLIENTS_HANDLER = (() => {
         // Import your database connection module here
 
         try {
-            if (result === 'You win') {
+            if (result === 'win') {
                 // Increment wins for the player
                 await pool.query('UPDATE userdata SET wins = wins + 1 WHERE username = $1', [username]);
-            } else if (result === 'You lost') {
+            } else if (result === 'lose') {
                 // Increment losses for the player
                 await pool.query('UPDATE userdata SET losses = losses + 1 WHERE username = $1', [username]);
                 console.log("Userdata has been modified-------------------");
