@@ -178,7 +178,6 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     }
 
     //Attempt to ping a room, but randomly scramble it first
-    // TODO-Richard hook up to winston's logic for ai ping
     const scrambleThenPing = (row, column, threatType) =>{
 
         let line = ConsoleLineData(gameTime, `Attempting to ping ${threatType} at ${row}-${column}`, "ai", "private");
