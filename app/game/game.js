@@ -1,7 +1,7 @@
 // @ts-check
 const { ROLES, GAME_TICK_DELAY_MS } = require("../constants");
 const { Threat, THREAT_COOLDOWN_SECONDS, THREAT_TTL } = require("./threat");
-const { randomInt, randomSelect } = require("../utils.js");
+const { randomInt, randomSelect, idGenerator } = require("../utils.js");
 const { sendDataToPlayer } = require("../broadcaster.js");
 const { ThreatSpawnedData, ThreatResolvedData, RoomDestroyedData, HumanToolUpdateData, AIPingThreatUpdateData, HumanRoomUpdateData, DelayData} = require("../dataObjects");
 const { CLIENTS_HANDLER } = require("../clientsHandler");
@@ -365,10 +365,9 @@ const addGame = (gameId, game) => {
     GAMES[gameId] = game;
 }
 
+const generateUniqueGameId = idGenerator();
 const startGame = (humanUsername, aiUsername) => {
-    // Temp: TO DO - Replace with idGenerator when we want to test multiple games running at once
-    // For now priority is getting 1 game working beginning to end
-    const gameId = 1;
+    const gameId = generateUniqueGameId();
     addGame(gameId, GAME(humanUsername, aiUsername, gameId));
     return gameId;
 }
