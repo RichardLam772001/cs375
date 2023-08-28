@@ -6,17 +6,31 @@
 const DATA_TYPES = {
     HUMAN_ROOM_UPDATE : "humanRoomUpdate",
     CONSOLE_LINE : "consoleLine",
+    HUMAN_TOOL_UPDATE: "humanToolUpdate",
+    AI_PING_THREAT_UPDATE: "aiPingThreatUpdate",
     GAME_READY : "gameReady",
     LOBBY_LIST : "lobbyList",
     THREAT_SPAWNED: "threatSpawned",
     THREAT_RESOLVED: "threatResolved",
     GAME_END : "GameEnd",
-    ROOM_DESTROYED: "roomDestroyed"
+    ROOM_DESTROYED: "roomDestroyed",
+    DELAY_DATA: "delayData",
 }
 
 const HumanRoomUpdateData = (room) => ({
     name : DATA_TYPES.HUMAN_ROOM_UPDATE,
     room
+});
+
+const HumanToolUpdateData = (tool) => ({
+  name: DATA_TYPES.HUMAN_TOOL_UPDATE,
+  tool,
+});
+
+const AIPingThreatUpdateData = (room, threatType) => ({
+  name: DATA_TYPES.AI_PING_THREAT_UPDATE,
+  room,
+  threatType,
 });
 
 const ConsoleLineData = (time, message, visibility, style) => ({
@@ -54,10 +68,29 @@ const RoomDestroyedData = (room) => ({
     name: DATA_TYPES.ROOM_DESTROYED,
     room
 });
+const DelayData = (description, time, speedFactor = 1, progress = 0) => ({
+    name: DATA_TYPES.DELAY_DATA,
+    description,
+    time,
+    speedFactor,
+    progress,
+});
 
 const GameEndData = (result => ({
     name: DATA_TYPES.GAME_END,
     result
 }))
 
-module.exports = { HumanRoomUpdateData, ConsoleLineData, GameReadyData, LobbyListData, ThreatSpawnedData, ThreatResolvedData, GameEndData, RoomDestroyedData };
+module.exports = {
+  HumanRoomUpdateData,
+  HumanToolUpdateData,
+  AIPingThreatUpdateData,
+  ConsoleLineData,
+  GameReadyData,
+  LobbyListData,
+  ThreatSpawnedData,
+  ThreatResolvedData,
+  RoomDestroyedData,
+  DelayData,
+  GameEndData,
+};

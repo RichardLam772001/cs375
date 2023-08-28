@@ -13,10 +13,10 @@ const HUMAN = (() => {
     });
   };
 
-  const switchTool = (tool) => {
+  const switchHumanTool = (tool) => {
     WS.send({
       action: {
-        name: "switchTool",
+        name: "switchHumanTool",
         args: {
           tool: tool,
         },
@@ -29,7 +29,7 @@ const HUMAN = (() => {
 
   return {
     enterRoom,
-    switchTool,
+    switchHumanTool,
   };
 })();
 
@@ -42,15 +42,6 @@ window.onload = () => {
           }
       }      
   }
-  document
-    .querySelector('#fire-extinguisher-button')
-    .addEventListener("click", () => HUMAN.switchTool("Fire Extinguisher"));
-  document
-    .querySelector('#wrench-button')
-    .addEventListener("click", () => HUMAN.switchTool("Wrench"));
-  document
-    .querySelector('#gun-button')
-    .addEventListener("click", () => HUMAN.switchTool("Gun"));
 };
 
 BOARD.setAllToHidden();

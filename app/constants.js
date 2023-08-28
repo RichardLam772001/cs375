@@ -10,10 +10,13 @@ const GAME_TICK_DELAY_MS = 1000;
 
 const HUMAN_ACTIONS = {
     enterRoom : "enterRoom",
-    getCurrentRoom : "getCurrentRoom"
+    getCurrentRoom : "getCurrentRoom",
+    switchHumanTool: "switchHumanTool"
 };
 const AI_ACTIONS = {
-    getCurrentRoom : "getCurrentRoom"
+    getCurrentRoom : "getCurrentRoom",
+    getPingRoom: "getPingRoom",
+    pingRoom: "pingRoom"
 };
 
 module.exports = {

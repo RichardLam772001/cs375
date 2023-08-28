@@ -35,6 +35,12 @@ WS.onReceive((data) => {
         case "humanRoomUpdate":
             HUMAN_STATE.setCurrentRoom(data.room);
             break;
+        case "humanToolUpdate":
+            HUMAN_STATE.switchHumanTool(data.tool);
+            break;
+        case "aiPingThreatUpdate":
+            BOARD.pingRoom(data.room, data.threatType);
+            break;
         case "threatSpawned":
             BOARD.spawnThreat(data.threatType, data.room);
             break;      
@@ -49,5 +55,7 @@ WS.onReceive((data) => {
         case "roomDestroyed":
             BOARD.destroyRoom(data.room);
             break;
+        case "delayData":
+            ACTION_TRACKER.setDelayData(data);
     }
 });

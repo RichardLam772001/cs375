@@ -104,6 +104,23 @@ const BOARD = ((rowCount, columnCount) => {
         ROOMS_WITH_THREATS.splice(ROOMS_WITH_THREATS.indexOf(room), 1);
         const roomElement = parseMoveableRoom(room);
         roomElement.setThreat("");
+
+        // If a threat resolves while human is not in room (human enters w/ correct tool then leaves), then set visibility to false
+        // May not be common case once we add minigames to be displayed upon entering room
+        // Note we only once this logic to apply for human player
+        if (HUMAN_STATE.getCurrentRoom() !== room && document.URL.endsWith("human/")) {
+            roomElement.setVisible(false);
+        }
+    }
+
+    /**
+     * 
+     * @param {string} room e.g. 0-0
+     * @param {string} threatType e.g. fire
+     */
+    const pingRoom = (room, threatType) => {
+        const roomElement = parseMoveableRoom(room);
+        roomElement.setPing(threatType);
     }
 
     function showGameEndMessage(result) {      
@@ -132,6 +149,7 @@ const BOARD = ((rowCount, columnCount) => {
         removeThreat,
         showGameEndMessage,
         destroyRoom,
+        pingRoom,
     };;
 })(3,3);
 

@@ -1,8 +1,6 @@
-const THREAT_TTL = 10;
+const THREAT_TTL = 18;
 const THREAT_TICK_SPEED = 1000;
 const THREAT_COOLDOWN_SECONDS = 5;
-
-const THREAT_RESOLVE_TIME_MS = 3*1000; // How long it takes when a player enters a room w/ the right tool for the threat to disappear
 
 const MAP_THREAT_TO_TOOL = {
     "fire" : "fire-extinguisher",
@@ -27,19 +25,16 @@ const Threat = (threatType, onThreatUnresolved, onThreatResolved) => {
         setTimeout(()=> tick(THREAT_TICK_SPEED*0.001), THREAT_TICK_SPEED);
         
     };
-    /**
-     * Starts a countdown to resolve the threat if the correct tool is passed in
-     * Will call onThreatResolved after a set time has elapsed
-     * Any further calls to resolve after it has started resolving will do nothing
-     */
-    const resolve = (tool) => {
-        const hasCorrectTool = MAP_THREAT_TO_TOOL[threatType] === tool;
-        if (!isResolving && hasCorrectTool) {
-            setTimeout(finishResolve, THREAT_RESOLVE_TIME_MS);
-            isResolving = true;
-        }
+
+    const correctTool = (tool) => {
+        return MAP_THREAT_TO_TOOL[threatType] === tool;
+    }
+    const startResolving = () => {
+        isResolving = true;
     }
     const finishResolve = () =>{
+        if(resolved) return; //already resolved
+        
         resolved = true;
         isResolving = false;
         onThreatResolved();
@@ -48,7 +43,9 @@ const Threat = (threatType, onThreatUnresolved, onThreatResolved) => {
 
     return {
         THREAT_TYPE,
-        resolve,
+        correctTool,
+        startResolving,
+        finishResolve,
     }
 }
 
