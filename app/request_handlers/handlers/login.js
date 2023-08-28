@@ -59,6 +59,7 @@ const createAccount = async (req, res) => {
     console.log("POST /login/create", body);
   
     try {
+      console.log(pool);
       const queryResult = await pool.query('SELECT * FROM userdata WHERE username = $1', [username]);
       const user = queryResult.rows[0];
 
