@@ -86,21 +86,12 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         }
 
         gameTime -= 1;
-        if (gameTime <= 0) {
-            console.log("game-----------------------------------------------end");
-            // Check if both players are logged in
-            if (CLIENTS_HANDLER.areBothPlayersLoggedIn(gameId,AI_USERNAME,HUMAN_USERNAME)) {
-                // Send game end message to both players
-                sendDataToPlayer(gameId, HUMAN_USERNAME, GameEndData('Lose'));
-                sendDataToPlayer(gameId, AI_USERNAME, GameEndData('Lose'));
-                // Update player stats
-                CLIENTS_HANDLER.updatePlayerStats(HUMAN_USERNAME, 'Lose');
-                CLIENTS_HANDLER.updatePlayerStats(AI_USERNAME, 'Lose');
-                removeGame(gameId);
-            } else {
-                console.log("At least one user is not loggedin");
-                removeGame(gameId);
-            }
+        if (gameTime === 0) {
+            onTimeout(gameId,AI_USERNAME,HUMAN_USERNAME);
+        }
+
+        if (AVAILABLE_ROOMS.length < 7) {
+            onShipExplode(gameId,AI_USERNAME,HUMAN_USERNAME);
         }
         
         // Threats
@@ -111,6 +102,41 @@ const GAME = (humanUsername, aiUsername, gameId) => {
             threatCooldown -= 1;
         }
     }
+
+    const onTimeout = (gameId,AI_USERNAME,HUMAN_USERNAME) => {
+        console.log("game-----------------------------------------------end");
+        // Check if both players are logged in
+        if (CLIENTS_HANDLER.areBothPlayersLoggedIn(gameId,AI_USERNAME,HUMAN_USERNAME)) {
+            // Send game end message to both players
+            sendDataToPlayer(gameId, HUMAN_USERNAME, GameEndData('win'));
+            sendDataToPlayer(gameId, AI_USERNAME, GameEndData('win'));
+            // Update player stats
+            CLIENTS_HANDLER.updatePlayerStats(HUMAN_USERNAME, 'win');
+            CLIENTS_HANDLER.updatePlayerStats(AI_USERNAME, 'win');
+            removeGame(gameId);
+        } else {
+            console.log("At least one user is not loggedin");
+            removeGame(gameId);
+        }
+    }
+
+    const onShipExplode = (gameId,AI_USERNAME,HUMAN_USERNAME) => {
+        console.log("game-----------------------------------------------end");
+        // Check if both players are logged in
+        if (CLIENTS_HANDLER.areBothPlayersLoggedIn(gameId,AI_USERNAME,HUMAN_USERNAME)) {
+            // Send game end message to both players
+            sendDataToPlayer(gameId, HUMAN_USERNAME, GameEndData('lose'));
+            sendDataToPlayer(gameId, AI_USERNAME, GameEndData('lose'));
+            // Update player stats
+            CLIENTS_HANDLER.updatePlayerStats(HUMAN_USERNAME, 'lose');
+            CLIENTS_HANDLER.updatePlayerStats(AI_USERNAME, 'lose');
+            removeGame(gameId);
+        } else {
+            console.log("At least one user is not loggedin");
+            removeGame(gameId);
+        }
+    }
+
 
     const spawnThreat = () => {
         const threatRoom = selectThreatRoom(AVAILABLE_ROOMS, ROOMS_WITH_THREATS);
