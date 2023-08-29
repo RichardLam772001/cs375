@@ -27,9 +27,18 @@ const HUMAN = (() => {
     });
   };
 
+  const boost = () => {
+    console.log("boost");
+  }
+  const inhibit = () => {
+    console.log("inhibit");
+  }
+
   return {
     enterRoom,
     switchHumanTool,
+    boost,
+    inhibit,
   };
 })();
 
@@ -41,6 +50,9 @@ window.onload = () => {
               BOARD.getRoom(i,j).rootElem.addEventListener('click', () => HUMAN.enterRoom(`${i}-${j}`));
           }
       }      
+      
+    document.getElementById("boost").addEventListener("click", HUMAN.boost);
+    document.getElementById("inhibit").addEventListener("click", HUMAN.inhibit);
   }
 };
 
