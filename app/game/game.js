@@ -1,7 +1,7 @@
 // @ts-check
 const { ROLES, GAME_TICK_DELAY_MS } = require("../constants");
 const { Threat, THREAT_COOLDOWN_SECONDS, THREAT_TTL } = require("./threat");
-const { randomInt, randomSelect } = require("../utils.js");
+const { randomInt, randomSelect, idGenerator } = require("../utils.js");
 const { sendDataToPlayer } = require("../broadcaster.js");
 const { ThreatSpawnedData, ThreatResolvedData, RoomDestroyedData, HumanToolUpdateData, AIPingThreatUpdateData, HumanRoomUpdateData, DelayData} = require("../dataObjects");
 const { CLIENTS_HANDLER } = require("../clientsHandler");
@@ -35,7 +35,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
 
     const GAME_ID = gameId;
 
-    let gameTime = 4*60;
+    let gameTime = 2*60;
     let HUMAN_USERNAME = humanUsername;
     let AI_USERNAME = aiUsername;
     let room = "0-0";
@@ -150,7 +150,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
             resolveGame('win');
             return;
         }
-        if (AVAILABLE_ROOMS.length <= 7) {
+        if (AVAILABLE_ROOMS.length < 7) {
             resolveGame('lose');
             return;
         }
@@ -275,7 +275,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     const scrambleThenPing = (room, threatType) =>{
         let row = Number(room[0]);
         let column = Number(room[2]);
-        let scrambleCount = RandomBag([[50, 0], [30, 1], [20, 2]]).pull();
+        let scrambleCount = RandomBag([[70, 0], [15, 1], [15, 2]]).pull();
 
         const scrambleBag = RandomBag([[1,"row"], [1, "col"], [1,"type"]]); //Different scramble categories may be given different weights
         for(let s = 0; s < scrambleCount; ++s){
@@ -365,10 +365,9 @@ const addGame = (gameId, game) => {
     GAMES[gameId] = game;
 }
 
+const generateUniqueGameId = idGenerator();
 const startGame = (humanUsername, aiUsername) => {
-    // Temp: TO DO - Replace with idGenerator when we want to test multiple games running at once
-    // For now priority is getting 1 game working beginning to end
-    const gameId = 1;
+    const gameId = generateUniqueGameId();
     addGame(gameId, GAME(humanUsername, aiUsername, gameId));
     return gameId;
 }

@@ -1,4 +1,4 @@
-const { joinLobby, getPlayersInLobby, clearLobby, getLobbies } = require("../../lobby/lobby.js");
+const { joinLobby, getPlayersInLobby, clearLobby, leaveLobby, isUserInLobby, getFormattedLobbies, getLobbyUserIsIn, deleteUserFromLobby } = require("../../lobby/lobby.js");
 const { sendToAllClients } = require("../../wss.js");
 const { GameReadyData, LobbyListData } = require("../../dataObjects.js");
 const { ANONY_COOKIE_DURATION_MS } = require("../../constants.js");
@@ -9,22 +9,33 @@ const startGameIfReady = (isGameReady, lobbyId) => {
         const [humanPlayer, aiPlayer] = getPlayersInLobby(lobbyId);
         const gameId = startGame(humanPlayer.username, aiPlayer.username);
         clearLobby(lobbyId);
+		refreshLobbyPage();
         sendToAllClients(GameReadyData(lobbyId, gameId));
     }
 }
 
 const lobbyJoin = (req, res) => {
     const body = req.body;
-    const lobbyId = body.lobbyId;
-    const username = body.username;
-    console.log("POST /lobby/join", body);
+	const username = body.username;
+	const lobbyId = body.lobbyId;
+
+	console.log("POST /lobby/join", body);
+
+	if (isUserInLobby(username, lobbyId)) {
+		res.statusCode = 400;
+		return res.send({error: "Already in lobby"});
+	}
+	if (!body.lobbyId) {
+		return res.send();
+	}
 
     const isGameReady = joinLobby(lobbyId, username);
 
     console.log(`Player ${username} joined lobby ${lobbyId}`);
 	
-	sendToAllClients(LobbyListData(prepLobbiesData(getLobbies())));
-    res.send();
+	refreshLobbyPage();
+	res.cookie('username', username, { maxAge: ANONY_COOKIE_DURATION_MS, httpOnly: false});
+    res.send({ lobbyId });
     setTimeout(() => startGameIfReady(isGameReady, lobbyId), 1000);
 }
 
@@ -35,6 +46,7 @@ const lobbyJoinGame = (req, res) => {
     console.log("POST /lobby/join-game", body);
 
     const role = lookUpRole(gameId, username);
+	deleteUserFromLobby(username);
 
     res.cookie('username', username, { maxAge: ANONY_COOKIE_DURATION_MS, httpOnly: false});
     // res.cookie('validation-cookie', validation-cookie, { maxAge: ANONY_COOKIE_DURATION_MS, httpOnly: false}); // TO DO!!!
@@ -43,21 +55,37 @@ const lobbyJoinGame = (req, res) => {
     return res.send({ role });
 }
 
-const lobbiesGet = (req, res) => {
-	console.log("GET /lobby/list");
+const lobbyLeave = (req, res) => {
+	const body = req.body;
+	const username = body.username;
+	const lobbyId = body.lobbyId;
+	console.log("POST /lobby/leave", body);
 	
-	return res.send(prepLobbiesData(getLobbies()));
-}
-
-const prepLobbiesData = (lobbies) => {
-	const lobbyIds = Object.keys(lobbies);
-	let lobbyList = {};
-	for (let id of lobbyIds) {
-		let hostname = lobbies[id][0]["username"]
-		lobbyList[id] = [id, hostname, "1/2", "sometime"]; // data accessible from main lobby: id, host username, etc...
+	const isSuccess = leaveLobby(lobbyId, username);
+	if (isSuccess) {
+		refreshLobbyPage();
+		return res.sendStatus(200);
 	}
-	return lobbyList;
+	return res.sendStatus(400);
 }
 
+const lobbiesGet = (_, res) => {
+	console.log("GET /lobby/list");	
+	return res.send(LobbyListData(getFormattedLobbies()));
+}
 
-module.exports = { lobbyJoin, lobbyJoinGame, lobbiesGet };
+const refreshLobbyPage = () => {
+	sendToAllClients(LobbyListData(getFormattedLobbies()));
+}
+
+const lobbyIsJoined = (req, res) => {
+	const body = req.body;
+	const username = body.username;
+	if (isUserInLobby(username)) {
+		return res.send({"lobbyId" : getLobbyUserIsIn(username)});
+	}
+	res.statusCode = 400;
+	return res.send({"lobbyId" : -1});
+}
+
+module.exports = { lobbyJoin, lobbyJoinGame, lobbyLeave, lobbiesGet, lobbyIsJoined };

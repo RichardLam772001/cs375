@@ -1,6 +1,6 @@
 const { idGenerator } = require("./utils.js");
 const { tokenStorage } =require("./request_handlers/handlers/login.js");
-const { pool } = require('./database/pool.js');
+const { getPool } = require('./database/pool.js');
 
 const generateUniqueClientId = idGenerator();
 
@@ -85,9 +85,10 @@ const CLIENTS_HANDLER = (() => {
 
     const updatePlayerStats = async (username, result) => {
         // Import your database connection module here
-
+	
         try {
-            if (result === 'win') {
+            const pool = getPool();
+	    if (result === 'win') {
                 // Increment wins for the player
                 await pool.query('UPDATE userdata SET wins = wins + 1 WHERE username = $1', [username]);
             } else if (result === 'lose') {
