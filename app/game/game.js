@@ -63,9 +63,12 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     const resolveThreatTime = 3;
     const setTrustTime = 1;
 
-    let aiSpeedFactor = 1;
+    let aiSpeedFactor = 1; //changes action speed for AI player
     const boostSpeedFactor = 1.25;
-    const inhibitSpeedFactor = 0.5;
+    const inhibitSpeedFactor = 0.70;
+
+    let threatSpeedFactor = 1;
+    const inhibitThreatFactor = 0.5;
     
 
     const THREATS_INDEXED_BY_ROOM = {};
@@ -91,7 +94,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
      * @returns {boolean} Whether the AI in this game is evil/compromised
      */
     const isAiEvil = () => {
-        return false; //TODO
+        return true; //TODO
     }
     //Whether the room exists on the spaceship
     const validateRoomPos = (x, y) =>{
@@ -178,6 +181,12 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         aiAction?.tick(deltaSeconds, aiSpeedFactor);
 
         // Threats
+
+        const threatDeltaSeconds = deltaSeconds*threatSpeedFactor;
+        for(const threatenedRoom of ROOMS_WITH_THREATS){
+            THREATS_INDEXED_BY_ROOM[threatenedRoom].tick(threatDeltaSeconds);
+        }
+
         if (threatCooldown <= 0 && ROOMS_WITH_THREATS.length < MAX_ACTIVE_THREATS) {
             spawnThreat();
         }
@@ -388,7 +397,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     }
     /**
      * Set a trust level for the AI.
-     * Positive values will increase action speed, while negative values will decrease action speed
+     * A positive value will increase action speed, while a negative value will decrease action speed
      * @param {int} newTrustLevel 
      */
     const doSetTrustLevel = (newTrustLevel) =>{
@@ -396,18 +405,19 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         aiSpeedFactor = newTrustLevel >= 0 ? boostSpeedFactor : inhibitSpeedFactor;
         const speedPercentage = (aiSpeedFactor)*100 + "%";
 
-        if(newTrustLevel > trustLevel){
+        if(newTrustLevel > 0){
             addConsoleLineAndBroadcast(ConsoleLineData(
                 gameTime, 
                 `Human boosts AI action speed to ${speedPercentage}`, 
                 undefined, 
                 "important"));
             if(isAiEvil() && trustLevel < 0){
+                threatSpeedFactor = 1;
                 addConsoleLineAndBroadcast(ConsoleLineData(
                     gameTime, 
-                    "THREAT SPEED INCREASED", 
-                    undefined, 
-                    "important"));
+                    `THREAT SPEED INCREASED to ${threatSpeedFactor*100}% because human trusts us`, 
+                    "ai", 
+                    "private"));
             }
         }else{
             addConsoleLineAndBroadcast(ConsoleLineData(
@@ -416,11 +426,12 @@ const GAME = (humanUsername, aiUsername, gameId) => {
                 undefined, 
                 "critical"));
             if(isAiEvil()){
+                threatSpeedFactor = inhibitThreatFactor;
                 addConsoleLineAndBroadcast(ConsoleLineData(
                     gameTime, 
-                    "THREAT SPEED REDUCED", 
-                    undefined, 
-                    "critical"));
+                    `THREAT SPEED REDUCED to ${threatSpeedFactor*100}% to because human is suspicious of us`, 
+                    "ai", 
+                    "private"));
             }
         }
 

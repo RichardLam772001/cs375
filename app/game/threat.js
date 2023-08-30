@@ -1,5 +1,4 @@
 const THREAT_TTL = 30;
-const THREAT_TICK_SPEED = 1000;
 const THREAT_COOLDOWN_SECONDS = 5;
 
 const MAP_THREAT_TO_TOOL = {
@@ -22,7 +21,6 @@ const Threat = (threatType, onThreatUnresolved, onThreatResolved) => {
             onThreatUnresolved();
             return;
         }
-        setTimeout(()=> tick(THREAT_TICK_SPEED*0.001), THREAT_TICK_SPEED);
         
     };
 
@@ -39,10 +37,10 @@ const Threat = (threatType, onThreatUnresolved, onThreatResolved) => {
         isResolving = false;
         onThreatResolved();
     }
-    setTimeout(()=> tick(THREAT_TICK_SPEED*0.001), THREAT_TICK_SPEED);
 
     return {
         THREAT_TYPE,
+        tick,
         correctTool,
         startResolving,
         finishResolve,
