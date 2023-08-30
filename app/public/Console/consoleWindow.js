@@ -22,7 +22,7 @@ const CONSOLE = (() => {
             stringMessage += `${timeString} `;
         }
 
-        stringMessage += "> "+message;
+        stringMessage += message;
         const newElem = addConsoleLineString(stringMessage);
         newElem.className = style;
     }
@@ -96,11 +96,11 @@ const CONSOLE = (() => {
 let testLines = [
     {message:"HOSTILE ALIEN PRESENCE DETECTED", style: "critical"},
     {message:"ATTACK IMMINENT", style: "critical"},
-    {message:"Distress beacon activated", style: "public"},
     {message:"Scanning AI companion system...", style: "public"},
     {message:"Scan result: 50% chance that AI system has been hacked by hostile forces", style: "critical"},
-    {time: 60*4, message:"Rescue arrives in 4 minutes", style: "important"}
-]
+    {time: 60*2, message:"Rescue arrives in 2 minutes", style: "important"},
+    {message:"private message", style: "private"},
+];
 CONSOLE.setConsoleLines(testLines);
 
 //setInterval(() => CONSOLE.addRandomLines(1),1000);
