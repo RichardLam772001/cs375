@@ -67,6 +67,10 @@ const onReceiveDataFromClient = (clientId, byteData) => {
             const newTool = action.args.tool;
             game.switchHumanTool(newTool);
             break;
+        case HUMAN_ACTIONS.setTrust:
+            const newTrustLevel = action.args.trust;
+            if(Number.isInteger(newTrustLevel)) game.setTrustLevel(action.args.trust);
+            break;
         case AI_ACTIONS.pingRoom:
             const aiPingRoom = action.args.room;
             const aiPingThreatType = action.args.threatType;

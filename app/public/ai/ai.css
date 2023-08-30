@@ -58,3 +58,10 @@
   .button.selected:hover {
     background-color: #4caf50;
   }
+
+  #progress-bar.fast{
+    background-color: greenyellow;
+  }
+  #progress-bar.slow{
+    background-color: red;
+  }

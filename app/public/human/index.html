@@ -38,6 +38,20 @@
           <i class="fa-solid fa-wrench"></i>
         </button>
         <button class="button" id="gun" onclick="HUMAN.switchHumanTool('gun')"><i class="fa-solid fa-gun"></i></button>
+        <div class="tool-group">
+            <div class="labelled-button">
+                <button class="button buttons-with-text" id="boost"> Boost AI </button>
+                +25% AI action speed
+            </div>
+            <div class="labelled-button">
+                <button class="button buttons-with-text" id="inhibit"> Inhibit AI </button>
+                <div>
+                    -30% AI action speed<br>
+                    -50% threat speed IF AI IS EVIL
+                </div>
+            </div>
+            
+        </div>
       </div>
       <div id="message-container">
         <p id="message-text"></p>
