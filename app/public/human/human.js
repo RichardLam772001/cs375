@@ -1,45 +1,54 @@
 const HUMAN = (() => {
-  const enterRoom = (room) => {
-    WS.send({
-      action: {
-        name: "enterRoom",
-        args: {
-          room: room,
-        },
-      },
-      username: USERNAME_COOKIE,
-      gameId: GAME_ID_COOKIE,
-      token: TOKEN_COOKIE
-    });
-  };
+    
+    const sendData = (data) => {
+        WS.send({
+            action: data,
+            username: USERNAME_COOKIE,
+            gameId: GAME_ID_COOKIE,
+            token: TOKEN_COOKIE
+        })
+    }
+    const enterRoom = (room) => {
+        sendData({
+            name: "enterRoom",
+            args: {
+                room: room,
+            },
+        });
+    };
 
-  const switchHumanTool = (tool) => {
-    WS.send({
-      action: {
-        name: "switchHumanTool",
-        args: {
-          tool: tool,
-        },
-      },
-      username: USERNAME_COOKIE,
-      gameId: GAME_ID_COOKIE,
-      token: TOKEN_COOKIE
-    });
-  };
+    const switchHumanTool = (tool) => {
+        sendData({
+            name: "switchHumanTool",
+            args: {
+                tool: tool,
+            },
+        });
+    };
 
-  const boost = () => {
-    console.log("boost");
-  }
-  const inhibit = () => {
-    console.log("inhibit");
-  }
+    const boost = () => {
+        sendData({
+            name: "setTrust",
+            args: {
+                trust: 1,
+            },
+        });
+    }
+    const inhibit = () => {
+        sendData({
+            name: "setTrust",
+            args: {
+                trust: -1,
+            },
+        });
+    }
 
-  return {
-    enterRoom,
-    switchHumanTool,
-    boost,
-    inhibit,
-  };
+    return {
+        enterRoom,
+        switchHumanTool,
+        boost,
+        inhibit,
+    };
 })();
 
 window.onload = () => {

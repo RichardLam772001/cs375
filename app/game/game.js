@@ -1,7 +1,7 @@
 // @ts-check
 const { ROLES, GAME_TICK_DELAY_MS } = require("../constants");
 const { Threat, THREAT_COOLDOWN_SECONDS, THREAT_TTL } = require("./threat");
-const { randomInt, randomSelect, idGenerator } = require("../utils.js");
+const { randomInt, randomSelect, idGenerator} = require("../utils.js");
 const { sendDataToPlayer } = require("../broadcaster.js");
 const { ThreatSpawnedData, ThreatResolvedData, RoomDestroyedData, HumanToolUpdateData, AIPingThreatUpdateData, HumanRoomUpdateData, DelayData} = require("../dataObjects");
 const { CLIENTS_HANDLER } = require("../clientsHandler");
@@ -49,15 +49,23 @@ const GAME = (humanUsername, aiUsername, gameId) => {
 
     //ACTIONS
     let humanAction;
-    const humanCanAct = () => {return humanAction === undefined || !humanAction.getIsRunning();};
+    const humanCanAct = () => {return !humanIsActing();};
+    const humanIsActing = () => {return humanAction !== undefined && humanAction.getIsRunning();};
     let aiAction;
-    const aiCanAct = () => {return aiAction === undefined || !aiAction.getIsRunning();};
+    const aiCanAct = () => {return !aiIsActing();};
+    const aiIsActing = () => {return aiAction !== undefined && aiAction.getIsRunning();};
+    let trustLevel = 0;
 
     //ACTION DELAYS
     const pingTime = 3;
     const moveTime = 2;
     const toolSwitchTime = 2;
     const resolveThreatTime = 3;
+    const setTrustTime = 1;
+
+    let aiSpeedFactor = 1;
+    const boostSpeedFactor = 1.25;
+    const inhibitSpeedFactor = 0.5;
     
 
     const THREATS_INDEXED_BY_ROOM = {};
@@ -78,6 +86,12 @@ const GAME = (humanUsername, aiUsername, gameId) => {
             return ROLES.AI;
         }
         return null;
+    }
+    /**
+     * @returns {boolean} Whether the AI in this game is evil/compromised
+     */
+    const isAiEvil = () => {
+        return false; //TODO
     }
     //Whether the room exists on the spaceship
     const validateRoomPos = (x, y) =>{
@@ -115,6 +129,11 @@ const GAME = (humanUsername, aiUsername, gameId) => {
             }
         }
         sendDataToBothPlayers(HumanRoomUpdateData(room));
+        addConsoleLineAndBroadcast(ConsoleLineData(
+            gameTime, 
+            `Human moves to room ${room}`, 
+            undefined, 
+            "public"));
     }
     const getCurrentRoom = () => {
         return room;
@@ -156,7 +175,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         }
 
         humanAction?.tick(deltaSeconds);
-        aiAction?.tick(deltaSeconds);
+        aiAction?.tick(deltaSeconds, aiSpeedFactor);
 
         // Threats
         if (threatCooldown <= 0 && ROOMS_WITH_THREATS.length < MAX_ACTIVE_THREATS) {
@@ -264,7 +283,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
 
         aiAction = DelayedAction(pingTime);
         aiAction.setOnFinish(() => scrambleThenPing(room, threatType));
-        sendDataToAI(DelayData(`Pinging ${threatType} at ${room}...`, pingTime));
+        sendDataToAI(DelayData(`Pinging ${threatType} at ${room}...`, pingTime, aiSpeedFactor));
     }
 
     /**
@@ -351,6 +370,68 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         return ROOMS_WITH_THREATS.indexOf(room) !== -1;
     }
 
+    /**
+     * Called by the human to request a change of trust level
+     * @param {int} newTrustLevel positive = boost, negative = inhibit
+     */
+    const setTrustLevel = (newTrustLevel) => {
+        if(!humanCanAct() || newTrustLevel == trustLevel) return;
+
+        humanAction = DelayedAction(setTrustTime, () => doSetTrustLevel(newTrustLevel));
+        let message;
+        if(newTrustLevel > trustLevel){
+            message = "Boosting AI...";
+        }else{
+            message = "Inhibitting AI...";
+        }
+        sendDataToHuman(DelayData(message, setTrustTime));
+    }
+    /**
+     * Set a trust level for the AI.
+     * Positive values will increase action speed, while negative values will decrease action speed
+     * @param {int} newTrustLevel 
+     */
+    const doSetTrustLevel = (newTrustLevel) =>{
+
+        aiSpeedFactor = newTrustLevel >= 0 ? boostSpeedFactor : inhibitSpeedFactor;
+        const speedPercentage = (aiSpeedFactor)*100 + "%";
+
+        if(newTrustLevel > trustLevel){
+            addConsoleLineAndBroadcast(ConsoleLineData(
+                gameTime, 
+                `Human boosts AI action speed to ${speedPercentage}`, 
+                undefined, 
+                "important"));
+            if(isAiEvil() && trustLevel < 0){
+                addConsoleLineAndBroadcast(ConsoleLineData(
+                    gameTime, 
+                    "THREAT SPEED INCREASED", 
+                    undefined, 
+                    "important"));
+            }
+        }else{
+            addConsoleLineAndBroadcast(ConsoleLineData(
+                gameTime, 
+                `Human inhibits AI action speed to ${speedPercentage}`, 
+                undefined, 
+                "critical"));
+            if(isAiEvil()){
+                addConsoleLineAndBroadcast(ConsoleLineData(
+                    gameTime, 
+                    "THREAT SPEED REDUCED", 
+                    undefined, 
+                    "critical"));
+            }
+        }
+
+        trustLevel = newTrustLevel;
+        
+        if(aiIsActing()){
+            sendDataToAI(DelayData("[ACTION SPEED CHANGED]", aiAction.getTotalTime(), aiSpeedFactor, aiAction.getProgress()));
+        }
+
+    }
+
     return {
         tick,
         getRole,
@@ -358,6 +439,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         getCurrentRoom,
         switchHumanTool,
         requestPing,
+        setTrustLevel,
     }
 }
 

@@ -49,12 +49,21 @@ const ACTION_TRACKER = (() => {
         totalTime = delayData.time;
         progress = delayData.progress;
         speedFactor = delayData.speedFactor;
+        setBarColorFromSpeedFactor(speedFactor);
         allowCompletion = true;
         
         if(totalTime > 0 && speedFactor > 0){
             startBar();
         }else{
             stopBar();
+        }
+    }
+    function setBarColorFromSpeedFactor(speedFactor){
+        progressBarElement.classList.remove("fast", "slow");
+        if(speedFactor > 1){
+            progressBarElement.classList.add("fast");
+        }else if(speedFactor < 1){
+            progressBarElement.classList.add("slow");
         }
     }
 
