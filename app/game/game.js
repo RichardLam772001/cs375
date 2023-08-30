@@ -381,7 +381,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
 
     /**
      * Called by the human to request a change of trust level
-     * @param {int} newTrustLevel positive = boost, negative = inhibit
+     * @param {Number} newTrustLevel positive = boost, negative = inhibit
      */
     const setTrustLevel = (newTrustLevel) => {
         if(!humanCanAct() || newTrustLevel == trustLevel) return;
@@ -398,7 +398,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     /**
      * Set a trust level for the AI.
      * A positive value will increase action speed, while a negative value will decrease action speed
-     * @param {int} newTrustLevel 
+     * @param {Number} newTrustLevel 
      */
     const doSetTrustLevel = (newTrustLevel) =>{
 
