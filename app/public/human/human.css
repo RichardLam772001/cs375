@@ -1,3 +1,16 @@
+
+
+#main-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#tools{
+  padding: 1em;
+}
+
+
 .button {
   width: 100px;
   height: 100px;

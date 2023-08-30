@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="./human.css" rel="stylesheet" />
     <link href="../gameScreen.css" rel="stylesheet" />
+    <link href="../minigame/shooting.css" rel="stylesheet" />
+    <link href="../minigame/typing.css" rel="stylesheet" />
     <link href="../Console/consoleWindowStyles.css" rel="stylesheet" />
     <link
       rel="stylesheet"
@@ -23,9 +25,19 @@
       <div id="console-window"></div>
       <div id="vertical-divider"></div>
       <div id="main-container">
-        <div id="minigame-container" style="position: absolute; top: 0; left: 0; width: 60%; height: 60%; z-index: 3; display: none;">
-          <!-- Mini-game content will be injected here -->
-      </div>
+        <div id="minigame-container" style="position: relative; top: 0; left: 0; width: 60%; height: 60%; z-index: 3; display: block; align-items: center; justify-content: center; ">
+          <div id = "container-for-typing-game">
+            <div class="quote-display" id="quoteDisplay">quote</div>
+            <textarea class="quote-input" id="quoteInput" onpaste="return false" autocomplete="off">quote</textarea>
+          </div>
+          <div id ="container-for-shooting-game">
+            <canvas class="canvas" id="canvas"></canvas>
+          </div>
+          <div>
+            <!-- container for fire game -->
+          </div>
+        </div>
+      <div></div>
       </div>
       <div id="vertical-divider"></div>
       <div id="tools">
@@ -48,6 +60,8 @@
 <script src="../cookies.js"></script>
 <script src="../constants.js"></script>
 <script src="../game/game.js"></script>
+<script src="../minigame/shooting.js"></script>
+<script src="../minigame/typing.js"></script>
 <script src="../Console/consoleWindow.js"></script>
 <script src="../roomElement.js"></script>
 <script src="../human/humanElem.js"></script>

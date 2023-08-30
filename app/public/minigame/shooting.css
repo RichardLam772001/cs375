@@ -1,0 +1,9 @@
+.canvas {
+    background: lightgray;
+    height: 500px;
+    width: 700px;
+}
+
+#container-for-shooting-game{
+    display: none;
+}
