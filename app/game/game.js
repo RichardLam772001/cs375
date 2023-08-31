@@ -3,7 +3,7 @@ const { ROLES, GAME_TICK_DELAY_MS } = require("../constants");
 const { Threat, THREAT_COOLDOWN_SECONDS, THREAT_TTL } = require("./threat");
 const { randomInt, randomSelect, idGenerator} = require("../utils.js");
 const { sendDataToPlayer } = require("../broadcaster.js");
-const { ThreatSpawnedData, ThreatResolvedData, RoomDestroyedData, HumanToolUpdateData, AIPingThreatUpdateData, HumanRoomUpdateData, DelayData} = require("../dataObjects");
+const { ThreatSpawnedData, ThreatResolvedData, RoomDestroyedData, HumanToolUpdateData, AIPingThreatUpdateData, HumanRoomUpdateData, DelayData, MiniGameTriggeredData} = require("../dataObjects");
 const { CLIENTS_HANDLER } = require("../clientsHandler");
 
 const { RandomBag } = require("../randomBag.js");
@@ -129,6 +129,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
             const threat = THREATS_INDEXED_BY_ROOM[room];
             if(threat.correctTool(currentTool)){
                 startResolvingThreat(threat);
+                sendDataToPlayer(GAME_ID, humanUsername, MiniGameTriggeredData(threat.THREAT_TYPE));
             }
         }
         sendDataToBothPlayers(HumanRoomUpdateData(room));

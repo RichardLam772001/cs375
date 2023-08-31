@@ -58,5 +58,10 @@ WS.onReceive((data) => {
             break;
         case "delayData":
             ACTION_TRACKER.setDelayData(data);
+            break;
+        case "miniGameTriggered":
+            MINI_GAME_HANDLER.showMiniGame(data.threatType); // Have this not run for AI player, rn it just throws an error cause not defined
+            // (we're not including the minigame scripts on the AI page)
+            break;
     }
 });

@@ -15,6 +15,7 @@ const DATA_TYPES = {
     GAME_END : "GameEnd",
     ROOM_DESTROYED: "roomDestroyed",
     DELAY_DATA: "delayData",
+    MINI_GAME_TRIGGERED: "miniGameTriggered",
 }
 
 const HumanRoomUpdateData = (room) => ({
@@ -81,6 +82,11 @@ const GameEndData = (result => ({
     result
 }))
 
+const MiniGameTriggeredData = (threatType) => ({
+    name: DATA_TYPES.MINI_GAME_TRIGGERED,
+    threatType,
+});
+
 module.exports = {
   HumanRoomUpdateData,
   HumanToolUpdateData,
@@ -93,4 +99,5 @@ module.exports = {
   RoomDestroyedData,
   DelayData,
   GameEndData,
+  MiniGameTriggeredData,
 };
