@@ -42,7 +42,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     let AI_USERNAME = aiUsername;
     let room = "0-0";
     let threatCooldown = THREAT_COOLDOWN_SECONDS;
-    let GRACE_PERIOD = 2; // time players have to both join before game auto ends
+    let GRACE_PERIOD = 3; // time players have to both join before game auto ends
 
     let AI_ROLE = setAiRole();
 
