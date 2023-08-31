@@ -379,6 +379,12 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         if (TOOLS.indexOf(newTool) === -1) {
             return;
         }
+        if(newTool === currentTool) return; //already selected
+        if(ifRoomHasThreat(room)){
+            const line = ConsoleLineData(gameTime, "CANNOT SWITCH TOOL in threatened room", "human", "private");
+            addConsoleLineAndBroadcast(line);
+            return;
+        }
 
         humanAction = DelayedAction(toolSwitchTime, () => doSwitchHumanTool(newTool));
         sendDataToHuman(DelayData(`Switching tool to ${newTool}...`, toolSwitchTime));
