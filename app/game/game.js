@@ -187,7 +187,9 @@ const GAME = (humanUsername, aiUsername, gameId) => {
 
         const threatDeltaSeconds = deltaSeconds*threatSpeedFactor;
         for(const threatenedRoom of ROOMS_WITH_THREATS){
-            THREATS_INDEXED_BY_ROOM[threatenedRoom].tick(threatDeltaSeconds);
+            if(threatenedRoom != room){ //pause timer when human is inside the room
+                THREATS_INDEXED_BY_ROOM[threatenedRoom].tick(threatDeltaSeconds);
+            }
         }
 
         if (threatCooldown <= 0 && ROOMS_WITH_THREATS.length < MAX_ACTIVE_THREATS) {
