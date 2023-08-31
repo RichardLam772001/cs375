@@ -193,7 +193,9 @@ const GAME = (humanUsername, aiUsername, gameId) => {
 
         const threatDeltaSeconds = deltaSeconds*threatSpeedFactor;
         for(const threatenedRoom of ROOMS_WITH_THREATS){
-            THREATS_INDEXED_BY_ROOM[threatenedRoom].tick(threatDeltaSeconds);
+            if(threatenedRoom != room){ //pause timer when human is inside the room
+                THREATS_INDEXED_BY_ROOM[threatenedRoom].tick(threatDeltaSeconds);
+            }
         }
 
         if (threatCooldown <= 0 && ROOMS_WITH_THREATS.length < MAX_ACTIVE_THREATS) {
@@ -383,6 +385,12 @@ const GAME = (humanUsername, aiUsername, gameId) => {
 
         // currentTool isnt valid tool
         if (TOOLS.indexOf(newTool) === -1) {
+            return;
+        }
+        if(newTool === currentTool) return; //already selected
+        if(ifRoomHasThreat(room)){
+            const line = ConsoleLineData(gameTime, "CANNOT SWITCH TOOL in threatened room", "human", "private");
+            addConsoleLineAndBroadcast(line);
             return;
         }
 

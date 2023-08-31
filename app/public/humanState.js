@@ -42,6 +42,7 @@ const HUMAN_STATE = (() => {
             currentToolButton.classList.remove("unselected");
             currentToolButton.classList.add("selected");
         }
+        HUMAN_ELEM.setTool(tool);
     }
     
     return {
