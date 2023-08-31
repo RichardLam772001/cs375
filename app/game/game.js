@@ -36,11 +36,13 @@ const GAME = (humanUsername, aiUsername, gameId) => {
 
     const GAME_ID = gameId;
 
-    let gameTime = 2*60;
+    let INITIAL_TIME = 2*60;
+    let gameTime = INITIAL_TIME;
     let HUMAN_USERNAME = humanUsername;
     let AI_USERNAME = aiUsername;
     let room = "0-0";
     let threatCooldown = THREAT_COOLDOWN_SECONDS;
+    let GRACE_PERIOD = 3; // time players have to both join before game auto ends
 
     let AI_ROLE = setAiRole();
 
@@ -165,12 +167,16 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     const tick = (deltaSeconds) => {
 
         // Pause game if clients in game aren't registered (client hasn't connected yet, or one of them logged out)
-        if (!CLIENTS_HANDLER.doesGameHaveRegisteredClients(gameId)) {
-            console.log(`Game paused. There are not 2 clients connected to the gameId ${gameId}`);
-            return;
+        gameTime -= deltaSeconds;
+        if (!CLIENTS_HANDLER.doesGameHaveRegisteredClients(gameId) && gameTime < INITIAL_TIME - GRACE_PERIOD) {
+                console.log(`Game ended. There are not 2 clients connected to gameId ${gameId}----------------------`);
+                sendDataToBothPlayers(GameEndData('disconnected'));
+                removeGame(GAME_ID);
+                return; 
         }
 
-        gameTime -= deltaSeconds;
+        
+        
         if (gameTime <= 0) {
             resolveGame('win');
             return;
