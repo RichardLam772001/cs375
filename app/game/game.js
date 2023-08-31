@@ -3,7 +3,7 @@ const { ROLES, GAME_TICK_DELAY_MS } = require("../constants");
 const { Threat, THREAT_COOLDOWN_SECONDS, THREAT_TTL } = require("./threat");
 const { randomInt, randomSelect, idGenerator} = require("../utils.js");
 const { sendDataToPlayer } = require("../broadcaster.js");
-const { ThreatSpawnedData, ThreatResolvedData, RoomDestroyedData, HumanToolUpdateData, AIPingThreatUpdateData, HumanRoomUpdateData, DelayData} = require("../dataObjects");
+const { ThreatSpawnedData, ThreatResolvedData, RoomDestroyedData, HumanToolUpdateData, AIPingThreatUpdateData, HumanRoomUpdateData, DelayData, AiRoleData} = require("../dataObjects");
 const { CLIENTS_HANDLER } = require("../clientsHandler");
 
 const { RandomBag } = require("../randomBag.js");
@@ -12,6 +12,7 @@ const { ConsoleLineData } = require("../dataObjects.js");
 const { GameEndData } = require("../dataObjects.js");
 
 const { DelayedAction } = require("./delayedAction.js");
+const { setAiRole } = require("./airole.js");
 
 const GAMES = {
     
@@ -40,6 +41,8 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     let AI_USERNAME = aiUsername;
     let room = "0-0";
     let threatCooldown = THREAT_COOLDOWN_SECONDS;
+
+    let AI_ROLE = setAiRole();
 
 
     //ROOMS
@@ -195,12 +198,24 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         }
     }
 
-    const resolveGame = (result) => {
-        if (CLIENTS_HANDLER.areBothPlayersLoggedIn(GAME_ID, AI_USERNAME, HUMAN_USERNAME)) {
-            CLIENTS_HANDLER.updatePlayerStats(HUMAN_USERNAME, result);
-            CLIENTS_HANDLER.updatePlayerStats(AI_USERNAME, result);
+    const reverseResult = (result) => {
+        if (result === 'win') {
+            return 'lose';
         }
-        sendDataToBothPlayers(GameEndData(result));
+        else {
+            return 'win';
+        }
+    }
+
+    const resolveGame = (result) => {
+        let humanResult = result;
+        let aiResult = AI_ROLE.isAiEvil() ? reverseResult(result) : result;
+        if (CLIENTS_HANDLER.areBothPlayersLoggedIn(GAME_ID, AI_USERNAME, HUMAN_USERNAME)) {
+            CLIENTS_HANDLER.updatePlayerStats(HUMAN_USERNAME, humanResult);
+            CLIENTS_HANDLER.updatePlayerStats(AI_USERNAME, aiResult);
+        }
+        sendDataToHuman(GameEndData(humanResult));
+        sendDataToAI(GameEndData(aiResult));
         removeGame(GAME_ID);
     }
 
@@ -238,6 +253,9 @@ const GAME = (humanUsername, aiUsername, gameId) => {
      */
     const alertHumanPlayerOfThreat = (room) => {
         alertPlayerOfThreat(THREATS_INDEXED_BY_ROOM[room], HUMAN_USERNAME, room);
+    }
+    const sendRoleToAI = (role) => {
+        sendDataToAI(AiRoleData(role)); // not called anywhere yet
     }
     const sendDataToBothPlayers = (data) =>{
         sendDataToHuman(data);
@@ -303,7 +321,8 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     const scrambleThenPing = (room, threatType) =>{
         let row = Number(room[0]);
         let column = Number(room[2]);
-        let scrambleCount = RandomBag([[70, 0], [15, 1], [15, 2]]).pull();
+        let weights = AI_ROLE.getScrambleWeights();
+        let scrambleCount = RandomBag([[weights[0], 0], [weights[1], 1], [weights[2], 2]]).pull();
 
         const scrambleBag = RandomBag([[1,"row"], [1, "col"], [1,"type"]]); //Different scramble categories may be given different weights
         for(let s = 0; s < scrambleCount; ++s){

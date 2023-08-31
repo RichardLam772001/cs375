@@ -15,6 +15,7 @@ const DATA_TYPES = {
     GAME_END : "GameEnd",
     ROOM_DESTROYED: "roomDestroyed",
     DELAY_DATA: "delayData",
+    AI_ROLE : "aiRole"
 }
 
 const HumanRoomUpdateData = (room) => ({
@@ -81,6 +82,11 @@ const GameEndData = (result => ({
     result
 }))
 
+const AiRoleData = (role) => ({
+    name: DATA_TYPES.AI_ROLE,
+    role
+});
+
 module.exports = {
   HumanRoomUpdateData,
   HumanToolUpdateData,
@@ -93,4 +99,5 @@ module.exports = {
   RoomDestroyedData,
   DelayData,
   GameEndData,
+  AiRoleData
 };
