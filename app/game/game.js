@@ -93,12 +93,6 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         }
         return null;
     }
-    /**
-     * @returns {boolean} Whether the AI in this game is evil/compromised
-     */
-    const isAiEvil = () => {
-        return true; //TODO
-    }
     //Whether the room exists on the spaceship
     const validateRoomPos = (x, y) =>{
         return x >= 0 && x < SHIP_ROWS && y >= 0 && y < SHIP_COLS;
@@ -254,8 +248,8 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     const alertHumanPlayerOfThreat = (room) => {
         alertPlayerOfThreat(THREATS_INDEXED_BY_ROOM[room], HUMAN_USERNAME, room);
     }
-    const sendRoleToAI = (role) => {
-        sendDataToAI(AiRoleData(role)); // not called anywhere yet
+    const sendRoleToAI = () => {
+        sendDataToAI(AiRoleData(AI_ROLE.roleToString()));
     }
     const sendDataToBothPlayers = (data) =>{
         sendDataToHuman(data);
@@ -430,7 +424,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
                 `Human boosts AI action speed to ${speedPercentage}`, 
                 undefined, 
                 "important"));
-            if(isAiEvil() && trustLevel < 0){
+            if(AI_ROLE.isAiEvil() && trustLevel < 0){
                 threatSpeedFactor = 1;
                 addConsoleLineAndBroadcast(ConsoleLineData(
                     gameTime, 
@@ -444,7 +438,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
                 `Human inhibits AI action speed to ${speedPercentage}`, 
                 undefined, 
                 "critical"));
-            if(isAiEvil()){
+            if(AI_ROLE.isAiEvil()){
                 threatSpeedFactor = inhibitThreatFactor;
                 addConsoleLineAndBroadcast(ConsoleLineData(
                     gameTime, 
@@ -465,6 +459,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     return {
         tick,
         getRole,
+        sendRoleToAI,
         enterRoom,
         getCurrentRoom,
         switchHumanTool,

@@ -71,6 +71,9 @@ const onReceiveDataFromClient = (clientId, byteData) => {
             const newTrustLevel = action.args.trust;
             if(Number.isInteger(newTrustLevel)) game.setTrustLevel(action.args.trust);
             break;
+        case AI_ACTIONS.getAiRole:
+            game.sendRoleToAI();
+            break;
         case AI_ACTIONS.pingRoom:
             const aiPingRoom = action.args.room;
             const aiPingThreatType = action.args.threatType;
