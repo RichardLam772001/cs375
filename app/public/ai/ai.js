@@ -35,6 +35,25 @@ const AI = (() => {
       };
 })();
 
+const AI_ROLE = (() => {
+  const aiHeader = document.getElementById("role-text");
+
+  const displayAiRole = (role) => {
+    switch (role) {
+      case "GOOD":
+        aiHeader.innerText = "You are the AI. Objective: Help human.";
+        break;
+      case "EVIL":
+        aiHeader.innerText = "You are the HACKED AI. Objective: Kill human.";
+        break;
+    }
+  }
+  
+  return {
+    displayAiRole
+  };
+})();
+
 window.onload = () => {
     if (USERNAME_COOKIE) {
         const size = BOARD.getSize();
