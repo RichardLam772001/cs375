@@ -341,7 +341,9 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     }
     const doSabotage = () => {
         for(const threatenedRoom of ROOMS_WITH_THREATS){
-            THREATS_INDEXED_BY_ROOM[threatenedRoom].sabotage();
+            if(threatenedRoom != room){ //don't sabotage room that human is in
+                THREATS_INDEXED_BY_ROOM[threatenedRoom].sabotage();
+            }
         }
         addConsoleLineAndBroadcast(
             ConsoleLineData(gameTime, 
