@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="progressBarStyles.css">
+    </head>
+    <body>
+        <h1>Testing Progress Bar</h1>
+
+        <div id="current-progress">
+            <div id="progress-bar"></div>
+        </div>
+
+        <br>
+        <button onclick="bar.startFill()">Run Progress</button>
+    </body>
+<script src="progressBar.js"></script>
+<script>
+    const bar = PROGRESS_BAR(document.getElementById("progress-bar"));
+</script>
+</html>
