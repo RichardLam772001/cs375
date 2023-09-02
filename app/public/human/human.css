@@ -45,7 +45,3 @@
 .button.selected:hover {
   background-color: #4caf50;
 }
-.buttons-with-text {
-  font-weight: 700;
-  color: black;
-}

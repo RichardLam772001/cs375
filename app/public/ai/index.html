@@ -41,12 +41,20 @@
             </div>
             <div class="tool-group">
                 <div>Manage Threats</div>
-                <button class="button">
-                  <img src="../images/ai/assist.png" alt="assist" class="button-icon" />
-                </button>
-                <button class="button">
-                  <img src="../images/ai/sabotage.png" alt="sabotage" class="button-icon" />
-                </button>
+                <div class="labelled-button">
+                  <button id="assist-button" class="button buttons-with-text">
+                    <img src="../images/ai/assist.png" alt="assist" class="button-icon" />
+                    Increase threat timers<br>
+                    Good: 25% to alert human<br>
+                    Evil: 100% to alert human
+                  </button>
+                </div>
+                <div class="labelled-button">
+                  <button id="sabotage-button" class="button buttons-with-text">
+                    <img src="../images/ai/sabotage.png" alt="sabotage" class="button-icon" />
+                    Reduce threat timers
+                  </button>
+                </div>
             </div>
         </div>
         <div id="message-container">

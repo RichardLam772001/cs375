@@ -1,6 +1,6 @@
 // @ts-check
 const { ROLES, GAME_TICK_DELAY_MS } = require("../constants");
-const { Threat, THREAT_COOLDOWN_SECONDS, THREAT_TTL } = require("./threat");
+const { Threat, THREAT_COOLDOWN_SECONDS, THREAT_TTL, THREAT_ASSIST_SECONDS, THREAT_SABOTAGE_SECONDS} = require("./threat");
 const { randomInt, randomSelect, idGenerator} = require("../utils.js");
 const { sendDataToPlayer } = require("../broadcaster.js");
 const { ThreatSpawnedData, ThreatResolvedData, RoomDestroyedData, HumanToolUpdateData, AIPingThreatUpdateData, HumanRoomUpdateData, DelayData, AiRoleData} = require("../dataObjects");
@@ -67,6 +67,8 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     const toolSwitchTime = 2;
     const resolveThreatTime = 3;
     const setTrustTime = 1;
+    const assistTime = 2;
+    const sabotageTime = 2;
 
     let aiSpeedFactor = 1; //changes action speed for AI player
     const boostSpeedFactor = 1.25;
@@ -74,6 +76,8 @@ const GAME = (humanUsername, aiUsername, gameId) => {
 
     let threatSpeedFactor = 1;
     const inhibitThreatFactor = 0.5;
+
+    let hasAIAssisted = false;
     
 
     const THREATS_INDEXED_BY_ROOM = {};
@@ -94,12 +98,6 @@ const GAME = (humanUsername, aiUsername, gameId) => {
             return ROLES.AI;
         }
         return null;
-    }
-    /**
-     * @returns {boolean} Whether the AI in this game is evil/compromised
-     */
-    const isAiEvil = () => {
-        return true; //TODO
     }
     //Whether the room exists on the spaceship
     const validateRoomPos = (x, y) =>{
@@ -262,8 +260,8 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     const alertHumanPlayerOfThreat = (room) => {
         alertPlayerOfThreat(THREATS_INDEXED_BY_ROOM[room], HUMAN_USERNAME, room);
     }
-    const sendRoleToAI = (role) => {
-        sendDataToAI(AiRoleData(role)); // not called anywhere yet
+    const sendRoleToAI = () => {
+        sendDataToAI(AiRoleData(AI_ROLE.roleToString()));
     }
     const sendDataToBothPlayers = (data) =>{
         sendDataToHuman(data);
@@ -303,6 +301,57 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         console.log(message);
         addConsoleLineAndBroadcast(ConsoleLineData(gameTime, message, "all", "important"));
     }
+    const assist = () => {
+        if(!aiCanAct()) return;
+        aiAction = DelayedAction(assistTime, doAssist);
+        sendDataToAI(DelayData(`Assisting with threats...`, assistTime, aiSpeedFactor));
+    }
+    const doAssist = () => {
+        for(const threatenedRoom of ROOMS_WITH_THREATS){
+            THREATS_INDEXED_BY_ROOM[threatenedRoom].assist();
+        }
+        if(Math.random() < AI_ROLE.getAssistAlertChance()){
+            alertAssist();
+        }else{
+            addConsoleLineAndBroadcast(
+                ConsoleLineData(gameTime, 
+                    `AI assists secretly: +${THREAT_ASSIST_SECONDS} seconds to all threats.`,
+                     "ai", "private")
+            );
+        }
+    }
+    const alertAssist = () => {
+        addConsoleLineAndBroadcast(
+            ConsoleLineData(gameTime, `AI assists: +${THREAT_ASSIST_SECONDS} seconds to all threats.`, "all", "public")
+        );
+        if(!hasAIAssisted){ //Adds an extra console line the first time an assist is alerted
+            hasAIAssisted = true;
+            addConsoleLineAndBroadcast(
+                ConsoleLineData(gameTime, 
+                    `A good AI has a ${Math.round(AI_ROLE.ROLE_VALUES.assistAlertChance[0]*100)}% chance to alert you when it assists.\n 
+                    An evil AI has a ${Math.round(AI_ROLE.ROLE_VALUES.assistAlertChance[1]*100)}% chance.`,
+                     "human", "private")
+            );
+        }
+    }
+    const sabotage = () => {
+        if(!aiCanAct()) return;
+        aiAction = DelayedAction(sabotageTime, doSabotage);
+        sendDataToAI(DelayData(`Sabotaging threats...`, sabotageTime, aiSpeedFactor));
+    }
+    const doSabotage = () => {
+        for(const threatenedRoom of ROOMS_WITH_THREATS){
+            if(threatenedRoom != room){ //don't sabotage room that human is in
+                THREATS_INDEXED_BY_ROOM[threatenedRoom].sabotage();
+            }
+        }
+        addConsoleLineAndBroadcast(
+            ConsoleLineData(gameTime, 
+                `AI sabotages: -${THREAT_SABOTAGE_SECONDS} seconds to all threats.`,
+                 "ai", "private")
+        );
+    }
+    
 
     /**
      * Queue up a ping action for the AI player
@@ -444,7 +493,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
                 `Human boosts AI action speed to ${speedPercentage}`, 
                 undefined, 
                 "important"));
-            if(isAiEvil() && trustLevel < 0){
+            if(AI_ROLE.isAiEvil() && trustLevel < 0){
                 threatSpeedFactor = 1;
                 addConsoleLineAndBroadcast(ConsoleLineData(
                     gameTime, 
@@ -458,7 +507,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
                 `Human inhibits AI action speed to ${speedPercentage}`, 
                 undefined, 
                 "critical"));
-            if(isAiEvil()){
+            if(AI_ROLE.isAiEvil()){
                 threatSpeedFactor = inhibitThreatFactor;
                 addConsoleLineAndBroadcast(ConsoleLineData(
                     gameTime, 
@@ -479,11 +528,14 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     return {
         tick,
         getRole,
+        sendRoleToAI,
         enterRoom,
         getCurrentRoom,
         switchHumanTool,
         requestPing,
         setTrustLevel,
+        assist,
+        sabotage,
     }
 }
 
