@@ -43,7 +43,7 @@ const Threat = (threatType, onThreatUnresolved, onThreatResolved) => {
         timeLeft += THREAT_ASSIST_SECONDS;
     }
     const sabotage = () => {
-        timeLeft -= THREAT_SABOTAGE_SECONDS;
+        tick(THREAT_SABOTAGE_SECONDS);
     }
 
     return {

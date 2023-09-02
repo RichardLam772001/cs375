@@ -79,6 +79,12 @@ const onReceiveDataFromClient = (clientId, byteData) => {
             const aiPingThreatType = action.args.threatType;
             game.requestPing(aiPingRoom, aiPingThreatType);
             break;
+        case AI_ACTIONS.assist:
+            game.assist();
+            break;
+        case AI_ACTIONS.sabotage:
+            game.sabotage();
+            break;
         default:
             break;
     }

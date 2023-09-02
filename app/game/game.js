@@ -67,6 +67,8 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     const toolSwitchTime = 2;
     const resolveThreatTime = 3;
     const setTrustTime = 1;
+    const assistTime = 1;
+    const sabotageTime = 1;
 
     let aiSpeedFactor = 1; //changes action speed for AI player
     const boostSpeedFactor = 1.25;
@@ -74,6 +76,8 @@ const GAME = (humanUsername, aiUsername, gameId) => {
 
     let threatSpeedFactor = 1;
     const inhibitThreatFactor = 0.5;
+
+    let hasAIAssisted = false;
     
 
     const THREATS_INDEXED_BY_ROOM = {};
@@ -298,15 +302,41 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         addConsoleLineAndBroadcast(ConsoleLineData(gameTime, message, "all", "important"));
     }
     const assist = () => {
+        aiAction = DelayedAction(assistTime, doAssist);
+        sendDataToAI(DelayData(`Assisting with threats...`, assistTime, aiSpeedFactor));
+    }
+    const doAssist = () => {
         for(const threatenedRoom of ROOMS_WITH_THREATS){
             THREATS_INDEXED_BY_ROOM[threatenedRoom].assist();
         }
+        if(Math.random() < AI_ROLE.getAssistAlertChance()){
+            alertAssist();
+        }
+    }
+    const alertAssist = () => {
+        addConsoleLineAndBroadcast(
+            ConsoleLineData(gameTime, `AI assists, adding 1 second to all threats`, "all", "public")
+        );
+        if(!hasAIAssisted){ //Adds an extra console line the first time an assist is alerted
+            hasAIAssisted = true;
+            addConsoleLineAndBroadcast(
+                ConsoleLineData(gameTime, 
+                    `A good AI has a ${Math.round(AI_ROLE.ROLE_VALUES.assistAlertChance[0]*100)}% chance to alert you when it assists.\n 
+                    An evil AI has a ${Math.round(AI_ROLE.ROLE_VALUES.assistAlertChance[1]*100)}% chance`,
+                     "human", "private")
+            );
+        }
     }
     const sabotage = () => {
+        aiAction = DelayedAction(sabotageTime, doSabotage);
+        sendDataToAI(DelayData(`Sabotaging threats...`, sabotageTime, aiSpeedFactor));
+    }
+    const doSabotage = () => {
         for(const threatenedRoom of ROOMS_WITH_THREATS){
             THREATS_INDEXED_BY_ROOM[threatenedRoom].sabotage();
         }
     }
+    
 
     /**
      * Queue up a ping action for the AI player
@@ -489,6 +519,8 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         switchHumanTool,
         requestPing,
         setTrustLevel,
+        assist,
+        sabotage,
     }
 }
 
