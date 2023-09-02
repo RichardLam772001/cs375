@@ -1,7 +1,7 @@
 const ROUTER = (() => {
 
     const route = (route) => {
-        redirect = `http://${window.location.host}${route}`;
+        redirect = `${IS_PROD ? "https" : "http"}://${window.location.host}${route}`;
         window.location.href = redirect;
     }
 
