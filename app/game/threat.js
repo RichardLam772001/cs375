@@ -1,5 +1,7 @@
 const THREAT_TTL = 30;
 const THREAT_COOLDOWN_SECONDS = 5;
+const THREAT_ASSIST_SECONDS = 1; // how many seconds gained from an assist
+const THREAT_SABOTAGE_SECONDS = 1; // how many seconds lost from a sabotage
 
 const MAP_THREAT_TO_TOOL = {
     "fire" : "fire-extinguisher",
@@ -8,7 +10,7 @@ const MAP_THREAT_TO_TOOL = {
 }
 
 const Threat = (threatType, onThreatUnresolved, onThreatResolved) => {
-    let currentAge = THREAT_TTL;
+    let timeLeft = THREAT_TTL;
     const THREAT_TYPE = threatType;
     let resolved = false;
     let isResolving = false;
@@ -16,8 +18,8 @@ const Threat = (threatType, onThreatUnresolved, onThreatResolved) => {
     const tick = (deltaSeconds) => {
         if(isResolving || resolved) return; //Threat timer is disarmed once human starts fixing it
 
-        currentAge -= deltaSeconds;
-        if (currentAge <= 0) {
+        timeLeft -= deltaSeconds;
+        if (timeLeft <= 0) {
             onThreatUnresolved();
             return;
         }
@@ -37,6 +39,12 @@ const Threat = (threatType, onThreatUnresolved, onThreatResolved) => {
         isResolving = false;
         onThreatResolved();
     }
+    const assist = () => {
+        timeLeft += THREAT_ASSIST_SECONDS;
+    }
+    const sabotage = () => {
+        timeLeft -= THREAT_SABOTAGE_SECONDS;
+    }
 
     return {
         THREAT_TYPE,
@@ -44,6 +52,8 @@ const Threat = (threatType, onThreatUnresolved, onThreatResolved) => {
         correctTool,
         startResolving,
         finishResolve,
+        assist,
+        sabotage,
     }
 }
 

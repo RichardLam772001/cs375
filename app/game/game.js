@@ -297,6 +297,16 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         console.log(message);
         addConsoleLineAndBroadcast(ConsoleLineData(gameTime, message, "all", "important"));
     }
+    const assist = () => {
+        for(const threatenedRoom of ROOMS_WITH_THREATS){
+            THREATS_INDEXED_BY_ROOM[threatenedRoom].assist();
+        }
+    }
+    const sabotage = () => {
+        for(const threatenedRoom of ROOMS_WITH_THREATS){
+            THREATS_INDEXED_BY_ROOM[threatenedRoom].sabotage();
+        }
+    }
 
     /**
      * Queue up a ping action for the AI player
