@@ -33,7 +33,7 @@ if (IS_PROD) {
 	httpsServer = https.createServer(options, app);
 
 	// Create WebSocket Server to run on HTTPS server
-	webSockServer = new WebSocketServer({server});
+	webSockServer = new WebSocketServer({server : httpsServer});
 }
 else {
 	// Create WebSocket Server to run on separate port
@@ -127,7 +127,7 @@ webSockServer.on('connection', ws => {
 const hostname = IS_PROD ? PROD_HOSTNAME : LOCAL_HOSTNAME;
 const port = IS_PROD ? PROD_PORT : LOCAL_PORT;
 if (IS_PROD) {
-	server.listen(port, () => {
+	httpsServer.listen(port, () => {
         console.log(`App running on http://${hostname}:${port}`);
 });
 }
