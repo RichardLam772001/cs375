@@ -6,13 +6,6 @@
     <link href="./human.css" rel="stylesheet" />
     <link href="../gameScreen.css" rel="stylesheet" />
     <link href="../Console/consoleWindowStyles.css" rel="stylesheet" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-      integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
     <title>Cyberspace Saboteur</title>
   </head>
   <body>
@@ -29,22 +22,28 @@
           class="button"
           id="fire-extinguisher"
           onclick="HUMAN.switchHumanTool('fire-extinguisher')">
-          <i class="fa-solid fa-fire-extinguisher"></i>
+          <img src="../images/Human/fire-extinguisher.png" alt="fire-extinguisher" class="button-icon" />
         </button>
         <button
           class="button"
           id="wrench"
           onclick="HUMAN.switchHumanTool('wrench')">
-          <i class="fa-solid fa-wrench"></i>
+          <img src="../images/Human/wrench.png" alt="wrench" class="button-icon" />
         </button>
-        <button class="button" id="gun" onclick="HUMAN.switchHumanTool('gun')"><i class="fa-solid fa-gun"></i></button>
+        <button class="button" id="gun" onclick="HUMAN.switchHumanTool('gun')">
+          <img src="../images/Human/gun.png" alt="gun" class="button-icon" />
+        </button>
         <div class="tool-group">
             <div class="labelled-button">
-                <button class="button buttons-with-text" id="boost"> Boost AI </button>
+                <button class="button buttons-with-text" id="boost">
+                  <img src="../images/Human/boost.png" alt="boost" class="button-icon" />
+                </button>
                 +25% AI action speed
             </div>
             <div class="labelled-button">
-                <button class="button buttons-with-text" id="inhibit"> Inhibit AI </button>
+                <button class="button buttons-with-text" id="inhibit"> 
+                  <img src="../images/Human/inhibit.png" alt="inhibit" class="button-icon" />
+                </button>
                 <div>
                     -30% AI action speed<br>
                     -50% threat speed IF AI IS EVIL
