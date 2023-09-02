@@ -1,7 +1,7 @@
 const THREAT_TTL = 30;
 const THREAT_COOLDOWN_SECONDS = 5;
-const THREAT_ASSIST_SECONDS = 1; // how many seconds gained from an assist
-const THREAT_SABOTAGE_SECONDS = 1; // how many seconds lost from a sabotage
+const THREAT_ASSIST_SECONDS = 0.5; // how many seconds gained from an assist
+const THREAT_SABOTAGE_SECONDS = 0.5; // how many seconds lost from a sabotage
 
 const MAP_THREAT_TO_TOOL = {
     "fire" : "fire-extinguisher",
@@ -57,4 +57,4 @@ const Threat = (threatType, onThreatUnresolved, onThreatResolved) => {
     }
 }
 
-module.exports = { Threat, THREAT_COOLDOWN_SECONDS, THREAT_TTL }
+module.exports = { Threat, THREAT_COOLDOWN_SECONDS, THREAT_TTL, THREAT_ASSIST_SECONDS, THREAT_SABOTAGE_SECONDS };

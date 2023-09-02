@@ -81,5 +81,7 @@ window.onload = () => {
             }
         }
         
+        document.getElementById("assist-button").addEventListener('click', AI.assist);
+        document.getElementById("sabotage-button").addEventListener('click', AI.sabotage);
     }
 };
