@@ -17,6 +17,15 @@ app.use(cookieParser());
 app.use(express.static("public"));
 app.use(express.json());
 
+const httpApp = express();
+httpApp.use((req, res, next) => {
+    if (req.protocol === 'http') {
+        return res.redirect(301, `https://${req.headers.host}${req.url}`);
+    }
+    next();
+});
+httpApp.listen(80, () => console.log(`HTTP app running on port 80!`));
+
 let webSockServer = null;
 let httpsServer = null;
 
