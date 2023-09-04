@@ -1,38 +1,54 @@
-const canvas0 = document.getElementById("canvas0"),
-canvas1 = document.getElementById("canvas1"),
-canvas2 = document.getElementById("canvas2"),
-canvas3 = document.getElementById("canvas3"),
-canvas4 = document.getElementById("canvas4"),
-canvas5 = document.getElementById("canvas5"),
-canvas6 = document.getElementById("canvas6"),
-canvas7 = document.getElementById("canvas7"),
-canvas8 = document.getElementById("canvas8");
+const gridDimension = 3;
 
-let pattern = [0, 0, 0, 0, 0];
-for (let i = 0; i < 5; i++) {
-    pattern[i] = Math.floor(Math.random() * 9);
+let pattern = [0, 0, 0, 0];
+const patternLength = pattern.length;
+
+//timers
+const blinkDuration = 300,
+delayBetweenBlinks = 500,
+incorrectPenaltyTime = 800;
+
+let table = document.getElementById("container");
+for (let i = 0; i < gridDimension; i++) {
+    let newRow = document.createElement("tr");
+    for (let j = 0; j < gridDimension; j++) {
+        let newCol = document.createElement("td");
+        newCol.classList.add("canvas");
+        newCol.setAttribute("id", `canvas${i*3+j}`);
+        newCol.style.margin = "2px";
+        newRow.append(newCol);
+    }
+    table.append(newRow);
+}
+
+const messageDisplay = document.getElementById("message-display");
+
+for (let i = 0; i < patternLength; i++) {
+    pattern[i] = Math.floor(Math.random() * gridDimension * gridDimension);
     renderPattern();
 }
 console.log(pattern);
 
 function renderPattern() {
-    for (let i = 0; i < pattern.length; i++) {
+    messageDisplay.innerText = "Memorize the pattern";
+    for (let i = 0; i < patternLength; i++) {
         setTimeout(() => {
             const canvas = document.getElementById(`canvas${pattern[i]}`)
             canvas.style.background = "lightgreen";
             setTimeout(() => {
                 canvas.style.background = "lightgray";
-            }, 1000);
-        }, 1200 * i);
+            }, blinkDuration);
+        }, delayBetweenBlinks * i);
     }
     setTimeout(() => {
         enableHandler();
-    }, 6000);
+        messageDisplay.innerText = "Repeat the pattern";
+    }, delayBetweenBlinks * patternLength);
 }
 
 let playerPattern = [];
 function enableHandler() {
-    for (let i = 0; i < 9; i++) {
+    for (let i = 0; i < gridDimension * gridDimension; i++) {
         const canvas = document.getElementById(`canvas${i}`)
         canvas.addEventListener("click", handler);
         canvas.number = i;
@@ -40,7 +56,7 @@ function enableHandler() {
 }
 
 function disableHandler() {
-    for (let i = 0; i < 9; i++) {
+    for (let i = 0; i < gridDimension * gridDimension; i++) {
         const canvas = document.getElementById(`canvas${i}`)
         canvas.removeEventListener("click", handler);
     }
@@ -50,34 +66,37 @@ function handler(e) {
     let curr = e.currentTarget;
     if (curr.number === pattern[playerPattern.length]) {
         playerPattern.push(curr.number);
-        if (playerPattern.length === 5) {
-            board = document.querySelectorAll("canvas");
-            for (let tile of board) {
-                tile.style.background = "lightgreen";
+        if (playerPattern.length === patternLength) {
+            messageDisplay.innerText = "Breach resolved";
+            for (let i = 0; i < gridDimension * gridDimension; i++) {
+                const canvas = document.getElementById(`canvas${i}`);
+                canvas.style.background = "lightgreen";
             }
         } else {
             curr.style.background = "lightgreen";
             setTimeout(() => {
                 curr.style.background = "lightgray";
-            }, 200);
+            }, blinkDuration);
         }
     } else {
-        if (playerPattern.length < 5)
+        if (playerPattern.length < patternLength)
             incorrectTile();
     }
 }
 
 function incorrectTile() {
     disableHandler();
-    for (let i = 0; i < 9; i++) {
+    messageDisplay.innerText = "Incorrect";
+    for (let i = 0; i < gridDimension * gridDimension; i++) {
         const canvas = document.getElementById(`canvas${i}`);
         canvas.style.background = "red";
         setTimeout(() => {
             canvas.style.background = "lightgray";
-        }, 500);
+        }, delayBetweenBlinks);
     }
     playerPattern = [];
     setTimeout(() => {
+        messageDisplay.innerText = "Memorize the pattern"
         renderPattern();
-    }, 800);
+    }, incorrectPenaltyTime);
 }
