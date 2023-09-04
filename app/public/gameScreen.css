@@ -7,6 +7,7 @@ body{
 #body {
     display: flex;
     flex-direction: row;
+    height: 30rem;
 }
 #vertical-divider {
     width: 1rem;
@@ -22,11 +23,13 @@ body{
 
 #main-container {
     display: flex;
+    flex-grow: 55;
+    flex-basis: 55%;
 }
 #game-board {
     border-collapse: collapse;
 
-    width: 100vh;
+    width: 100%;
     height: 100%;
 
     display: flex;
@@ -77,8 +80,9 @@ body{
 #sidebar{
     display: flex;
     flex-direction: column;
-    height: 20rem;
-
+    height: 100%;
+    flex-grow: 20;
+    flex-basis: 20%;
 }
 
 .tool-group{

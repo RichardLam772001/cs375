@@ -1,13 +1,14 @@
 #console-window {
     background-color: black;
     width:20%;
-    height: 80vh;
+    height: 100%;
     overflow-y: auto;
     vertical-align: text-bottom;
     border: 0.5rem solid rgb(77, 77, 77);
     position: relative;
     border-radius: 10px;
     padding: 5px;
+    flex-grow: 25;
 }
 /* Source: https://www.digitalocean.com/community/tutorials/css-scrollbars */
 #console-window::-webkit-scrollbar {

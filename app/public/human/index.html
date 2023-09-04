@@ -15,54 +15,55 @@
     />
     <title>Cyberspace Saboteur</title>
   </head>
-  <body>
-    <h1 id="role-text">You are the human</h1>
+    <body>
+        <h1 id="role-text">You are the human</h1>
 
-    <div id="body">
-      <div id="console"></div>
-      <div id="console-window"></div>
-      <div id="vertical-divider"></div>
-      <div id="main-container"></div>
-      <div id="vertical-divider"></div>
-      <div id="tools">
-        <button
-          class="button"
-          id="fire-extinguisher"
-          onclick="HUMAN.switchHumanTool('fire-extinguisher')">
-          <i class="fa-solid fa-fire-extinguisher"></i>
-        </button>
-        <button
-          class="button"
-          id="wrench"
-          onclick="HUMAN.switchHumanTool('wrench')">
-          <i class="fa-solid fa-wrench"></i>
-        </button>
-        <button class="button" id="gun" onclick="HUMAN.switchHumanTool('gun')"><i class="fa-solid fa-gun"></i></button>
-        <div class="tool-group">
-            <div class="labelled-button">
-                <button class="button buttons-with-text" id="boost"> Boost AI </button>
-                +25% AI action speed
-            </div>
-            <div class="labelled-button">
-                <button class="button buttons-with-text" id="inhibit"> Inhibit AI </button>
-                <div>
-                    -30% AI action speed<br>
-                    -50% threat speed IF AI IS EVIL
+        <div id="body">
+            <div id="console-window"></div>
+            <div id="vertical-divider"></div>
+            <div id="main-container"></div>
+            <div id="vertical-divider"></div>
+            <div id="sidebar">
+                <div id="tools">
+                    <button
+                    class="button"
+                    id="fire-extinguisher"
+                    onclick="HUMAN.switchHumanTool('fire-extinguisher')">
+                    <i class="fa-solid fa-fire-extinguisher"></i>
+                    </button>
+                    <button
+                    class="button"
+                    id="wrench"
+                    onclick="HUMAN.switchHumanTool('wrench')">
+                    <i class="fa-solid fa-wrench"></i>
+                    </button>
+                    <button class="button" id="gun" onclick="HUMAN.switchHumanTool('gun')"><i class="fa-solid fa-gun"></i></button>
                 </div>
-            </div>
+                <div class="tool-group">
+                    <div class="labelled-button">
+                        <button class="button buttons-with-text" id="boost"> Boost AI </button>
+                        +25% AI action speed
+                    </div>
+                    <div class="labelled-button">
+                        <button class="button buttons-with-text" id="inhibit"> Inhibit AI </button>
+                        <div>
+                            -30% AI action speed<br>
+                            -50% threat speed IF AI IS EVIL
+                        </div>
+                    </div>
+                    
+                </div>
+
             
+            </div>
+            <div id="message-container">
+                <p id="message-text"></p>
+                <div id="route-to-lobby-link"> Lobby </div>
+            </div>
         </div>
-      </div>
-      <div id="message-container">
-        <p id="message-text"></p>
-        <div id="route-to-lobby-link"> Lobby </div>
-      </div>
-      
-    </div>
-    <div id="action-tracker">
-    </div>
+        <div id="action-tracker">
     
-</body>
+    </body>
 <script src="../cookies.js"></script>
 <script src="../constants.js"></script>
 <script src="../router.js"></script>
