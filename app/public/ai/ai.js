@@ -1,6 +1,6 @@
 const AI = (() => {
 
-    let currentThreatType = "";
+    let currentThreatType = "breach";
 
     const sendData = (data) => {
         WS.send({
@@ -34,7 +34,7 @@ const AI = (() => {
     
       const switchThreatType = (threatType) => {
         currentThreatType = threatType;
-        document.querySelectorAll(".button").forEach((btn) => {
+        document.querySelectorAll(".ai-button").forEach((btn) => {
           btn.classList.remove("selected");
           btn.classList.add("unselected");
         });

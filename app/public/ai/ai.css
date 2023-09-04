@@ -1,4 +1,4 @@
-.button {
+.ai-button {
     width: 100px;
     height: 100px;
     background-color: #a9a9a9;
@@ -28,34 +28,34 @@
     transition: 0.3s;
   }
   
-  .button:hover .button-icon {
+  .ai-button:hover .button-icon {
     transform: translate(-50%, -50%) scale(1.1);
   }
   
-  .button i {
+  .ai-button i {
     font-size: 60px;
     color: #d91f1f;
   }
   
-  .button:hover {
+  .ai-button:hover {
     background-color: #808080;
   }
   
-  .button i:hover {
+  .ai-button i:hover {
     color: #bcbbbb;
   }
   
-  .button.selected i {
+  .ai-button.selected i {
     font-size: 60px;
     color: white;
   }
   
-  .button.selected {
+  .ai-button.selected {
     background-color: #4caf50;
     color: white;
   }
   
-  .button.selected:hover {
+  .ai-button.selected:hover {
     background-color: #4caf50;
   }
 

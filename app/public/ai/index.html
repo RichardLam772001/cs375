@@ -22,19 +22,19 @@
                 <div>Pings</div>
                 <button
                   id="fire"
-                  class="button"
+                  class="ai-button"
                   onclick="AI.switchThreatType('fire')">
                   <img src="../images/ai/fire.png" alt="fire" class="button-icon" />
                 </button>
                 <button
                   id="breach"
-                  class="button"
+                  class="ai-button selected"
                   onclick="AI.switchThreatType('breach')">
                   <img src="../images/ai/breach.png" alt="breach" class="button-icon" />
                 </button>
                 <button
                   id="invader"
-                  class="button"
+                  class="ai-button"
                   onclick="AI.switchThreatType('invader')">
                   <img src="../images/ai/invader.png" alt="invader" class="button-icon" />
                 </button>
@@ -42,13 +42,13 @@
             <div class="tool-group">
                 <div>Manage Threats</div>
                 <div class="labelled-button">
-                    <button id="assist-button" class="button buttons-with-text"> Assist</button>
+                    <button id="assist-button" class="ai-button buttons-with-text"> Assist</button>
                     Increase threat timers<br>
                     Good: 25% to alert human<br>
                     Evil: 100% to alert human
                 </div>
                 <div class="labelled-button">
-                    <button id="sabotage-button" class="button buttons-with-text"> Sabotage </button>
+                    <button id="sabotage-button" class="ai-button buttons-with-text"> Sabotage </button>
                     Reduce threat timers
                 </div>
             </div>
