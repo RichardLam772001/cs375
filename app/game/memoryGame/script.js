@@ -1,6 +1,6 @@
 const gridDimension = 3;
 
-let pattern = [0, 0, 0, 0];
+let pattern = [0, 0, 0];
 const patternLength = pattern.length;
 
 //timers
