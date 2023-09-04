@@ -11,6 +11,17 @@ const getCurrentRoom = () => {
     });
 }
 
+const getAiRole = () => {
+    WS.send({
+        action: {
+            name: "getAiRole"
+        },
+        username: USERNAME_COOKIE,
+        gameId: GAME_ID_COOKIE,
+        token : TOKEN_COOKIE
+    })
+}
+
 WS.onConnect(() => {
     console.log("We are connected");
 });
@@ -18,6 +29,7 @@ WS.onConnect(() => {
 const registerClient = () => {
     if (WS.webSocket.readyState) {
         getCurrentRoom();
+        getAiRole();
     }
     else {
         setTimeout(registerClient, 500);
@@ -32,6 +44,9 @@ WS.onDisconnect(() => {
 WS.onReceive((data) => {
     console.log("Received WS data :", data);
     switch (data.name) {
+        case "aiRole":
+            AI_ROLE.displayAiRole(data.role);
+            break;
         case "humanRoomUpdate":
             HUMAN_STATE.setCurrentRoom(data.room);
             break;

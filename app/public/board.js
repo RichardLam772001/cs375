@@ -142,6 +142,8 @@ const BOARD = ((rowCount, columnCount) => {
           messageText.textContent = "You Win!";
         } else if (result === "lose") {
           messageText.textContent = "You Lost!";
+        } else if (result=="disconnected") {
+            messageText.textContent = "Player disconnected!";
         }
       
         // Show the message container

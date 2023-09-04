@@ -15,9 +15,12 @@ const HUMAN_ACTIONS = {
     setTrust: "setTrust",
 };
 const AI_ACTIONS = {
+    getAiRole: "getAiRole",
     getCurrentRoom : "getCurrentRoom",
     getPingRoom: "getPingRoom",
-    pingRoom: "pingRoom"
+    pingRoom: "pingRoom",
+    assist: "assist",
+    sabotage: "sabotage",
 };
 
 module.exports = {

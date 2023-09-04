@@ -1,24 +1,40 @@
 const AI = (() => {
 
-    let currentThreatType = "";
+    let currentThreatType = "breach";
+
+    const sendData = (data) => {
+        WS.send({
+            action: data,
+            username: USERNAME_COOKIE,
+            gameId: GAME_ID_COOKIE,
+            token: TOKEN_COOKIE
+        })
+    }
 
     const pingRoom = (room) => {
-        WS.send({
-          action: {
+        sendData({
             name: "pingRoom",
             args: {
               room: room,
               threatType: currentThreatType,
             },
-          },
-          username: USERNAME_COOKIE,
-          gameId: GAME_ID_COOKIE,
+        });
+    }
+
+    const assist = () => {
+        sendData({
+            name: "assist",
+        });
+    }
+    const sabotage = () => {
+        sendData({
+            name: "sabotage",
         });
     }
     
       const switchThreatType = (threatType) => {
         currentThreatType = threatType;
-        document.querySelectorAll(".button").forEach((btn) => {
+        document.querySelectorAll(".ai-button").forEach((btn) => {
           btn.classList.remove("selected");
           btn.classList.add("unselected");
         });
@@ -32,7 +48,28 @@ const AI = (() => {
       return {
         pingRoom,
         switchThreatType,
+        assist,
+        sabotage,
       };
+})();
+
+const AI_ROLE = (() => {
+  const aiHeader = document.getElementById("role-text");
+
+  const displayAiRole = (role) => {
+    switch (role) {
+      case "GOOD":
+        aiHeader.innerText = "You are the AI. Objective: Help human.";
+        break;
+      case "EVIL":
+        aiHeader.innerText = "You are the HACKED AI. Objective: Kill human.";
+        break;
+    }
+  }
+  
+  return {
+    displayAiRole
+  };
 })();
 
 window.onload = () => {
@@ -44,5 +81,7 @@ window.onload = () => {
             }
         }
         
+        document.getElementById("assist-button").addEventListener('click', AI.assist);
+        document.getElementById("sabotage-button").addEventListener('click', AI.sabotage);
     }
 };

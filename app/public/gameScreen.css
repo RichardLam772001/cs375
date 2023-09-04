@@ -130,3 +130,7 @@ body{
     flex-direction: row;
     align-items: center;
 }
+.buttons-with-text {
+    font-weight: 700;
+    color: black;
+  }
