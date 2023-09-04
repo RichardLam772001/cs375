@@ -1,11 +1,46 @@
-const { WEBSOCKET_PORT } = require("../env.json");
+// Require statements
 const { WebSocketServer } = require('ws');
 const { HumanRoomUpdateData } = require("./dataObjects.js");
 const { lookUpRole, lookUpGame } = require("./game/game");
 const { CLIENTS_HANDLER } = require("./clientsHandler");
 const { HUMAN_ACTIONS, ROLES, AI_ACTIONS } = require("./constants.js");
+const { WEBSOCKET_PORT, PROD_HOSTNAME, LOCAL_HOSTNAME, PROD_PORT, LOCAL_PORT, IS_PROD } = require("../env.json");
+const https = require('https');
+const fs = require('fs');
+const express = require("express");
+const cookieParser = require("cookie-parser");
 
-const webSockServer = new WebSocketServer({ port: WEBSOCKET_PORT });
+const app = express();
+app.use(express.static("public"));
+app.use(cookieParser());
+
+app.use(express.static("public"));
+app.use(express.json());
+
+let webSockServer = null;
+let httpsServer = null;
+
+if (IS_PROD) {
+	// Setup SSL Certificates
+	const privateKey = fs.readFileSync('private.key');
+	const certificate = fs.readFileSync('certificate.crt');
+	const options = {
+			key: privateKey,
+			cert: certificate,
+	};
+
+	// Create HTTPS server
+	httpsServer = https.createServer(options, app);
+
+	// Create WebSocket Server to run on HTTPS server
+	webSockServer = new WebSocketServer({server : httpsServer});
+}
+else {
+	// Create WebSocket Server to run on separate port
+	webSockServer = new WebSocketServer({ port: WEBSOCKET_PORT });
+}
+
+console.log("WebSocketServer initialized");
 
 const onConnectionClose = (clientId) => {
     console.log("client disconnected!");
@@ -71,10 +106,19 @@ const onReceiveDataFromClient = (clientId, byteData) => {
             const newTrustLevel = action.args.trust;
             if(Number.isInteger(newTrustLevel)) game.setTrustLevel(action.args.trust);
             break;
+        case AI_ACTIONS.getAiRole:
+            game.sendRoleToAI();
+            break;
         case AI_ACTIONS.pingRoom:
             const aiPingRoom = action.args.room;
             const aiPingThreatType = action.args.threatType;
             game.requestPing(aiPingRoom, aiPingThreatType);
+            break;
+        case AI_ACTIONS.assist:
+            game.assist();
+            break;
+        case AI_ACTIONS.sabotage:
+            game.sabotage();
             break;
         default:
             break;
@@ -83,12 +127,24 @@ const onReceiveDataFromClient = (clientId, byteData) => {
 webSockServer.on('connection', ws => {
     // This is what runs when a client makes a connection to our websocket server
     console.log('New client connected!');
-
     const clientId = CLIENTS_HANDLER.addClient(ws);
-
     ws.on('close', () => onConnectionClose(clientId));
     ws.on('message', (byteData) => onReceiveDataFromClient(clientId, byteData));
     ws.onerror = onError;
 });
 
-module.exports = { sendToAllClients };
+const hostname = IS_PROD ? PROD_HOSTNAME : LOCAL_HOSTNAME;
+const port = IS_PROD ? PROD_PORT : LOCAL_PORT;
+if (IS_PROD) {
+	httpsServer.listen(port, () => {
+        console.log(`App running on http://${hostname}:${port}`);
+});
+}
+else {
+	app.listen(port, () => {
+		console.log(`App running on http://${hostname}:${port}`);
+	});
+}
+
+module.exports = { sendToAllClients, app };
+
