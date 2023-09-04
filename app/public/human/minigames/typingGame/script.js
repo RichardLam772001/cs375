@@ -1,7 +1,8 @@
 const TYPING_GAME = (() => {
 
     const spaceQuotes = [
-        "fix hole fix hole fix hole",// We need something short since the threat resolves relatively quickly, and also has to be on theme w/ the threat
+        "bad fire bad fire bad fire",
+        "hot hot hot"        
     ]
     const quoteDisplay = document.getElementById("quoteDisplay");
     const quoteInput = document.getElementById("quoteInput");

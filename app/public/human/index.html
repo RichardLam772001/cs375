@@ -15,6 +15,7 @@
     />
     <link rel="stylesheet" href="./minigames/shootingGame/styles.css">
     <link rel="stylesheet" href="./minigames/typingGame/styles.css">
+    <link rel="stylesheet" href="./minigames/memoryGame/styles.css">
     <link rel="stylesheet" href="./minigames/minigames.css">
     <title>Cyberspace Saboteur</title>
   </head>
@@ -70,10 +71,16 @@
       <div class="quote-display" id="quoteDisplay">quote</div>
       <textarea class="quote-input" id="quoteInput" onpaste="return false" autocomplete="off">quote</textarea>
     </div>
+    <div id="memory-minigame" class="minigame">
+      <table id="memory-game-container">
+        <caption id="memory-game-message-display"></caption>
+      </table>
+    </div>
 </body>
 <!-- Load minigame logic -->
 <script src="./minigames/shootingGame/script.js"></script>
 <script src="./minigames/typingGame/script.js"></script>
+<script src="./minigames/memoryGame/script.js"></script>
 <script src="./minigames/minigame-handler.js"></script>
 
 <script src="../cookies.js"></script>
