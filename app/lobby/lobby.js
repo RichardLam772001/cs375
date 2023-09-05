@@ -84,12 +84,15 @@ const leaveLobby = (lobbyId, username) => {
 			return false;
 		}
         // Removes user
-        if (LOBBIES[lobbyId][0].username === username) {
+        if (LOBBIES[lobbyId][0] !== undefined && LOBBIES[lobbyId][0].username === username) {
             LOBBIES[lobbyId].splice(0, 1);
         }
-		else if (LOBBIES[lobbyId][1].username === username) {
+		else if (LOBBIES[lobbyId][1] !== undefined && LOBBIES[lobbyId][1].username === username) {
             LOBBIES[lobbyId].splice(1, 1);
 		}
+        else {
+            throw Error(`Lobby ${lobbyId} is already empty`);
+        }
         deleteUserFromLobby(username);
 	}
     return true;

@@ -94,6 +94,17 @@ const checkIfUserIsInLobby = async () => {
 	}
 }
 
+const getUserStats = async () => {
+	const resp = await get("/lobby/stats");
+	if (resp.status === 200) {
+		const userData = await resp.json();
+		setUserStatDisplay(userData.wins, userData.losses);
+	}
+	else {
+		console.log("ERROR - Something went wrong");
+	}
+}
+
 // Richard - I think the making lobby logic is fun and may be useful in future if lots of players join.
 // But since it's week 9/10, I don't think it'll be worth continuing this logic. It may be simpler to just
 // have prepopulated lobbies and just prevent the user from creating lobbies for now and only being able to join lobbies.
