@@ -1,5 +1,8 @@
 const TYPING_GAME = (() => {
 
+    const minigameElement = document.getElementById("typing-minigame");
+    const messageElement = minigameElement.getElementsByClassName("minigame-message")[0];
+
     const spaceQuotes = [
         "bad fire bad fire bad fire",
         "hot hot hot"        
@@ -31,6 +34,7 @@ const TYPING_GAME = (() => {
             }
         });
         if (correct) {
+            messageElement.textContent = "FIRE RESOLVED";
             onComplete();
         }
     });
@@ -41,6 +45,7 @@ const TYPING_GAME = (() => {
     }
 
     function renderNewQuote() {
+        messageElement.textContent = "TYPE THE PHRASE:";
         const quote = getRandomQuote();
         quoteDisplay.innerText = "";
         quote.split("").forEach(character => {

@@ -17,6 +17,7 @@ const MINI_GAME_HANDLER = (() => {
     }
     const startShootingGame = () => {
         hideMinigames();
+        SHOOTING_GAME.startGame();
         shootingMiniGame.style.display = "block";
     }
     const startMemoryGame = () => {

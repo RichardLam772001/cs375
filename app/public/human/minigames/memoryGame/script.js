@@ -117,7 +117,7 @@ const MEMORY_GAME = (() => {
         onComplete = onCompleteFunction;
     }
     const complete = () => {
-        messageDisplay.innerText = "THREAT RESOLVED";
+        messageDisplay.innerText = "BREACH RESOLVED";
         setAllTilesToColor("lightgreen");
         disableHandler();
         onComplete();
