@@ -12,7 +12,7 @@ const MINI_GAME_HANDLER = (() => {
 
     const startTypingGame = () => {
         hideMinigames();
-        TYPING_GAME.renderNewQuote();
+        TYPING_GAME.startGame();
         typingMiniGame.style.display = "block";
     }
     const startShootingGame = () => {

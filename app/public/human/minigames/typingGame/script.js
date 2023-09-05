@@ -4,12 +4,23 @@ const TYPING_GAME = (() => {
     const messageElement = minigameElement.getElementsByClassName("minigame-message")[0];
 
     const spaceQuotes = [
-        "bad fire bad fire bad fire",
-        "hot hot hot"        
+        "put out the fire",
+        "aim the extinguisher",
+        "ouch, that's hot",
+        "spray and pray",
     ]
     const quoteDisplay = document.getElementById("quoteDisplay");
     const quoteInput = document.getElementById("quoteInput");
     let onComplete = () => {};
+
+    function startGame(){
+        renderNewQuote();
+        setTimeout(selectInput, 0);
+    }
+    function selectInput(){
+        quoteInput.focus();
+        quoteInput.select();
+    }
 
     quoteInput.addEventListener("input", () => {
         const arrayQuote = quoteDisplay.querySelectorAll("span");
@@ -54,6 +65,7 @@ const TYPING_GAME = (() => {
             quoteDisplay.appendChild(characterSpan);
         });
         quoteInput.value = null;
+        
     }
     /**
      * Accepts a function to be run when the game completes
@@ -63,7 +75,7 @@ const TYPING_GAME = (() => {
         onComplete = onCompleteFunction;
     }
     return {
-        renderNewQuote,
+        startGame,
         setOnComplete,
     }
 })();
