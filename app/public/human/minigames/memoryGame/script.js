@@ -7,7 +7,8 @@ const MEMORY_GAME = (() => {
     //timers
     const blinkDuration = 300,
     delayBetweenBlinks = 500,
-    incorrectPenaltyTime = 800;
+    startDelay = 200, //time for player to react to the pattern about to be shown
+    incorrectPenaltyTime = 500;
     let onComplete = () => {};
     
     let table = document.getElementById("memory-game-container");
@@ -48,15 +49,17 @@ const MEMORY_GAME = (() => {
     function showPattern() {
         setAllTilesToColor("lightgray")
         messageDisplay.innerText = "MEMORIZE PATTERN:";
-        for (let i = 0; i < patternLength; i++) {
+        setTimeout(()=>{
+            for (let i = 0; i < patternLength; i++) {
+                setTimeout(() => {
+                    blinkSquare(pattern[i]);
+                }, delayBetweenBlinks * i);
+            }
             setTimeout(() => {
-                blinkSquare(pattern[i]);
-            }, delayBetweenBlinks * i);
-        }
-        setTimeout(() => {
-            enableHandler();
-            messageDisplay.innerText = "REPEAT PATTERN:";
-        }, delayBetweenBlinks * patternLength);
+                enableHandler();
+                messageDisplay.innerText = "REPEAT PATTERN:";
+            }, delayBetweenBlinks * patternLength);
+        },startDelay);
     }
     
     let playerPattern = [];
