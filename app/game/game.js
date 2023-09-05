@@ -64,7 +64,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     //ACTION DELAYS
     const pingTime = 3;
     const moveTime = 2;
-    const toolSwitchTime = 2;
+    const toolSwitchTime = 1;
     const resolveThreatTime = 3;
     const setTrustTime = 1;
     const assistTime = 2;
