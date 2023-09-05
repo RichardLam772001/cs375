@@ -43,13 +43,17 @@ const MINI_GAME_HANDLER = (() => {
     }
 
     const finishShootingGame = () => {
-        hideMinigames();
+        finishMinigame();
     }
     const finishTypingGame = () => {
-        hideMinigames();
+        finishMinigame();
     }
     const finishMemoryGame = () => {
+        finishMinigame();
+    }
+    const finishMinigame = () => {
         hideMinigames();
+        HUMAN.finishMinigame();
     }
 
     SHOOTING_GAME.setOnComplete(finishShootingGame);

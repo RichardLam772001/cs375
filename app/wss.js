@@ -118,6 +118,9 @@ const onReceiveDataFromClient = (clientId, byteData) => {
             const newTrustLevel = action.args.trust;
             if(Number.isInteger(newTrustLevel)) game.setTrustLevel(action.args.trust);
             break;
+        case HUMAN_ACTIONS.finishMinigame:
+            game.completeThreatMinigame();
+            break;
         case AI_ACTIONS.getAiRole:
             game.sendRoleToAI();
             break;

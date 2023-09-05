@@ -42,12 +42,18 @@ const HUMAN = (() => {
             },
         });
     }
+    const finishMinigame = () => {
+        sendData({
+            name: "finishMinigame",
+        })
+    }
 
     return {
         enterRoom,
         switchHumanTool,
         boost,
         inhibit,
+        finishMinigame,
     };
 })();
 

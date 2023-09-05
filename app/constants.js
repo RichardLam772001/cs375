@@ -13,6 +13,7 @@ const HUMAN_ACTIONS = {
     getCurrentRoom : "getCurrentRoom",
     switchHumanTool: "switchHumanTool",
     setTrust: "setTrust",
+    finishMinigame: "finishMinigame",
 };
 const AI_ACTIONS = {
     getAiRole: "getAiRole",
