@@ -14,6 +14,8 @@ const { GameEndData } = require("../dataObjects.js");
 const { DelayedAction } = require("./delayedAction.js");
 const { setAiRole } = require("./airole.js");
 
+const {IntroSequence} = require("./introSequence.js");
+
 const GAMES = {
     
 };
@@ -37,14 +39,16 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     const GAME_ID = gameId;
 
     let INITIAL_TIME = 2*60;
-    let gameTime = INITIAL_TIME;
+    let GRACE_PERIOD = 3; // time players have to both join before game auto ends
+    let gameTime = INITIAL_TIME+GRACE_PERIOD;
     let HUMAN_USERNAME = humanUsername;
     let AI_USERNAME = aiUsername;
     let room = "0-0";
     let threatCooldown = THREAT_COOLDOWN_SECONDS;
-    let GRACE_PERIOD = 3; // time players have to both join before game auto ends
+    
 
     let AI_ROLE = setAiRole();
+    const introSequence = IntroSequence(addConsoleLineAndBroadcast, onFinishIntroSequence, AI_ROLE.isAiEvil(), 5);
 
 
     //ROOMS
@@ -54,10 +58,10 @@ const GAME = (humanUsername, aiUsername, gameId) => {
 
     //ACTIONS
     let humanAction;
-    const humanCanAct = () => {return !humanIsActing();};
+    const humanCanAct = () => {return !humanIsActing() && introSequence.done();};
     const humanIsActing = () => {return humanAction !== undefined && humanAction.getIsRunning();};
     let aiAction;
-    const aiCanAct = () => {return !aiIsActing();};
+    const aiCanAct = () => {return !aiIsActing() && introSequence.done();};
     const aiIsActing = () => {return aiAction !== undefined && aiAction.getIsRunning();};
     let trustLevel = 0;
 
@@ -163,18 +167,39 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         humanAction.setAllowCompletion(true);
     }
 
-    const tick = (deltaSeconds) => {
+    function onFinishIntroSequence() {
+        addConsoleLineAndBroadcast(ConsoleLineData(gameTime, `Rescue arrives in ${INITIAL_TIME/60} minutes`, "all", "important"));
+        currentTickFunc = mainLoop;
+    }
+
+    
+    //Wait until both clients are registered, or until the grace period ends
+    const waitingForPlayersLoop = (deltaSeconds) => {
+        gameTime -= deltaSeconds;
+
+        if(CLIENTS_HANDLER.doesGameHaveRegisteredClients(gameId) || gameTime <= INITIAL_TIME){
+            gameTime = INITIAL_TIME;
+            currentTickFunc = introSequence.tick;
+        }        
+    }
+    
+    let currentTickFunc = waitingForPlayersLoop;
+    
+    const tick = (deltaSeconds)=>{
+        currentTickFunc(deltaSeconds);
+    }
+
+    const mainLoop = (deltaSeconds) => {
+
+        gameTime -= deltaSeconds;
 
         // Pause game if clients in game aren't registered (client hasn't connected yet, or one of them logged out)
-        gameTime -= deltaSeconds;
-        if (!CLIENTS_HANDLER.doesGameHaveRegisteredClients(gameId) && gameTime < INITIAL_TIME - GRACE_PERIOD) {
-                console.log(`Game ended. There are not 2 clients connected to gameId ${gameId}----------------------`);
-                sendDataToBothPlayers(GameEndData('disconnected'));
-                removeGame(GAME_ID);
-                return; 
+        if(!CLIENTS_HANDLER.doesGameHaveRegisteredClients(gameId)){
+            console.log(`Game ended. There are not 2 clients connected to gameId ${gameId}----------------------`);
+            sendDataToBothPlayers(GameEndData('disconnected'));
+            removeGame(GAME_ID);
+            return; 
         }
-
-        
         
         if (gameTime <= 0) {
             resolveGame('win');
@@ -419,7 +444,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     }
 
     function addConsoleLineAndBroadcast(consoleLine){
-        consoleLine.time = Math.round(gameTime);
+        if(consoleLine.time !== undefined) consoleLine.time = Math.round(gameTime);
         consoleLinesLog.addConsoleLine(consoleLine);
 
         if(isLineVisibleToHuman(consoleLine)){

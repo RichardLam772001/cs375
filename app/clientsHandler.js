@@ -65,6 +65,8 @@ const CLIENTS_HANDLER = (() => {
      * @returns the websocket client
      */
     const getClientByGameAndUser = (gameId, username) => {
+        if(!REGISTERED_CLIENTS_BY_GAME[gameId] || !REGISTERED_CLIENTS_BY_GAME[gameId][username]) return undefined;
+        
         const clientId = REGISTERED_CLIENTS_BY_GAME[gameId][username];
         return CLIENTS[clientId];
     }
