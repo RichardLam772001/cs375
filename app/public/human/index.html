@@ -65,15 +65,18 @@
     <div id="action-tracker">
     </div>
     <div id="shooting-minigame" class="minigame">
+        <div class="minigame-message">SHOOT THE TARGETS:</div>
       <canvas class="canvas" id="canvas"></canvas>
     </div>
     <div id="typing-minigame" class="typing-game-container minigame">
+      <div class="minigame-message">TYPE THE PHRASE:</div>
+      <br>
       <div class="quote-display" id="quoteDisplay">quote</div>
       <textarea class="quote-input" id="quoteInput" onpaste="return false" autocomplete="off">quote</textarea>
     </div>
     <div id="memory-minigame" class="minigame">
       <table id="memory-game-container">
-        <b><div id="memory-game-message-display"></div></b>
+        <div id="memory-game-message-display" class="minigame-message"></div>
       </table>
     </div>
 </body>

@@ -13,3 +13,8 @@
     padding: 10px 20px;
     border-radius: 5px;
 }
+
+.minigame-message{
+    text-align: center;
+    font-weight: bold;
+}
