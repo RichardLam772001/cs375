@@ -151,7 +151,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         threat.startResolving();
 
         humanAction = DelayedAction(resolveThreatTime, () => threat.finishResolve());
-        humanAction.setAllowCompletion(false); //uncomment this once threat minigames are implemented
+        humanAction.setAllowCompletion(false);
         sendDataToHuman(DelayData(`Resolving ${threat.THREAT_TYPE}...`, resolveThreatTime));
     }
 
