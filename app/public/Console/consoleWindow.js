@@ -87,20 +87,7 @@ const CONSOLE = (() => {
         setConsoleLines,
         secondsToTimeObj,
 
-        //TESTING
-        //addRandomLines
     }
 })();
 
 
-let testLines = [
-    {message:"HOSTILE ALIEN PRESENCE DETECTED", style: "critical"},
-    {message:"ATTACK IMMINENT", style: "critical"},
-    {message:"Scanning AI companion system...", style: "public"},
-    {message:"Scan result: 50% chance that AI system has been hacked by hostile forces", style: "critical"},
-    {time: 60*2, message:"Rescue arrives in 2 minutes", style: "important"},
-    {message:"private message", style: "private"},
-];
-CONSOLE.setConsoleLines(testLines);
-
-//setInterval(() => CONSOLE.addRandomLines(1),1000);
