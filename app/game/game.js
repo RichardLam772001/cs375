@@ -64,7 +64,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
     //ACTION DELAYS
     const pingTime = 3;
     const moveTime = 2;
-    const toolSwitchTime = 2;
+    const toolSwitchTime = 1;
     const resolveThreatTime = 3;
     const setTrustTime = 1;
     const assistTime = 2;
@@ -151,7 +151,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         threat.startResolving();
 
         humanAction = DelayedAction(resolveThreatTime, () => threat.finishResolve());
-        //humanAction.setAllowCompletion(false); //uncomment this once threat minigames are implemented
+        humanAction.setAllowCompletion(false);
         sendDataToHuman(DelayData(`Resolving ${threat.THREAT_TYPE}...`, resolveThreatTime));
     }
 
@@ -537,6 +537,7 @@ const GAME = (humanUsername, aiUsername, gameId) => {
         setTrustLevel,
         assist,
         sabotage,
+        completeThreatMinigame,
     }
 }
 
