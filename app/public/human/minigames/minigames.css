@@ -1,0 +1,10 @@
+.minigame {
+    position: absolute;
+    z-index: 2;
+    display: none;
+
+    /* Btw this is how to center absolute positioned elements */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

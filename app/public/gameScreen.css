@@ -3,6 +3,9 @@
 body{
     background: url("./images/stars-background.png");
     color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 #body {
     display: flex;

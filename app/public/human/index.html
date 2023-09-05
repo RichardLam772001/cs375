@@ -13,6 +13,10 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
+    <link rel="stylesheet" href="./minigames/shootingGame/styles.css">
+    <link rel="stylesheet" href="./minigames/typingGame/styles.css">
+    <link rel="stylesheet" href="./minigames/memoryGame/styles.css">
+    <link rel="stylesheet" href="./minigames/minigames.css">
     <title>Cyberspace Saboteur</title>
   </head>
   <body>
@@ -57,12 +61,28 @@
         <p id="message-text"></p>
         <div id="route-to-lobby-link"> Lobby </div>
       </div>
-      
     </div>
     <div id="action-tracker">
     </div>
-    
+    <div id="shooting-minigame" class="minigame">
+      <canvas class="canvas" id="canvas"></canvas>
+    </div>
+    <div id="typing-minigame" class="typing-game-container minigame">
+      <div class="quote-display" id="quoteDisplay">quote</div>
+      <textarea class="quote-input" id="quoteInput" onpaste="return false" autocomplete="off">quote</textarea>
+    </div>
+    <div id="memory-minigame" class="minigame">
+      <table id="memory-game-container">
+        <caption id="memory-game-message-display"></caption>
+      </table>
+    </div>
 </body>
+<!-- Load minigame logic -->
+<script src="./minigames/shootingGame/script.js"></script>
+<script src="./minigames/typingGame/script.js"></script>
+<script src="./minigames/memoryGame/script.js"></script>
+<script src="./minigames/minigame-handler.js"></script>
+
 <script src="../cookies.js"></script>
 <script src="../constants.js"></script>
 <script src="../router.js"></script>
@@ -72,7 +92,6 @@
 <script src="../Console/consoleWindow.js"></script>
 <script src="../roomElement.js"></script>
 <script src="../human/humanElem.js"></script>
-<script src="../websocket.js"></script>
 <script src="../board.js"></script>
 <script src="../receiver.js"></script>
 <script src="../actionTracker.js"></script>
