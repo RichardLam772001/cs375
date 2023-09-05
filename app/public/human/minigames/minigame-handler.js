@@ -21,6 +21,7 @@ const MINI_GAME_HANDLER = (() => {
     }
     const startMemoryGame = () => {
         hideMinigames();
+        MEMORY_GAME.startGame();
         memoryMiniGame.style.display = "block";
     }
 
@@ -29,6 +30,10 @@ const MINI_GAME_HANDLER = (() => {
      * @param {string} threatType e.g. "fire", "breach", "invader" 
      */
     const showMiniGame = (threatType) => {
+        setTimeout(() => startMinigame(threatType), 500); //brief pause before minigame popup is shown
+    }
+    
+    const startMinigame = (threatType) => {
         switch (threatType) {
             case "fire":
                 startTypingGame();
@@ -52,8 +57,8 @@ const MINI_GAME_HANDLER = (() => {
         finishMinigame();
     }
     const finishMinigame = () => {
-        hideMinigames();
         HUMAN.finishMinigame();
+        setTimeout(hideMinigames, 500);
     }
 
     SHOOTING_GAME.setOnComplete(finishShootingGame);

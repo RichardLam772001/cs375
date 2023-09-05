@@ -25,25 +25,37 @@ const MEMORY_GAME = (() => {
     
     const messageDisplay = document.getElementById("memory-game-message-display");
     
-    for (let i = 0; i < patternLength; i++) {
-        pattern[i] = Math.floor(Math.random() * gridDimension * gridDimension);
-        renderPattern();
+    function generateRandomPattern(){
+        for (let i = 0; i < patternLength; i++) {
+            pattern[i] = Math.floor(Math.random() * gridDimension * gridDimension);
+        }
+    }
+
+    function startGame(){
+        playerPattern = [];
+        generateRandomPattern();
+        showPattern();
+    }
+
+    function blinkSquare(index){
+        const canvas = document.getElementById(`canvas${index}`)
+        canvas.style.background = "green";
+        setTimeout(() => {
+            canvas.style.background = "lightgray";
+        }, blinkDuration);
     }
     
-    function renderPattern() {
-        messageDisplay.innerText = "Memorize the pattern";
+    function showPattern() {
+        setAllTilesToColor("lightgray")
+        messageDisplay.innerText = "MEMORIZE PATTERN:";
         for (let i = 0; i < patternLength; i++) {
             setTimeout(() => {
-                const canvas = document.getElementById(`canvas${pattern[i]}`)
-                canvas.style.background = "lightgreen";
-                setTimeout(() => {
-                    canvas.style.background = "lightgray";
-                }, blinkDuration);
+                blinkSquare(pattern[i]);
             }, delayBetweenBlinks * i);
         }
         setTimeout(() => {
             enableHandler();
-            messageDisplay.innerText = "Repeat the pattern";
+            messageDisplay.innerText = "REPEAT PATTERN:";
         }, delayBetweenBlinks * patternLength);
     }
     
@@ -68,47 +80,51 @@ const MEMORY_GAME = (() => {
         if (curr.number === pattern[playerPattern.length]) {
             playerPattern.push(curr.number);
             if (playerPattern.length === patternLength) {
-                messageDisplay.innerText = "Breach resolved";
-                for (let i = 0; i < gridDimension * gridDimension; i++) {
-                    const canvas = document.getElementById(`canvas${i}`);
-                    canvas.style.background = "lightgreen";
-                }
-                onComplete();
-                incorrectTile();
+                complete();
             } else {
-                curr.style.background = "lightgreen";
-                setTimeout(() => {
-                    curr.style.background = "lightgray";
-                }, blinkDuration);
+                blinkSquare(curr.number);
             }
         } else {
             if (playerPattern.length < patternLength)
                 incorrectTile();
         }
     }
+
+    /**
+     * 
+     * @param {string} color 
+     */
+    function setAllTilesToColor(color){
+        for (let i = 0; i < gridDimension * gridDimension; i++) {
+            const canvas = document.getElementById(`canvas${i}`);
+            canvas.style.background = color;
+        }
+    }
     
     function incorrectTile() {
         disableHandler();
-        messageDisplay.innerText = "Incorrect";
-        for (let i = 0; i < gridDimension * gridDimension; i++) {
-            const canvas = document.getElementById(`canvas${i}`);
-            canvas.style.background = "red";
-            setTimeout(() => {
-                canvas.style.background = "lightgray";
-            }, delayBetweenBlinks);
-        }
+        messageDisplay.innerText = "INCORRECT";
+
+        setAllTilesToColor("red");
+        
         playerPattern = [];
         setTimeout(() => {
-            messageDisplay.innerText = "Memorize the pattern"
-            renderPattern();
+            showPattern();
         }, incorrectPenaltyTime);
     }
 
     const setOnComplete = (onCompleteFunction) => {
         onComplete = onCompleteFunction;
     }
+    const complete = () => {
+        messageDisplay.innerText = "THREAT RESOLVED";
+        setAllTilesToColor("lightgreen");
+        disableHandler();
+        onComplete();
+    }
 
     return {
-        setOnComplete
+        startGame,
+        setOnComplete,
     }
 })();
