@@ -1,3 +1,36 @@
+header {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    position: fixed;
+    width: 100%;
+    height: 6rem;
+    top: 0rem;
+    right: 0rem;
+}
+
+.header-info {
+    width: 12rem;
+    padding: .5rem 1rem;
+}
+
+.header-stat {
+    display: flex;
+    flex-direction: row;
+    font-size: 24px;
+    font-weight: 600;
+    font-family: system-ui;
+    justify-content: right;
+    color: white;
+    height: 50%;
+}
+
+.stat {
+    flex-grow: 50%;
+    justify-content: right;
+    padding: 0rem 0rem 0rem 1rem;
+}
+
 .lobbies {
     flex: 4;
     display: flex;
@@ -77,4 +110,6 @@
 /* Disabled initially if not in lobby */
 #leave-lobby-button {
     display: none;
+    position: fixed;
+    top: 6rem;
 }
