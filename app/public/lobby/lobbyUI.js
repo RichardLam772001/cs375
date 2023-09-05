@@ -16,6 +16,9 @@ const updateLobbyData = (updateLobbyData) => {
 
 const lobbies = document.getElementById("lobbies");
 const leaveLobbyButton = document.getElementById("leave-lobby-button");
+const userDiv = document.getElementById("username");
+const winDiv = document.getElementById("wins");
+const loseDiv = document.getElementById("losses");
 
 /**.
  * @param {string[]} classes e.g. ["class1", "class2"]
@@ -91,8 +94,24 @@ const clearLobbies = () => {
     lobbies.innerText = "";
 }
 
+const setUserStatDisplay = (wins, losses) => {
+	// only show wins/losses if player is logged in and has stats
+	if (wins === undefined) {
+		userDiv.innerText = "ANONYMOUS";
+		// these would already be empty, but...
+		winDiv.innerText = "";
+		loseDiv.innerText = "";
+	}
+	else {
+		userDiv.innerText = USERNAME_COOKIE;
+		winDiv.innerText = "W: " + wins.toString();
+		loseDiv.innerText = "L: " + losses.toString();
+	}
+}
+
 const init = () => {
 	getLobbyData();
 	checkIfUserIsInLobby();
+	getUserStats();
 }
 init();

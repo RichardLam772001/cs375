@@ -22,7 +22,7 @@ const CLIENTS_HANDLER = (() => {
      */
     const registerClient = (clientId, username, gameId, token) => {
         let loggedIn = false;
-        if (token in tokenStorage) {
+        if (isUserLoggedin(token)) {
             loggedIn = true;
         } 
         REGISTERED_CLIENTS[clientId] = {
@@ -114,6 +114,10 @@ const CLIENTS_HANDLER = (() => {
         }
     }
 
+    const isUserLoggedin = (token) => {
+        return token in tokenStorage;
+    };
+
 
     return {
         CLIENTS,
@@ -124,7 +128,8 @@ const CLIENTS_HANDLER = (() => {
         registerClient,
         doesGameHaveRegisteredClients,
         updatePlayerStats,
-        areBothPlayersLoggedIn
+        areBothPlayersLoggedIn,
+        isUserLoggedin
     }
 })();
 
