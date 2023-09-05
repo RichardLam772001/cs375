@@ -106,7 +106,7 @@ const lobbyStats = (req, res) => {
 			return res.send(stats);
 		}).catch((error) => {
 			console.error('Error getting player stats:', error);
-			res.statusCode = 400;
+			res.statusCode = 500;
 			return res.send(stats);
 		});
 	}
